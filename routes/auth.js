@@ -8,15 +8,11 @@ const router = express.Router();
 // Inscription
 router.post('/register', async (req, res) => {
   try {
-    const { username, email, password, confirmPassword } = req.body;
+    const { username, email, password } = req.body;
 
     // Validation
-    if (!username || !email || !password || !confirmPassword) {
+    if (!username || !email || !password) {
       return res.status(400).json({ error: 'Tous les champs sont obligatoires' });
-    }
-
-    if (password !== confirmPassword) {
-      return res.status(400).json({ error: 'Les mots de passe ne correspondent pas' });
     }
 
     if (password.length < 6) {
