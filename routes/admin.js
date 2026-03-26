@@ -25,7 +25,7 @@ router.get('/users', requireAdmin, (req, res) => {
       return res.status(500).json({ error: 'Erreur serveur' });
     }
 
-    res.json(rows);
+    res.json({users: rows || []});
   });
 });
 
@@ -168,7 +168,7 @@ router.get('/entries', requireAdmin, (req, res) => {
       return res.status(500).json({ error: 'Erreur serveur' });
     }
 
-    res.json(rows);
+    res.json({entries: rows || []});
   });
 });
 
