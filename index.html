@@ -522,6 +522,11 @@
             color: white;
         }
 
+        .alert.warning {
+            background: var(--warning);
+            color: white;
+        }
+
         @keyframes slideIn {
             from { transform: translateX(400px); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
@@ -640,15 +645,15 @@
 
         <!-- Navigation -->
         <div class="nav-tabs">
-            <button class="nav-tab active" onclick="showTab('entries')">
-                <i class="fas fa-list"></i> Mes Heures
-            </button>
-            <button class="nav-tab" onclick="showTab('add')">
-                <i class="fas fa-plus"></i> Ajouter une entrée
-            </button>
-            <button class="nav-tab" id="adminBtn" style="display:none;" onclick="showTab('admin')">
-                <i class="fas fa-cog"></i> Administration
-            </button>
+                    <button class="nav-tab active" data-tab="entries" onclick="showTab(this)">
+                        <i class="fas fa-list"></i> Mes Heures
+                    </button>
+                    <button class="nav-tab" data-tab="add" onclick="showTab(this)">
+                        <i class="fas fa-plus"></i> Ajouter une entrée
+                    </button>
+                    <button class="nav-tab" id="adminBtn" data-tab="admin" style="display:none;" onclick="showTab(this)">
+                        <i class="fas fa-cog"></i> Administration
+                    </button>
         </div>
 
         <!-- Contenu -->
@@ -678,7 +683,7 @@
                         </div>
                         <div class="form-group">
                             <label>Taux horaire (€/h)</label>
-                            <input type="number" id="entryHourlyRate" step="0.01" required>
+                            <input type="number" id="entryHourlyRate" step="0.01" value="10" required>
                         </div>
                     </div>
                     <div class="form-group">
@@ -694,6 +699,13 @@
             <!-- Administration -->
             <div id="adminTab" class="tab-content">
                 <h2 style="margin-bottom: 20px;">Tableau de bord administrateur</h2>
+                
+                <div style="margin-bottom: 20px;">
+                    <button class="btn btn-primary" onclick="changePassword()" style="width: auto;">
+                        <i class="fas fa-key"></i> Changer mon mot de passe
+                    </button>
+                </div>
+                
                 <div class="admin-grid">
                     <div class="stat-card">
                         <div class="stat-card-label">Utilisateurs</div>
@@ -713,7 +725,10 @@
                     </div>
                 </div>
 
-                <h3 style="margin-top: 30px; margin-bottom: 15px;">Utilisateurs</h3>
+                <h3 style="margin-top: 30px; margin-bottom: 15px;">Statistiques mensuelles</h3>
+                <div id="monthlyStats" style="margin-bottom: 30px;"></div>
+
+                <h3 style="margin-top: 30px; margin-bottom: 15px;">Gestion des utilisateurs</h3>
                 <table class="users-table">
                     <thead>
                         <tr>
@@ -916,13 +931,88 @@
             }
         }
 
+        // Charger les stats mensuelles
+        async function loadMonthlyStats() {
+            try {
+                const res = await fetch(API_URL + '/entries', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                const entries = await res.json();
+                
+                // Grouper par mois
+                const months = {};
+                entries.forEach(e => {
+                    const month = e.date.substring(0, 7); // YYYY-MM
+                    if (!months[month]) {
+                        months[month] = { hours: 0, salary: 0, count: 0 };
+                    }
+                    months[month].hours += e.totalHours || 0;
+                    months[month].salary += e.salary || 0;
+                    months[month].count += 1;
+                });
+                
+                // Afficher stats mensuelles
+                const monthsHtml = Object.entries(months)
+                    .sort(([a], [b]) => b.localeCompare(a))
+                    .map(([month, data]) => `
+                        <div style="padding: 15px; background: var(--bg-light); border-radius: 8px; margin-bottom: 10px;">
+                            <div style="font-weight: 600; margin-bottom: 8px; color: var(--text-primary);">${month}</div>
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; font-size: 13px;">
+                                <div>
+                                    <span style="color: var(--text-secondary); font-weight: 600;">Entrées:</span>
+                                    <span style="margin-left: 5px; font-weight: 700; color: var(--primary);">${data.count}</span>
+                                </div>
+                                <div>
+                                    <span style="color: var(--text-secondary); font-weight: 600;">Heures:</span>
+                                    <span style="margin-left: 5px; font-weight: 700; color: var(--primary);">${data.hours.toFixed(1)}h</span>
+                                </div>
+                                <div>
+                                    <span style="color: var(--text-secondary); font-weight: 600;">Salaire:</span>
+                                    <span style="margin-left: 5px; font-weight: 700; color: var(--success);">${data.salary.toFixed(2)}€</span>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                
+                const monthlyContainer = document.getElementById('monthlyStats');
+                if (monthlyContainer) {
+                    monthlyContainer.innerHTML = monthsHtml || '<p style="color: var(--text-secondary);">Aucune entrée</p>';
+                }
+            } catch (err) {
+                showAlert(err.message, 'error');
+            }
+        }
+
+        // Changer le mot de passe
+        async function changePassword() {
+            const oldPwd = prompt('Ancien mot de passe:');
+            if (!oldPwd) return;
+            const newPwd = prompt('Nouveau mot de passe:');
+            if (!newPwd) return;
+            const confirmPwd = prompt('Confirmer le nouveau mot de passe:');
+            if (confirmPwd !== newPwd) {
+                showAlert('Les mots de passe ne correspondent pas', 'error');
+                return;
+            }
+            try {
+                // Cette route n'existe pas encore, à ajouter au backend
+                showAlert('Fonctionnalité de changement de mot de passe à ajouter au backend', 'warning');
+            } catch (err) {
+                showAlert(err.message, 'error');
+            }
+        }
+
         // ===== NAVIGATION =====
-        function showTab(tab) {
+        function showTab(element) {
+            const tab = element.getAttribute('data-tab');
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
             document.getElementById(tab + 'Tab').classList.add('active');
-            event.target.classList.add('active');
-            if (tab === 'admin') loadAdminData();
+            element.classList.add('active');
+            if (tab === 'admin') {
+                loadAdminData();
+                loadMonthlyStats();
+            }
             if (tab === 'entries') loadEntries();
         }
 
