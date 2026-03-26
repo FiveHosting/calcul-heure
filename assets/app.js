@@ -408,6 +408,28 @@ function changePassword() {
 
 // ===== INITIALISATION =====
 document.addEventListener('DOMContentLoaded', function() {
+    // Attacher les event listeners aux formulaires
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        await login();
+    });
+
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const pwd = document.getElementById('registerPassword').value;
+        const pwd2 = document.getElementById('registerPassword2').value;
+        if (pwd !== pwd2) {
+            showAlert('Les mots de passe ne correspondent pas', 'error');
+            return;
+        }
+        await register();
+    });
+
+    document.getElementById('entryForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        await addEntry();
+    });
+
     // Vérifier si l'utilisateur est déjà connecté
     if (token) {
         try {
