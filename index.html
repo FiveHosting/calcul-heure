@@ -970,6 +970,7 @@
                 document.getElementById('entryDate').value = today;
                 showAlert('Entrée ajoutée !', 'success');
                 loadEntries();
+                loadMonthlyStats(); // Mettre à jour les stats globales
                 showTab('entries');
             } catch (err) {
                 showAlert(err.message, 'error');

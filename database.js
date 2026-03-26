@@ -65,18 +65,27 @@ function ensureAdminUser() {
       return;
     }
 
-    db.run(
-      `INSERT OR REPLACE INTO users (id, username, email, password, role, created_at) 
-       VALUES (1, ?, ?, ?, 'admin', CURRENT_TIMESTAMP)`,
-      [adminUsername, adminEmail, hashedPassword],
-      function(insertErr) {
-        if (insertErr) {
-          console.error('Erreur création admin:', insertErr);
-        } else {
-          console.log(`✅ Admin garanti en base: ${adminUsername}`);
-        }
+    // Vérifier d'abord si l'admin existe
+    db.get('SELECT id FROM users WHERE id = 1', (err, row) => {
+      if (row) {
+        console.log('✅ Admin existe déjà, mot de passe préservé');
+        return;
       }
-    );
+      
+      // Créer l'admin seulement s'il n'existe pas
+      db.run(
+        `INSERT INTO users (id, username, email, password, role, created_at) 
+         VALUES (1, ?, ?, ?, 'admin', CURRENT_TIMESTAMP)`,
+        [adminUsername, adminEmail, hashedPassword],
+        function(insertErr) {
+          if (insertErr) {
+            console.error('Erreur création admin:', insertErr);
+          } else {
+            console.log(`✅ Admin créé en base: ${adminUsername}`);
+          }
+        }
+      );
+    });
   });
 }
 
