@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-
 <html lang="fr">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Calculateur d'Heures de Travail</title>
-<style>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Calculateur d'Heures - Connexion</title>
+    <style>
         * {
             margin: 0;
             padding: 0;
@@ -121,34 +120,15 @@
             background: #38a169;
         }
         
-        .btn-info {
-            background: #4299e1;
-            color: white;
-        }
-        
-        .btn-info:hover {
-            background: #3182ce;
-        }
-        
-        .btn-warning {
-            background: #ed8936;
-            color: white;
-        }
-        
-        .btn-warning:hover {
-            background: #dd6b20;
-        }
-        
-        .btn-danger {
+        .btn-logout {
             background: #f56565;
             color: white;
-            padding: 0.25rem 0.5rem;
-            font-size: 0.875rem;
             width: auto;
+            padding: 0.5rem 1rem;
             margin: 0;
         }
         
-        .btn-danger:hover {
+        .btn-logout:hover {
             background: #e53e3e;
         }
         
@@ -209,6 +189,23 @@
             margin-bottom: 0.5rem;
         }
         
+        .btn-danger {
+            background: #f56565;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+            width: auto;
+            margin: 0;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .btn-danger:hover {
+            background: #e53e3e;
+        }
+        
         .modal {
             position: fixed;
             top: 0;
@@ -231,33 +228,6 @@
             width: 100%;
             max-height: 80vh;
             overflow-y: auto;
-        }
-        
-        .modal h3 {
-            margin-bottom: 1rem;
-            color: #2d3748;
-        }
-        
-        .code-display {
-            background: #f7fafc;
-            padding: 1rem;
-            border-radius: 8px;
-            font-family: monospace;
-            word-break: break-all;
-            margin: 1rem 0;
-            border: 2px solid #e2e8f0;
-        }
-        
-        .text-export {
-            width: 100%;
-            height: 300px;
-            padding: 1rem;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            font-family: monospace;
-            font-size: 0.875rem;
-            background: #f7fafc;
-            resize: vertical;
         }
         
         .empty-state {
@@ -284,6 +254,58 @@
             border: 1px solid #fc8181;
         }
         
+        .auth-container {
+            max-width: 500px;
+            margin: 3rem auto;
+        }
+        
+        .auth-form h2 {
+            margin-bottom: 1.5rem;
+            color: #2d3748;
+        }
+        
+        .tab-switch {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .tab-btn {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
+            background: #e2e8f0;
+            cursor: pointer;
+            border-radius: 8px;
+            font-weight: 600;
+            color: #718096;
+            transition: all 0.2s;
+        }
+        
+        .tab-btn.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .user-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: #edf2f7;
+            border-radius: 8px;
+        }
+        
+        .user-welcome {
+            color: #2d3748;
+            font-weight: 600;
+        }
+        
         @media (max-width: 768px) {
             .entry-item {
                 flex-direction: column;
@@ -302,563 +324,460 @@
 </head>
 <body>
 <div class="container">
-<!-- En-tête -->
-<div class="card header">
-<h1>📊 Calculateur d'Heures</h1>
-<p>Gérez vos horaires de travail et calculez votre salaire automatiquement</p>
-</div>
-<div class="grid grid-2">
-<!-- Formulaire de saisie -->
-<div class="card">
-<h2 style="margin-bottom: 1.5rem; color: #2d3748;">🕐 Nouvelle entrée</h2>
-<div class="form-group">
-<label for="workDate">Date</label>
-<input id="workDate" type="date"/>
-</div>
-<div class="grid-cols-2">
-<div class="form-group">
-<label for="startTime">Heure de début</label>
-<input id="startTime" type="time"/>
-</div>
-<div class="form-group">
-<label for="endTime">Heure de fin</label>
-<input id="endTime" type="time"/>
-</div>
-</div>
-<div class="form-group">
-<label for="hourlyRate">Taux horaire (€)</label>
-<input id="hourlyRate" min="0" step="0.01" type="number" value="10"/>
-</div>
-<div class="form-group">
-<label for="description">Description (optionnel)</label>
-<input id="description" placeholder="Ex: Service de nuit" type="text"/>
-</div>
-<button class="btn btn-primary" onclick="addWorkEntry()">
-                    ➕ Ajouter l'entrée
-                </button>
-</div>
-<!-- Résumé mensuel -->
-<div class="card">
-<h2 style="margin-bottom: 1.5rem; color: #2d3748;">📅 Résumé mensuel</h2>
-<div class="form-group">
-<label for="selectedMonth">Mois à afficher</label>
-<input id="selectedMonth" type="month"/>
-</div>
-<div class="stats-grid">
-<div>
-<div class="stat-value" id="totalHours">0h00</div>
-<div class="stat-label">Heures totales</div>
-</div>
-<div>
-<div class="stat-value" id="totalSalary">0,00 €</div>
-<div class="stat-label">Salaire total</div>
-</div>
+    <!-- Écran d'authentification -->
+    <div id="authContainer" class="auth-container">
+        <div class="card header">
+            <h1>📊 Calculateur d'Heures</h1>
+            <p>Gérez vos horaires de travail et calculez votre salaire</p>
+        </div>
+        
+        <div class="card auth-form">
+            <div class="tab-switch">
+                <button class="tab-btn active" onclick="switchTab('login')">Connexion</button>
+                <button class="tab-btn" onclick="switchTab('register')">Inscription</button>
+            </div>
+            
+            <!-- Formulaire de connexion -->
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="loginUsername">Nom d'utilisateur</label>
+                    <input id="loginUsername" type="text" required/>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Mot de passe</label>
+                    <input id="loginPassword" type="password" required/>
+                </div>
+                <button type="submit" class="btn btn-primary">Se connecter</button>
+            </form>
+            
+            <!-- Formulaire d'inscription -->
+            <form id="registerForm" class="hidden" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label for="regUsername">Nom d'utilisateur</label>
+                    <input id="regUsername" type="text" required/>
+                </div>
+                <div class="form-group">
+                    <label for="regEmail">Email</label>
+                    <input id="regEmail" type="email" required/>
+                </div>
+                <div class="form-group">
+                    <label for="regPassword">Mot de passe</label>
+                    <input id="regPassword" type="password" required minlength="6"/>
+                </div>
+                <div class="form-group">
+                    <label for="regConfirmPassword">Confirmer le mot de passe</label>
+                    <input id="regConfirmPassword" type="password" required/>
+                </div>
+                <button type="submit" class="btn btn-success">Créer un compte</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Écran principal après connexion -->
+    <div id="appContainer" class="hidden">
+        <div class="user-info">
+            <span class="user-welcome">👤 <span id="userGreeting"></span></span>
+            <button class="btn-logout" onclick="logout()">Déconnexion</button>
+        </div>
+        
+        <div class="card header">
+            <h1>📊 Calculateur d'Heures</h1>
+            <p>Gérez vos horaires de travail et calculez votre salaire automatiquement</p>
+        </div>
+        
+        <div class="grid grid-2">
+            <!-- Formulaire de saisie -->
+            <div class="card">
+                <h2 style="margin-bottom: 1.5rem; color: #2d3748;">🕐 Nouvelle entrée</h2>
+                <form onsubmit="addWorkEntry(event)">
+                    <div class="form-group">
+                        <label for="workDate">Date</label>
+                        <input id="workDate" type="date" required/>
+                    </div>
+                    <div class="grid-cols-2">
+                        <div class="form-group">
+                            <label for="startTime">Heure de début</label>
+                            <input id="startTime" type="time" required/>
+                        </div>
+                        <div class="form-group">
+                            <label for="endTime">Heure de fin</label>
+                            <input id="endTime" type="time" required/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="hourlyRate">Taux horaire (€)</label>
+                        <input id="hourlyRate" min="0" step="0.01" type="number" value="10" required/>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description (optionnel)</label>
+                        <input id="description" placeholder="Ex: Service de nuit" type="text"/>
+                    </div>
+                    <button type="submit" class="btn btn-primary">➕ Ajouter l'entrée</button>
+                </form>
+            </div>
+            
+            <!-- Résumé mensuel -->
+            <div class="card">
+                <h2 style="margin-bottom: 1.5rem; color: #2d3748;">📅 Résumé mensuel</h2>
+                <div class="form-group">
+                    <label for="selectedMonth">Mois à afficher</label>
+                    <input id="selectedMonth" type="month"/>
+                </div>
+                <div class="stats-grid">
+                    <div>
+                        <div class="stat-value" id="totalHours">0h00</div>
+                        <div class="stat-label">Heures totales</div>
+                    </div>
+                    <div>
+                        <div class="stat-value" id="totalSalary">0,00 €</div>
+                        <div class="stat-label">Salaire total</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Liste des entrées -->
+        <div class="card">
+            <h2 style="margin-bottom: 1.5rem; color: #2d3748;">📋 Historique des entrées</h2>
+            <div id="workEntries">
+                <div class="empty-state">
+                    <p>Aucune entrée pour le moment.<br/>Ajoutez votre première journée de travail !</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-
-<button class="btn btn-warning" onclick="exportToText()">
-                    📝 Export texte simple
-                </button><input accept=".json" id="jsonFileInput" onchange="importJsonBackup(this)" style="display: none;" type="file"/><button class="btn btn-success" onclick="downloadJsonBackup()">💾 Exporter (.json)</button><button class="btn btn-info" onclick="document.getElementById('jsonFileInput').click()">📂 Importer (.json)</button>
-</div>
-</div>
-<!-- Liste des entrées -->
-<div class="card">
-<h2 style="margin-bottom: 1.5rem; color: #2d3748;">📋 Historique des entrées</h2>
-<div id="workEntries">
-<div class="empty-state">
-<p>Aucune entrée pour le moment.<br/>Ajoutez votre première journée de travail !</p>
-</div>
-</div>
-</div>
-</div>
 <script>
-        // Variables globales
-        let workData = [];
-        let currentModal = null;
-        
-        // Initialisation au chargement de la page
-        document.addEventListener('DOMContentLoaded', function() {
-            loadData();
-            initializeDates();
-            updateDisplay();
-        });
-        
-        // Initialiser les dates par défaut
-        function initializeDates() {
-            const today = new Date();
-            document.getElementById('workDate').valueAsDate = today;
-            document.getElementById('selectedMonth').value = today.toISOString().slice(0, 7);
+    // Configuration API
+    const API_URL = 'http://localhost:3000/api';
+    let token = localStorage.getItem('token');
+    let currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+    let workData = [];
+    
+    // Initialisation
+    document.addEventListener('DOMContentLoaded', function() {
+        if (token && currentUser.username) {
+            showApp();
+            loadEntries();
+        } else {
+            showAuth();
         }
+    });
+    
+    // Afficher l'écran d'authentification
+    function showAuth() {
+        document.getElementById('authContainer').classList.remove('hidden');
+        document.getElementById('appContainer').classList.add('hidden');
+    }
+    
+    // Afficher l'application
+    function showApp() {
+        document.getElementById('authContainer').classList.add('hidden');
+        document.getElementById('appContainer').classList.remove('hidden');
+        document.getElementById('userGreeting').textContent = `Bienvenue ${currentUser.username}!`;
         
-        // Charger les données depuis localStorage
-        function loadData() {
-            try {
-                const saved = localStorage.getItem('workData');
-                workData = saved ? JSON.parse(saved) : [];
-            } catch (error) {
-                console.error('Erreur lors du chargement des données:', error);
-                workData = [];
-            }
+        const today = new Date();
+        document.getElementById('workDate').valueAsDate = today;
+        document.getElementById('selectedMonth').value = today.toISOString().slice(0, 7);
+        document.getElementById('selectedMonth').addEventListener('change', updateDisplay);
+    }
+    
+    // Basculer entre les onglets
+    function switchTab(tab) {
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const tabs = document.querySelectorAll('.tab-btn');
+        
+        if (tab === 'login') {
+            loginForm.classList.remove('hidden');
+            registerForm.classList.add('hidden');
+            tabs[0].classList.add('active');
+            tabs[1].classList.remove('active');
+        } else {
+            loginForm.classList.add('hidden');
+            registerForm.classList.remove('hidden');
+            tabs[0].classList.remove('active');
+            tabs[1].classList.add('active');
         }
+    }
+    
+    // Gestion de la connexion
+    async function handleLogin(event) {
+        event.preventDefault();
         
-        // Sauvegarder les données dans localStorage
-        function saveData() {
-            try {
-                localStorage.setItem('workData', JSON.stringify(workData));
-            } catch (error) {
-                console.error('Erreur lors de la sauvegarde:', error);
-                showAlert('Erreur lors de la sauvegarde des données', 'error');
-            }
-        }
+        const username = document.getElementById('loginUsername').value;
+        const password = document.getElementById('loginPassword').value;
         
-        // Calculer les heures travaillées (gestion des horaires de nuit)
-        function calculateHours(startTime, endTime) {
-            const [startHour, startMin] = startTime.split(':').map(Number);
-            const [endHour, endMin] = endTime.split(':').map(Number);
-            
-            let startMinutes = startHour * 60 + startMin;
-            let endMinutes = endHour * 60 + endMin;
-            
-            // Si l'heure de fin est plus petite, c'est un horaire de nuit
-            if (endMinutes <= startMinutes) {
-                endMinutes += 24 * 60; // Ajouter 24h
-            }
-            
-            const totalMinutes = endMinutes - startMinutes;
-            const hours = Math.floor(totalMinutes / 60);
-            const minutes = totalMinutes % 60;
-            
-            return { hours, minutes, totalMinutes };
-        }
-        
-        // Ajouter une entrée de travail
-        function addWorkEntry() {
-            const date = document.getElementById('workDate').value;
-            const startTime = document.getElementById('startTime').value;
-            const endTime = document.getElementById('endTime').value;
-            const hourlyRate = parseFloat(document.getElementById('hourlyRate').value);
-            const description = document.getElementById('description').value.trim();
-            
-            // Validation
-            if (!date || !startTime || !endTime || !hourlyRate || hourlyRate <= 0) {
-                showAlert('Veuillez remplir tous les champs obligatoires avec des valeurs valides', 'error');
-                return;
-            }
-            
-            try {
-                const timeCalc = calculateHours(startTime, endTime);
-                const totalHours = timeCalc.totalMinutes / 60;
-                const salary = totalHours * hourlyRate;
-                
-                const entry = {
-                    id: Date.now(),
-                    date,
-                    startTime,
-                    endTime,
-                    hourlyRate,
-                    description,
-                    hours: timeCalc.hours,
-                    minutes: timeCalc.minutes,
-                    totalHours,
-                    salary
-                };
-                
-                workData.push(entry);
-                saveData();
-                updateDisplay();
-                
-                // Réinitialiser le formulaire
-                document.getElementById('description').value = '';
-                
-                showAlert(`Entrée ajoutée: ${timeCalc.hours}h${timeCalc.minutes.toString().padStart(2, '0')} - ${salary.toFixed(2)}€`, 'success');
-                
-            } catch (error) {
-                console.error('Erreur lors de l\'ajout:', error);
-                showAlert('Erreur lors de l\'ajout de l\'entrée', 'error');
-            }
-        }
-        
-        // Mettre à jour l'affichage
-        function updateDisplay() {
-            const selectedMonth = document.getElementById('selectedMonth').value;
-            const filteredData = workData.filter(entry => entry.date.startsWith(selectedMonth));
-            
-            // Calculer les totaux
-            let totalMinutes = 0;
-            let totalSalary = 0;
-            
-            filteredData.forEach(entry => {
-                totalMinutes += entry.totalHours * 60;
-                totalSalary += entry.salary;
+        try {
+            const response = await fetch(`${API_URL}/auth/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
             });
             
-            const totalHours = Math.floor(totalMinutes / 60);
-            const remainingMinutes = Math.floor(totalMinutes % 60);
+            const data = await response.json();
             
-            document.getElementById('totalHours').textContent = `${totalHours}h${remainingMinutes.toString().padStart(2, '0')}`;
-            document.getElementById('totalSalary').textContent = `${totalSalary.toFixed(2)} €`;
-            
-            // Afficher les entrées
-            displayEntries(filteredData);
-        }
-        
-        // Afficher les entrées
-        function displayEntries(entries) {
-            const container = document.getElementById('workEntries');
-            
-            if (entries.length === 0) {
-                container.innerHTML = '<div class="empty-state"><p>Aucune entrée pour ce mois.</p></div>';
+            if (!response.ok) {
+                showAlert(data.error || 'Erreur de connexion', 'error');
                 return;
             }
             
-            const entriesHTML = entries
-                .sort((a, b) => new Date(b.date) - new Date(a.date))
-                .map(entry => {
-                    const date = new Date(entry.date);
-                    const dayName = date.toLocaleDateString('fr-FR', { 
-                        weekday: 'long', 
-                        day: '2-digit', 
-                        month: '2-digit' 
-                    });
-                    
-                    return `
-                        <div class="entry-item">
-                            <div class="entry-info">
-                                <h4>${dayName} - ${entry.startTime} à ${entry.endTime}</h4>
-                                <p>${entry.description || 'Travail'} • ${entry.hours}h${entry.minutes.toString().padStart(2, '0')} • ${entry.hourlyRate}€/h</p>
-                            </div>
-                            <div class="entry-actions">
-                                <div class="entry-salary">${entry.salary.toFixed(2)} €</div>
-                                <button onclick="deleteEntry(${entry.id})" class="btn btn-danger">
-                                    🗑️ Supprimer
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
+            // Sauvegarder le token et les infos utilisateur
+            token = data.token;
+            currentUser = data.user;
+            localStorage.setItem('token', token);
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
             
-            container.innerHTML = entriesHTML;
-        }
-        
-        // Supprimer une entrée
-        function deleteEntry(id) {
-            if (confirm('Êtes-vous sûr de vouloir supprimer cette entrée ?')) {
-                workData = workData.filter(entry => entry.id !== id);
-                saveData();
-                updateDisplay();
-                showAlert('Entrée supprimée avec succès', 'success');
-            }
-        }
-        
-        // Générer un code de sauvegarde
-        function generateSaveCode() {
-            if (workData.length === 0) {
-                showAlert('Aucune donnée à sauvegarder', 'error');
-                return;
-            }
+            showAlert('Connecté avec succès !', 'success');
+            document.getElementById('loginForm').reset();
+            setTimeout(showApp, 500);
             
-            try {
-                const compressed = workData.map(entry => 
-                    `${entry.date}|${entry.startTime}|${entry.endTime}|${entry.hourlyRate}|${entry.description || ''}`
-                ).join('~');
-                
-                const code = btoa(unescape(encodeURIComponent(compressed)));
-                showCodeModal(code);
-                
-            } catch (error) {
-                console.error('Erreur génération code:', error);
-                showAlert('Erreur lors de la génération du code', 'error');
-            }
+        } catch (error) {
+            console.error('Erreur:', error);
+            showAlert('Erreur de connexion', 'error');
         }
-        
-        // Charger depuis un code
-        function loadFromCode() {
-            const code = prompt('🔓 Entrez votre code de sauvegarde:');
-            if (!code) return;
-            
-            try {
-                const compressed = decodeURIComponent(escape(atob(code)));
-                const entries = compressed.split('~');
-                
-                const newData = entries.map((entry, index) => {
-                    const parts = entry.split('|');
-                    if (parts.length < 4) throw new Error('Format invalide');
-                    
-                    const [date, startTime, endTime, hourlyRate, description] = parts;
-                    const timeCalc = calculateHours(startTime, endTime);
-                    const totalHours = timeCalc.totalMinutes / 60;
-                    const salary = totalHours * parseFloat(hourlyRate);
-                    
-                    return {
-                        id: Date.now() + index,
-                        date,
-                        startTime,
-                        endTime,
-                        hourlyRate: parseFloat(hourlyRate),
-                        description: description || '',
-                        hours: timeCalc.hours,
-                        minutes: timeCalc.minutes,
-                        totalHours,
-                        salary
-                    };
-                });
-                
-                workData = newData;
-                saveData();
-                updateDisplay();
-                showAlert(`${newData.length} entrées chargées avec succès !`, 'success');
-                
-            } catch (error) {
-                console.error('Erreur import code:', error);
-                showAlert('Code invalide ou corrompu', 'error');
-            }
-        }
-        
-        // Export en texte simple
-        function exportToText() {
-            if (workData.length === 0) {
-                showAlert('Aucune donnée à exporter', 'error');
-                return;
-            }
-            
-            try {
-                let textExport = `📊 MES HEURES DE TRAVAIL - ${new Date().toLocaleDateString('fr-FR')}\n`;
-                textExport += `${'='.repeat(50)}\n\n`;
-                
-                // Grouper par mois
-                const byMonth = {};
-                workData.forEach(entry => {
-                    const month = entry.date.substring(0, 7);
-                    if (!byMonth[month]) byMonth[month] = [];
-                    byMonth[month].push(entry);
-                });
-                
-                Object.keys(byMonth).sort().forEach(month => {
-                    const monthName = new Date(month + '-01').toLocaleDateString('fr-FR', { 
-                        year: 'numeric', 
-                        month: 'long' 
-                    });
-                    textExport += `📅 ${monthName.toUpperCase()}\n`;
-                    textExport += `${'-'.repeat(30)}\n`;
-                    
-                    let monthHours = 0;
-                    let monthSalary = 0;
-                    
-                    byMonth[month].sort((a, b) => new Date(a.date) - new Date(b.date)).forEach(entry => {
-                        const dayName = new Date(entry.date).toLocaleDateString('fr-FR', { 
-                            weekday: 'long', 
-                            day: '2-digit', 
-                            month: '2-digit' 
-                        });
-                        textExport += `${dayName} : ${entry.startTime}-${entry.endTime} (${entry.hours}h${entry.minutes.toString().padStart(2, '0')}) = ${entry.salary.toFixed(2)}€\n`;
-                        if (entry.description) textExport += `   📝 ${entry.description}\n`;
-                        
-                        monthHours += entry.totalHours;
-                        monthSalary += entry.salary;
-                    });
-                    
-                    const totalH = Math.floor(monthHours);
-                    const totalM = Math.floor((monthHours % 1) * 60);
-                    textExport += `\n💰 TOTAL: ${totalH}h${totalM.toString().padStart(2, '0')} - ${monthSalary.toFixed(2)}€\n\n`;
-                });
-                
-                showTextExportModal(textExport);
-                
-            } catch (error) {
-                console.error('Erreur export texte:', error);
-                showAlert('Erreur lors de l\'export', 'error');
-            }
-        }
-        
-        // Afficher le modal avec le code
-        function showCodeModal(code) {
-            const modal = createModal(`
-                <h3>🔐 Votre code de sauvegarde</h3>
-                <p style="margin-bottom: 1rem; color: #718096;">Copiez ce code et gardez-le précieusement :</p>
-                <div class="code-display">${code}</div>
-                <button onclick="copyToClipboard('${code}'); this.textContent='✅ Copié !'" class="btn btn-info">
-                    📋 Copier le code
-                </button>
-                <button onclick="shareCode('${code}')" class="btn btn-success">
-                    📤 Partager le code
-                </button>
-                <button onclick="closeModal()" class="btn" style="background: #718096; color: white;">
-                    Fermer
-                </button>
-                <p style="font-size: 0.875rem; color: #718096; margin-top: 1rem;">💡 Sauvegardez ce code dans Notes ou envoyez-le vous par mail</p>
-            `);
-            
-            document.body.appendChild(modal);
-            currentModal = modal;
-        }
-        
-        // Afficher le modal d'export texte
-        function showTextExportModal(textContent) {
-            const modal = createModal(`
-                <h3>📝 Export texte lisible</h3>
-                <textarea class="text-export" readonly onclick="this.select()">${textContent}</textarea>
-                <button onclick="copyToClipboard(\`${textContent.replace(/`/g, '\\`')}\`); this.textContent='✅ Copié !'" class="btn btn-info">
-                    📋 Copier le texte
-                </button>
-                <button onclick="shareText(\`${textContent.replace(/`/g, '\\`')}\`)" class="btn btn-success">
-                    📤 Partager
-                </button>
-                <button onclick="closeModal()" class="btn" style="background: #718096; color: white;">
-                    Fermer
-                </button>
-            `);
-            
-            document.body.appendChild(modal);
-            currentModal = modal;
-        }
-        
-        // Créer un modal
-        function createModal(content) {
-            const modal = document.createElement('div');
-            modal.className = 'modal';
-            modal.innerHTML = `<div class="modal-content">${content}</div>`;
-            modal.onclick = function(e) {
-                if (e.target === modal) closeModal();
-            };
-            return modal;
-        }
-        
-        // Fermer le modal
-        function closeModal() {
-            if (currentModal) {
-                document.body.removeChild(currentModal);
-                currentModal = null;
-            }
-        }
-        
-        // Copier dans le presse-papiers
-        function copyToClipboard(text) {
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(text).then(() => {
-                    showAlert('Copié dans le presse-papiers !', 'success');
-                }).catch(() => {
-                    fallbackCopy(text);
-                });
-            } else {
-                fallbackCopy(text);
-            }
-        }
-        
-        // Méthode de copie alternative
-        function fallbackCopy(text) {
-            const textArea = document.createElement('textarea');
-            textArea.value = text;
-            document.body.appendChild(textArea);
-            textArea.select();
-            try {
-                document.execCommand('copy');
-                showAlert('Copié dans le presse-papiers !', 'success');
-            } catch (err) {
-                showAlert('Impossible de copier automatiquement', 'error');
-            }
-            document.body.removeChild(textArea);
-        }
-        
-        // Partager le code
-        function shareCode(code) {
-            const message = `🔐 Code de sauvegarde de mes heures de travail:\n\n${code}\n\n📱 À garder précieusement !`;
-            shareContent('Code de sauvegarde - Heures de travail', message);
-        }
-        
-        // Partager du texte
-        function shareText(text) {
-            shareContent('Mes heures de travail', text);
-        }
-        
-        // Fonction générique de partage
-        function shareContent(title, text) {
-            if (navigator.share) {
-                navigator.share({ title, text }).catch(() => {
-                    fallbackShare(title, text);
-                });
-            } else {
-                fallbackShare(title, text);
-            }
-        }
-        
-        // Partage alternatif par email
-        function fallbackShare(title, text) {
-            const mailtoLink = `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(text)}`;
-            window.open(mailtoLink, '_blank');
-        }
-        
-        // Afficher une alerte
-        function showAlert(message, type = 'success') {
-            const alertDiv = document.createElement('div');
-            alertDiv.className = `alert alert-${type}`;
-            alertDiv.textContent = message;
-            
-            const container = document.querySelector('.container');
-            container.insertBefore(alertDiv, container.firstChild);
-            
-            setTimeout(() => {
-                if (alertDiv.parentNode) {
-                    alertDiv.parentNode.removeChild(alertDiv);
-                }
-            }, 5000);
-        }
-        
-        // Événements
-        document.getElementById('selectedMonth').addEventListener('change', updateDisplay);
-        
-        // Gestion des erreurs globales
-        window.addEventListener('error', function(e) {
-            console.error('Erreur globale:', e.error);
-            showAlert('Une erreur inattendue s\'est produite', 'error');
-        });
-    </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'961b5be3d6031bf1',t:'MTc1Mjk0MDA2My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();
-
-// Exporter les données au format JSON
-function downloadJsonBackup() {
-    if (workData.length === 0) {
-        showAlert("Aucune donnée à sauvegarder", "error");
-        return;
     }
-
-    const json = JSON.stringify(workData, null, 2);
-    const blob = new Blob([json], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `heures-travail-${new Date().toISOString().split('T')[0]}.json`;
-    a.click();
-
-    URL.revokeObjectURL(url);
-    showAlert("Fichier JSON téléchargé avec succès", "success");
-}
-
-// Importer un fichier JSON
-function importJsonBackup(input) {
-    const file = input.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        try {
-            const imported = JSON.parse(e.target.result);
-            if (!Array.isArray(imported)) throw new Error("Format invalide");
-
-            const valid = imported.every(entry => entry.date && entry.startTime && entry.endTime && entry.hourlyRate);
-            if (!valid) throw new Error("Certaines entrées sont invalides");
-
-            workData = imported;
-            saveData();
-            updateDisplay();
-            showAlert("Fichier JSON importé avec succès", "success");
-        } catch (err) {
-            console.error("Erreur import JSON:", err);
-            showAlert("Fichier corrompu ou non conforme", "error");
+    
+    // Gestion de l'inscription
+    async function handleRegister(event) {
+        event.preventDefault();
+        
+        const username = document.getElementById('regUsername').value;
+        const email = document.getElementById('regEmail').value;
+        const password = document.getElementById('regPassword').value;
+        const confirmPassword = document.getElementById('regConfirmPassword').value;
+        
+        if (password !== confirmPassword) {
+            showAlert('Les mots de passe ne correspondent pas', 'error');
+            return;
         }
-    };
-    reader.readAsText(file);
-    input.value = '';
-}
-</script></body>
+        
+        try {
+            const response = await fetch(`${API_URL}/auth/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, email, password, confirmPassword })
+            });
+            
+            const data = await response.json();
+            
+            if (!response.ok) {
+                showAlert(data.error || 'Erreur lors de l\'inscription', 'error');
+                return;
+            }
+            
+            // Connexion automatique après inscription
+            token = data.token;
+            currentUser = data.user;
+            localStorage.setItem('token', token);
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            
+            showAlert('Compte créé avec succès !', 'success');
+            document.getElementById('registerForm').reset();
+            setTimeout(showApp, 500);
+            
+        } catch (error) {
+            console.error('Erreur:', error);
+            showAlert('Erreur lors de l\'inscription', 'error');
+        }
+    }
+    
+    // Déconnexion
+    function logout() {
+        if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('currentUser');
+            token = null;
+            currentUser = {};
+            workData = [];
+            showAuth();
+            document.getElementById('loginForm').reset();
+            document.getElementById('registerForm').reset();
+        }
+    }
+    
+    // Calculer les heures
+    function calculateHours(startTime, endTime) {
+        const [startHour, startMin] = startTime.split(':').map(Number);
+        const [endHour, endMin] = endTime.split(':').map(Number);
+        
+        let startMinutes = startHour * 60 + startMin;
+        let endMinutes = endHour * 60 + endMin;
+        
+        if (endMinutes <= startMinutes) {
+            endMinutes += 24 * 60;
+        }
+        
+        const totalMinutes = endMinutes - startMinutes;
+        const hours = Math.floor(totalMinutes / 60);
+        const minutes = totalMinutes % 60;
+        
+        return { hours, minutes, totalMinutes };
+    }
+    
+    // Ajouter une entrée de travail
+    async function addWorkEntry(event) {
+        event.preventDefault();
+        
+        const date = document.getElementById('workDate').value;
+        const startTime = document.getElementById('startTime').value;
+        const endTime = document.getElementById('endTime').value;
+        const hourlyRate = parseFloat(document.getElementById('hourlyRate').value);
+        const description = document.getElementById('description').value.trim();
+        
+        if (hourlyRate <= 0) {
+            showAlert('Le taux horaire doit être positif', 'error');
+            return;
+        }
+        
+        try {
+            const response = await fetch(`${API_URL}/work/entries`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ date, startTime, endTime, hourlyRate, description })
+            });
+            
+            const data = await response.json();
+            
+            if (!response.ok) {
+                showAlert(data.error || 'Erreur lors de l\'ajout', 'error');
+                return;
+            }
+            
+            const timeCalc = calculateHours(startTime, endTime);
+            showAlert(`Entrée ajoutée: ${timeCalc.hours}h${timeCalc.minutes.toString().padStart(2, '0')} - ${data.entry.salary.toFixed(2)}€`, 'success');
+            
+            document.getElementById('description').value = '';
+            await loadEntries();
+            
+        } catch (error) {
+            console.error('Erreur:', error);
+            showAlert('Erreur lors de l\'ajout', 'error');
+        }
+    }
+    
+    // Charger toutes les entrées
+    async function loadEntries() {
+        try {
+            const response = await fetch(`${API_URL}/work/entries`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            
+            if (!response.ok) {
+                console.error('Erreur chargement entrées');
+                return;
+            }
+            
+            workData = await response.json();
+            updateDisplay();
+            
+        } catch (error) {
+            console.error('Erreur:', error);
+            showAlert('Erreur lors du chargement des données', 'error');
+        }
+    }
+    
+    // Mettre à jour l'affichage
+    function updateDisplay() {
+        const selectedMonth = document.getElementById('selectedMonth').value;
+        const filteredData = workData.filter(entry => entry.date.startsWith(selectedMonth));
+        
+        let totalMinutes = 0;
+        let totalSalary = 0;
+        
+        filteredData.forEach(entry => {
+            totalMinutes += entry.totalHours * 60;
+            totalSalary += entry.salary;
+        });
+        
+        const totalHours = Math.floor(totalMinutes / 60);
+        const remainingMinutes = Math.floor(totalMinutes % 60);
+        
+        document.getElementById('totalHours').textContent = `${totalHours}h${remainingMinutes.toString().padStart(2, '0')}`;
+        document.getElementById('totalSalary').textContent = `${totalSalary.toFixed(2)} €`;
+        
+        displayEntries(filteredData);
+    }
+    
+    // Afficher les entrées
+    function displayEntries(entries) {
+        const container = document.getElementById('workEntries');
+        
+        if (entries.length === 0) {
+            container.innerHTML = '<div class="empty-state"><p>Aucune entrée pour ce mois.</p></div>';
+            return;
+        }
+        
+        const entriesHTML = entries
+            .sort((a, b) => new Date(b.date) - new Date(a.date))
+            .map(entry => {
+                const date = new Date(entry.date);
+                const dayName = date.toLocaleDateString('fr-FR', {
+                    weekday: 'long',
+                    day: '2-digit',
+                    month: '2-digit'
+                });
+                
+                return `
+                    <div class="entry-item">
+                        <div class="entry-info">
+                            <h4>${dayName} - ${entry.startTime} à ${entry.endTime}</h4>
+                            <p>${entry.description || 'Travail'} • ${entry.hours}h${entry.minutes.toString().padStart(2, '0')} • ${entry.hourlyRate}€/h</p>
+                        </div>
+                        <div class="entry-actions">
+                            <div class="entry-salary">${entry.salary.toFixed(2)} €</div>
+                            <button onclick="deleteEntry(${entry.id})" class="btn-danger">🗑️ Supprimer</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        
+        container.innerHTML = entriesHTML;
+    }
+    
+    // Supprimer une entrée
+    async function deleteEntry(id) {
+        if (!confirm('Êtes-vous sûr de vouloir supprimer cette entrée ?')) return;
+        
+        try {
+            const response = await fetch(`${API_URL}/work/entries/${id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            
+            if (!response.ok) {
+                showAlert('Erreur lors de la suppression', 'error');
+                return;
+            }
+            
+            showAlert('Entrée supprimée avec succès', 'success');
+            await loadEntries();
+            
+        } catch (error) {
+            console.error('Erreur:', error);
+            showAlert('Erreur lors de la suppression', 'error');
+        }
+    }
+    
+    // Afficher une alerte
+    function showAlert(message, type = 'success') {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${type}`;
+        alertDiv.textContent = message;
+        
+        const container = document.querySelector('.container');
+        container.insertBefore(alertDiv, container.firstChild);
+        
+        setTimeout(() => {
+            if (alertDiv.parentNode) {
+                alertDiv.parentNode.removeChild(alertDiv);
+            }
+        }, 5000);
+    }
+</script>
+</body>
 </html>
