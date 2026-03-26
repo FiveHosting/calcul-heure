@@ -6,42 +6,18 @@
 
 ---
 
-## 🏗️ Architecture
-
-### Structure des fichiers
-```
-calcul-heure/
-├── index.html          # Interface principale (HTML propre)
-├── assets/
-│   ├── styles.css      # Styles CSS externes (sécurité renforcée)
-│   └── app.js          # Logique JavaScript séparée
-├── server.js           # Serveur backend Node.js/Express
-├── database.js         # Gestion base de données SQLite
-├── routes/             # API endpoints
-├── middleware/         # Authentification JWT
-└── package.json        # Dépendances
-```
-
-### Avantages de la séparation
-- **Sécurité renforcée** : Code JavaScript et CSS non visible dans le HTML
-- **Maintenance facilitée** : Fichiers organisés et modulaires
-- **Performance** : Cache des ressources statiques
-- **Lisibilité** : Code HTML propre et structuré
-
----
-
 ## 🚀 Démarrage rapide
 
 ### Installation (3 minutes)
-```bash
+`ash
 git clone https://github.com/votre_user/calcul-heure.git
 cd calcul-heure
 npm install
-```
+`
 
 ### Configuration
 Créer un fichier .env :
-```env
+`env
 PORT=3000
 DB_PATH=./database.db
 JWT_SECRET=votre_clé_secrète_très_sûre_ici_32_caractères_minimum
@@ -77,25 +53,7 @@ npm start
 
 ---
 
-## � Sécurité
-
-### Mesures implémentées
-- **Hashage des mots de passe** : bcrypt avec salt
-- **Authentification JWT** : tokens sécurisés avec expiration
-- **Contrôle d'accès** : rôles utilisateur/admin
-- **Validation des entrées** : prévention des injections
-- **Code séparé** : JavaScript/CSS externes pour éviter le dump
-- **Headers de sécurité** : CORS, Content-Type validation
-
-### Bonnes pratiques
-- Changer le JWT_SECRET en production
-- Utiliser HTTPS en production
-- Sauvegarder régulièrement la base de données
-- Monitorer les logs d'erreur
-
----
-
-## �📋 API Endpoints
+## � API Endpoints
 
 ### Authentification
 - POST /api/auth/register - Inscription
