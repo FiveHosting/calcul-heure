@@ -6,6 +6,7 @@ const db = require('./database');
 const authRoutes = require('./routes/auth');
 const entriesRoutes = require('./routes/entries');
 const adminRoutes = require('./routes/admin');
+const { authenticateToken } = require('./middleware/auth');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -23,8 +24,8 @@ app.use('/api', (req, res, next) => {
 
 // Routes API
 app.use('/api/auth', authRoutes);
-app.use('/api/entries', entriesRoutes);
-app.use('/api/admin', adminRoutes);
+app.use('/api/entries', authenticateToken, entriesRoutes);
+app.use('/api/admin', authenticateToken, adminRoutes);
 
 // Route pour favicon
 app.get('/favicon.ico', (req, res) => {
