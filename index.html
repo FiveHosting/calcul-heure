@@ -512,7 +512,6 @@
             } else {
                 showAuth();
             }
-            document.getElementById('entryDate').valueAsDate = new Date();
         });
 
         function showAuth() {
@@ -523,6 +522,7 @@
         function showApp() {
             document.getElementById('authSection').classList.add('hidden');
             document.getElementById('appSection').classList.remove('hidden');
+            document.getElementById('entryDate').valueAsDate = new Date();
             document.getElementById('userDisplay').textContent = currentUser.username;
             if (currentUser.role === 'admin') {
                 document.getElementById('adminBadge').classList.remove('hidden');

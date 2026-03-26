@@ -17,7 +17,7 @@ app.use(express.static(path.join(__dirname)));
 
 // Routes API
 app.use('/api/auth', authRoutes);
-app.use('/api/work', entriesRoutes);
+app.use('/api/entries', entriesRoutes);
 app.use('/api/admin', adminRoutes);
 
 // Route pour servir l'app React/HTML
