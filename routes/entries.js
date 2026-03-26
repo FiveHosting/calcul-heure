@@ -25,7 +25,7 @@ function calculateHours(startTime, endTime) {
 }
 
 // Ajouter une entrée de travail
-router.post('/entries', authenticateToken, (req, res) => {
+router.post('/', authenticateToken, (req, res) => {
   try {
     const { date, startTime, endTime, hourlyRate, description } = req.body;
     const userId = req.user.id;
@@ -79,7 +79,7 @@ router.post('/entries', authenticateToken, (req, res) => {
 });
 
 // Récupérer toutes les entrées de l'utilisateur
-router.get('/entries', authenticateToken, (req, res) => {
+router.get('/', authenticateToken, (req, res) => {
   try {
     const userId = req.user.id;
 

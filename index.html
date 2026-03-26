@@ -659,9 +659,10 @@
                 });
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.error);
+                const entries = Array.isArray(data) ? data : (Array.isArray(data.entries) ? data.entries : []);
                 const list = document.getElementById('entriesList');
-                list.innerHTML = data.entries.map(e => 
-                    '<div class="entry-item"><div class="entry-info"><strong>' + e.date + '</strong><small>' + e.start_time + ' - ' + e.end_time + '</small><small>' + e.total_hours + 'h - ' + e.salary.toFixed(2) + '€</small>' + (e.description ? '<small><strong>:</strong> ' + e.description + '</small>' : '') + '</div><div class="entry-actions"><button class="btn btn-danger" onclick="deleteEntry(' + e.id + ')"><i class="fas fa-trash"></i></button></div></div>'
+                list.innerHTML = entries.map(e => 
+                    '<div class="entry-item"><div class="entry-info"><strong>' + e.date + '</strong><small>' + (e.startTime || e.start_time) + ' - ' + (e.endTime || e.end_time) + '</small><small>' + (e.totalHours || e.total_hours) + 'h - ' + (parseFloat(e.salary) || 0).toFixed(2) + '€</small>' + (e.description ? '<small><strong>:</strong> ' + e.description + '</small>' : '') + '</div><div class="entry-actions"><button class="btn btn-danger" onclick="deleteEntry(' + e.id + ')"><i class="fas fa-trash"></i></button></div></div>'
                 ).join('');
             } catch (err) {
                 showAlert(err.message, 'error');
@@ -690,10 +691,10 @@
                     headers: { 'Authorization': 'Bearer ' + token }
                 });
                 const data = await res.json();
-                const entries = data.entries;
-                const hours = entries.reduce((s, e) => s + parseFloat(e.total_hours), 0);
-                const salary = entries.reduce((s, e) => s + parseFloat(e.salary), 0);
-                document.getElementById('statsContainer').innerHTML = '<div class="stat-box"><div class="stat-value">' + entries.length + '</div><div class="stat-label">Entrees</div></div><div class="stat-box"><div class="stat-value">' + hours.toFixed(1) + '</div><div class="stat-label">Heures</div></div><div class="stat-box"><div class="stat-value">' + salary.toFixed(2) + 'e</div><div class="stat-label">Total</div></div>';
+                const entries = Array.isArray(data) ? data : (Array.isArray(data.entries) ? data.entries : []);
+                const hours = entries.reduce((s, e) => s + parseFloat(e.totalHours || e.total_hours || 0), 0);
+                const salary = entries.reduce((s, e) => s + parseFloat(e.salary || 0), 0);
+                document.getElementById('statsContainer').innerHTML = '<div class="stat-box"><div class="stat-value">' + entries.length + '</div><div class="stat-label">Entrees</div></div><div class="stat-box"><div class="stat-value">' + hours.toFixed(1) + '</div><div class="stat-label">Heures</div></div><div class="stat-box"><div class="stat-value">' + salary.toFixed(2) + '€</div><div class="stat-label">Total</div></div>';
             } catch (err) {
                 showAlert(err.message, 'error');
             }
