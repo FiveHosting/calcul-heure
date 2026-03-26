@@ -396,33 +396,37 @@
         .entry-card-details {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 15px;
-            padding: 15px;
-            background: white;
-            border-radius: 8px;
+            gap: 15px;
+            margin-bottom: 18px;
+            padding: 16px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(96, 165, 250, 0.2);
+            border-radius: 10px;
+            backdrop-filter: blur(5px);
         }
 
         .entry-detail {
-            font-size: 12px;
+            text-align: center;
         }
 
         .entry-detail-label {
             color: var(--text-secondary);
+            font-size: 11px;
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.8px;
+            margin-bottom: 6px;
         }
 
         .entry-detail-value {
             color: var(--text-primary);
             font-weight: 700;
-            margin-top: 4px;
-            font-size: 14px;
+            font-size: 16px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
         }
 
         .entry-card-salary {
-            background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+            background: linear-gradient(135deg, rgba(52, 211, 153, 0.9) 0%, rgba(5, 150, 105, 0.95) 100%);
             color: white;
             padding: 12px;
             border-radius: 8px;
@@ -1046,7 +1050,7 @@
                         <div class="entry-card-time">${e.startTime} - ${e.endTime}</div>
                         <div class="entry-card-details">
                             <div class="entry-detail">
-                                <div class="entry-detail-label">Heures</div>
+                                <div class="entry-detail-label">Durée</div>
                                 <div class="entry-detail-value">${e.hours}h ${e.minutes}m</div>
                             </div>
                             <div class="entry-detail">
