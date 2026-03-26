@@ -1,4 +1,5 @@
 const sqlite3 = require('sqlite3').verbose();
+const bcrypt = require('bcrypt');
 const path = require('path');
 
 const dbPath = path.join(__dirname, 'database.db');
@@ -8,6 +9,7 @@ const db = new sqlite3.Database(dbPath, (err) => {
   } else {
     console.log('✅ Connecté à la base de données SQLite');
     initializeDatabase();
+    ensureAdminUser();
   }
 });
 
@@ -50,5 +52,42 @@ function initializeDatabase() {
     else console.log('✅ Table work_entries initialisée');
   });
 }
+
+function ensureAdminUser() {
+  const adminUsername = process.env.ADMIN_USER || 'admin';
+  const adminEmail = process.env.ADMIN_EMAIL || 'admin@example.com';
+  const adminPassword = process.env.ADMIN_PASS || 'admin123';
+
+  db.get("SELECT id FROM users WHERE role = 'admin' LIMIT 1", (err, row) => {
+    if (err) {
+      console.error('Erreur recherche admin:', err);
+      return;
+    }
+
+    if (!row) {
+      bcrypt.hash(adminPassword, 10, (hashErr, hashedPassword) => {
+        if (hashErr) {
+          console.error('Erreur hash admin :', hashErr);
+          return;
+        }
+
+        db.run(
+          'INSERT OR IGNORE INTO users (username, email, password, role) VALUES (?, ?, ?, ?)',
+          [adminUsername, adminEmail, hashedPassword, 'admin'],
+          function(insertErr) {
+            if (insertErr) {
+              console.error('Erreur création admin par défaut:', insertErr);
+            } else {
+              console.log(`✅ Admin par défaut créé (${adminUsername})`);
+            }
+          }
+        );
+      });
+    } else {
+      console.log('✅ Admin existant détecté');
+    }
+  });
+}
+
 
 module.exports = db;

@@ -20,7 +20,12 @@ app.use('/api/auth', authRoutes);
 app.use('/api/entries', entriesRoutes);
 app.use('/api/admin', adminRoutes);
 
-// Route pour servir l'app React/HTML
+// Route pour favicon
+app.get('/favicon.ico', (req, res) => {
+  res.sendStatus(204);
+});
+
+// Route pour servir l'app HTML
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });

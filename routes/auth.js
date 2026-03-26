@@ -76,12 +76,15 @@ router.post('/login', (req, res) => {
       return res.status(400).json({ error: 'Nom d\'utilisateur et mot de passe requis' });
     }
 
+    console.log('Tentative de login:', username);
     db.get('SELECT * FROM users WHERE username = ?', [username], async (err, user) => {
       if (err) {
+        console.error('Erreur DB login:', err);
         return res.status(500).json({ error: 'Erreur serveur' });
       }
 
       if (!user) {
+        console.warn('Login failed: utilisateur non trouvé', username);
         return res.status(401).json({ error: 'Identifiants invalides' });
       }
 
