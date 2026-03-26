@@ -527,6 +527,65 @@
             color: white;
         }
 
+        /* ===== MODAL ===== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            margin-bottom: 20px;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal-footer .btn {
+            flex: 1;
+            padding: 10px;
+            font-size: 13px;
+        }
+
         @keyframes slideIn {
             from { transform: translateX(400px); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
@@ -747,6 +806,37 @@
         </div>
     </div>
 
+    <!-- MODAL Changement mot de passe -->
+    <div id="changePwdModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-lock"></i> Changer mon mot de passe</h2>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Ancien mot de passe</label>
+                    <input type="password" id="oldPasswordInput" placeholder="Entrez votre ancien mot de passe">
+                </div>
+                <div class="form-group">
+                    <label>Nouveau mot de passe</label>
+                    <input type="password" id="newPasswordInput" placeholder="Entrez votre nouveau mot de passe (min. 6 caractères)">
+                </div>
+                <div class="form-group">
+                    <label>Confirmer le nouveau mot de passe</label>
+                    <input type="password" id="confirmPasswordInput" placeholder="Confirmez votre nouveau mot de passe">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeChangePwdModal()">
+                    <i class="fas fa-times"></i> Annuler
+                </button>
+                <button class="btn btn-primary" onclick="submitChangePassword()">
+                    <i class="fas fa-check"></i> Valider
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const API_URL = window.location.origin + '/api';
         let token = localStorage.getItem('token');
@@ -895,6 +985,7 @@
                 if (!res.ok) throw new Error('Erreur');
                 showAlert('Entrée supprimée', 'success');
                 loadEntries();
+                loadMonthlyStats(); // Recharger les stats mensuelles
             } catch (err) {
                 showAlert(err.message, 'error');
             }
@@ -984,20 +1075,40 @@
             }
         }
 
-        // Changer le mot de passe
-        async function changePassword() {
-            const oldPwd = prompt('Ancien mot de passe:');
-            if (!oldPwd) return;
-            const newPwd = prompt('Nouveau mot de passe (min. 6 caractères):');
-            if (!newPwd || newPwd.length < 6) {
+        // Changer le mot de passe - Ouvrir le modal
+        function changePassword() {
+            document.getElementById('oldPasswordInput').value = '';
+            document.getElementById('newPasswordInput').value = '';
+            document.getElementById('confirmPasswordInput').value = '';
+            document.getElementById('changePwdModal').classList.add('active');
+        }
+
+        // Fermer le modal
+        function closeChangePwdModal() {
+            document.getElementById('changePwdModal').classList.remove('active');
+        }
+
+        // Valider et envoyer le changement de mot de passe
+        async function submitChangePassword() {
+            const oldPwd = document.getElementById('oldPasswordInput').value;
+            const newPwd = document.getElementById('newPasswordInput').value;
+            const confirmPwd = document.getElementById('confirmPasswordInput').value;
+
+            if (!oldPwd || !newPwd || !confirmPwd) {
+                showAlert('Tous les champs sont obligatoires', 'error');
+                return;
+            }
+
+            if (newPwd.length < 6) {
                 showAlert('Le mot de passe doit contenir au moins 6 caractères', 'error');
                 return;
             }
-            const confirmPwd = prompt('Confirmer le nouveau mot de passe:');
+
             if (confirmPwd !== newPwd) {
                 showAlert('Les mots de passe ne correspondent pas', 'error');
                 return;
             }
+
             try {
                 const res = await fetch(API_URL + '/auth/change-password', {
                     method: 'POST',
@@ -1013,6 +1124,7 @@
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.error || 'Erreur');
                 showAlert('Mot de passe changé avec succès!', 'success');
+                closeChangePwdModal();
             } catch (err) {
                 showAlert(err.message, 'error');
             }
@@ -1022,6 +1134,13 @@
         function showTab(event) {
             const element = event.currentTarget || event.target;
             const tab = element.getAttribute('data-tab');
+            
+            // Sécurité: vérifier que l'utilisateur a le droit d'accéder à cet onglet
+            if (tab === 'admin' && currentUser.role !== 'admin') {
+                showAlert('Accès refusé: vous n\'êtes pas administrateur', 'error');
+                return;
+            }
+            
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
             document.getElementById(tab + 'Tab').classList.add('active');
@@ -1038,9 +1157,15 @@
             document.getElementById('app').classList.add('active');
             document.getElementById('headerUsername').textContent = currentUser.username;
             document.getElementById('headerRole').textContent = currentUser.role === 'admin' ? 'Administrateur' : 'Utilisateur';
+            
+            // Afficher le bouton admin UNIQUEMENT si l'utilisateur est admin
+            const adminBtn = document.getElementById('adminBtn');
             if (currentUser.role === 'admin') {
-                document.getElementById('adminBtn').style.display = 'flex';
+                adminBtn.style.display = 'flex';
+            } else {
+                adminBtn.style.display = 'none';
             }
+            
             loadEntries();
             loadMonthlyStats();
         }
@@ -1054,6 +1179,9 @@
             document.getElementById('loginPanel').classList.add('active');
             document.getElementById('registerPanel').classList.remove('active');
             document.getElementById('loginForm').reset();
+            
+            // S'assurer que le bouton admin est caché
+            document.getElementById('adminBtn').style.display = 'none';
         }
 
         // ===== ALERT =====
