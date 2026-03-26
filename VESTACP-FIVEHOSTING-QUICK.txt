@@ -1,0 +1,147 @@
+# ⚡ Quick Start VestaCP FiveHosting - Port 3001
+
+## 🎯 Votre situation
+
+```
+Serveur: VestaCP avec Nginx
+IP: 185.171.202.132
+Domaine: heurejo.fivehosting.net
+Port Node.js: 3001
+Chemin: /home/admin/web/heurejo.fivehosting.net/calcul-heure/
+```
+
+---
+
+## 🚀 3 étapes pour déployer (30 min)
+
+### ÉTAPE 1: SSH + Code (5 min)
+
+```bash
+# SSH
+ssh admin@185.171.202.132
+
+# Créer dossier app
+mkdir -p /home/admin/web/heurejo.fivehosting.net/calcul-heure
+cd /home/admin/web/heurejo.fivehosting.net/calcul-heure
+
+# Télécharger code
+git clone https://github.com/votre_user/calcul-heure .
+
+# Ou via SCP depuis votre PC:
+# scp -r ./* admin@185.171.202.132:/home/admin/web/heurejo.fivehosting.net/calcul-heure/
+
+# Vérifier
+ls -la
+```
+
+### ÉTAPE 2: Installation + Config (5 min)
+
+```bash
+# npm install
+npm install
+
+# Générer JWT_SECRET
+openssl rand -base64 32
+# Copier le résultat
+
+# Éditer .env
+nano .env
+# PORT=3001
+# JWT_SECRET=COLLER_LE_RÉSULTAT
+# NODE_ENV=production
+# Ctrl+O, Enter, Ctrl+X
+
+# Tester localement
+npm start
+# Ctrl+C pour arrêter
+```
+
+### ÉTAPE 3: PM2 + Nginx + Tests (10 min)
+
+```bash
+# PM2
+npm install -g pm2
+
+# Config PM2
+nano ecosystem.config.js
+# Copier depuis VESTACP-FIVEHOSTING.md (Étape 6)
+# Ctrl+O, Enter, Ctrl+X
+
+# Démarrer
+pm2 start ecosystem.config.js
+pm2 status
+# Résultat: online ✅
+
+# Config Nginx
+sudo nano /home/admin/conf/web/nginx.heurejo.fivehosting.net.conf
+# Copier contenu de nginx-config-FIVEHOSTING-FINAL.conf
+# Adapter IP et domaine
+# Ctrl+O, Enter, Ctrl+X
+
+# Tester Nginx
+sudo nginx -t
+
+# Recharger
+sudo systemctl reload nginx
+
+# Vérifier ports
+sudo netstat -tlnp | grep 3001
+sudo netstat -tlnp | grep nginx
+
+# HTTPS (VestaCP Panel)
+# https://185.171.202.132:8083/ → Domaines → SSL → Activer Let's Encrypt
+
+# ✅ TESTER
+# https://heurejo.fivehosting.net
+```
+
+---
+
+## 📚 Documents VestaCP
+
+1. **VESTACP-FIVEHOSTING.md** ← Lire en priorité (45 min)
+2. **nginx-config-FIVEHOSTING-FINAL.conf** ← Config prête
+3. **.env** ← Fichier de config
+
+---
+
+## 🔑 Points clés
+
+| Item | Valeur |
+|------|--------|
+| Port Node.js | 3001 |
+| Chemin app | /home/admin/web/heurejo.fivehosting.net/calcul-heure |
+| Database | /home/admin/web/heurejo.fivehosting.net/calcul-heure/database.db |
+| Nginx config | /home/admin/conf/web/nginx.heurejo.fivehosting.net.conf |
+| Proxy | http://127.0.0.1:3001 |
+| HTTPS | Let's Encrypt (gratuit) |
+| Process manager | PM2 |
+
+---
+
+## ✅ Vérifications
+
+```bash
+# App tourne?
+pm2 status
+
+# Port 3001 écoute?
+sudo ss -tlnp | grep 3001
+
+# Nginx reload OK?
+sudo systemctl reload nginx && echo "✅"
+
+# HTTPS valide?
+curl -I https://heurejo.fivehosting.net
+```
+
+---
+
+## 🎉 C'est prêt!
+
+**Lire**: VESTACP-FIVEHOSTING.md  
+**Adapter**: nginx-config-FIVEHOSTING-FINAL.conf  
+**Déployer**: 3 étapes au-dessus  
+**Tester**: https://heurejo.fivehosting.net  
+
+**Bon déploiement! 🚀**
