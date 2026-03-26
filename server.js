@@ -5,6 +5,7 @@ const path = require('path');
 const db = require('./database');
 const authRoutes = require('./routes/auth');
 const entriesRoutes = require('./routes/entries');
+const adminRoutes = require('./routes/admin');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -17,6 +18,7 @@ app.use(express.static(path.join(__dirname)));
 // Routes API
 app.use('/api/auth', authRoutes);
 app.use('/api/work', entriesRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Route pour servir l'app React/HTML
 app.get('/', (req, res) => {

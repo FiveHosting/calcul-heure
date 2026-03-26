@@ -3,51 +3,1486 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Calculateur d'Heures - Connexion</title>
+    <title>⏰ Calculateur d'Heures Pro</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #ec4899;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            --glass: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.15);
+            --radius: 16px;
+            --radius-sm: 8px;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
             min-height: 100vh;
+            color: var(--gray-800);
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
             padding: 1rem;
         }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .animate-slide-in {
+            animation: slideIn 0.4s ease-out;
+        }
+
+        /* Glassmorphism Cards */
         .card {
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius);
             padding: 2rem;
-            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
         }
-        
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Modern Header */
         .header {
             text-align: center;
             margin-bottom: 2rem;
+            position: relative;
         }
-        
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 2px;
+        }
+
         .header h1 {
-            font-size: 2.5rem;
-            color: #2d3748;
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-        
+
         .header p {
-            color: #718096;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        /* Modern Grid */
+        .grid {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        }
+
+        .grid-3 {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        /* Modern Form Elements */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            border: 2px solid var(--glass-border);
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .form-group input::placeholder, .form-group select {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Modern Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            min-height: 48px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-admin {
+            background: linear-gradient(135deg, var(--warning), #d97706);
+            color: white;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+        }
+
+        .btn-admin:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
+        }
+
+        .btn-logout {
+            background: linear-gradient(135deg, var(--error), #dc2626);
+            color: white;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-logout:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--error), #dc2626);
+            color: white;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+        }
+
+        /* Modern Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            opacity: 0.8;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 0.25rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+        }
+
+        /* Modern Entry Cards */
+        .entry-item {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .entry-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .entry-info h4 {
+            color: white;
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+            font-weight: 600;
+        }
+
+        .entry-info p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .entry-salary {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--success);
+            margin-bottom: 0.5rem;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Modern Navigation */
+        .nav-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius);
+            padding: 0.5rem;
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: none;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            border-radius: calc(var(--radius) - 4px);
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tab.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .nav-tab:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        /* Modern User Info */
+        .user-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .user-welcome {
+            color: white;
+            font-weight: 600;
             font-size: 1.1rem;
         }
-        
-        .grid {
+
+        .user-role {
+            background: var(--primary);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Modern Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal-content {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            max-width: 600px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .modal-title {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        /* Modern Alerts */
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius-sm);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .alert-error {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Admin Panel */
+        .admin-panel {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(239, 68, 68, 0.1));
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .admin-panel h3 {
+            color: var(--warning);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .entry-item {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .user-info {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .nav-tabs {
+                flex-direction: column;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Hidden class */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Écran d'authentification -->
+    <div id="authContainer" class="auth-container">
+        <div class="card header animate-fade-in">
+            <h1><i class="fas fa-clock"></i> Calculateur d'Heures Pro</h1>
+            <p>Gestion intelligente de vos horaires de travail</p>
+        </div>
+
+        <div class="card auth-form animate-slide-in">
+            <div class="nav-tabs">
+                <button class="nav-tab active" onclick="switchTab('login')">
+                    <i class="fas fa-sign-in-alt"></i> Connexion
+                </button>
+                <button class="nav-tab" onclick="switchTab('register')">
+                    <i class="fas fa-user-plus"></i> Inscription
+                </button>
+            </div>
+
+            <!-- Formulaire de connexion -->
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="loginUsername">
+                        <i class="fas fa-user"></i> Nom d'utilisateur
+                    </label>
+                    <input id="loginUsername" type="text" placeholder="Votre nom d'utilisateur" required/>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">
+                        <i class="fas fa-lock"></i> Mot de passe
+                    </label>
+                    <input id="loginPassword" type="password" placeholder="Votre mot de passe" required/>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> Se connecter
+                </button>
+            </form>
+
+            <!-- Formulaire d'inscription -->
+            <form id="registerForm" class="hidden" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label for="regUsername">
+                        <i class="fas fa-user"></i> Nom d'utilisateur
+                    </label>
+                    <input id="regUsername" type="text" placeholder="Choisissez un nom d'utilisateur" required/>
+                </div>
+                <div class="form-group">
+                    <label for="regEmail">
+                        <i class="fas fa-envelope"></i> Email
+                    </label>
+                    <input id="regEmail" type="email" placeholder="votre.email@example.com" required/>
+                </div>
+                <div class="form-group">
+                    <label for="regPassword">
+                        <i class="fas fa-lock"></i> Mot de passe
+                    </label>
+                    <input id="regPassword" type="password" placeholder="Minimum 6 caractères" required minlength="6"/>
+                </div>
+                <div class="form-group">
+                    <label for="regConfirmPassword">
+                        <i class="fas fa-lock"></i> Confirmer le mot de passe
+                    </label>
+                    <input id="regConfirmPassword" type="password" placeholder="Répétez votre mot de passe" required/>
+                </div>
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-user-plus"></i> Créer un compte
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Écran principal après connexion -->
+    <div id="appContainer" class="hidden">
+        <div class="user-info animate-fade-in">
+            <div>
+                <span class="user-welcome">
+                    <i class="fas fa-user-circle"></i> Bienvenue <span id="userGreeting"></span>
+                </span>
+                <span id="userRole" class="user-role hidden">Admin</span>
+            </div>
+            <div>
+                <button id="adminBtn" class="btn btn-admin hidden" onclick="showAdminPanel()">
+                    <i class="fas fa-cog"></i> Administration
+                </button>
+                <button class="btn btn-logout" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Déconnexion
+                </button>
+            </div>
+        </div>
+
+        <!-- Panel Admin -->
+        <div id="adminPanel" class="admin-panel hidden animate-slide-in">
+            <h3><i class="fas fa-shield-alt"></i> Panel Administrateur</h3>
+            <div class="grid grid-3">
+                <button class="btn btn-primary" onclick="showUsersManagement()">
+                    <i class="fas fa-users"></i> Gérer les utilisateurs
+                </button>
+                <button class="btn btn-success" onclick="showGlobalStats()">
+                    <i class="fas fa-chart-bar"></i> Statistiques globales
+                </button>
+                <button class="btn btn-warning" onclick="showAllEntries()">
+                    <i class="fas fa-list"></i> Toutes les entrées
+                </button>
+            </div>
+        </div>
+
+        <div class="card header animate-fade-in">
+            <h1><i class="fas fa-calculator"></i> Calculateur d'Heures</h1>
+            <p>Gérez vos horaires de travail et calculez votre salaire automatiquement</p>
+        </div>
+
+        <div class="grid grid-2">
+            <!-- Formulaire de saisie -->
+            <div class="card animate-slide-in">
+                <h2 style="margin-bottom: 1.5rem; color: white; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-plus-circle"></i> Nouvelle entrée
+                </h2>
+                <form onsubmit="addWorkEntry(event)">
+                    <div class="form-group">
+                        <label for="workDate">
+                            <i class="fas fa-calendar"></i> Date
+                        </label>
+                        <input id="workDate" type="date" required/>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="startTime">
+                                <i class="fas fa-clock"></i> Heure de début
+                            </label>
+                            <input id="startTime" type="time" required/>
+                        </div>
+                        <div class="form-group">
+                            <label for="endTime">
+                                <i class="fas fa-clock"></i> Heure de fin
+                            </label>
+                            <input id="endTime" type="time" required/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="hourlyRate">
+                            <i class="fas fa-euro-sign"></i> Taux horaire (€)
+                        </label>
+                        <input id="hourlyRate" min="0" step="0.01" type="number" value="10" required/>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">
+                            <i class="fas fa-comment"></i> Description (optionnel)
+                        </label>
+                        <input id="description" placeholder="Ex: Service de nuit, Formation..." type="text"/>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Ajouter l'entrée
+                    </button>
+                </form>
+            </div>
+
+            <!-- Résumé mensuel -->
+            <div class="card animate-slide-in">
+                <h2 style="margin-bottom: 1.5rem; color: white; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-calendar-alt"></i> Résumé mensuel
+                </h2>
+                <div class="form-group">
+                    <label for="selectedMonth">
+                        <i class="fas fa-filter"></i> Mois à afficher
+                    </label>
+                    <input id="selectedMonth" type="month"/>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">⏱️</div>
+                        <div class="stat-value" id="totalHours">0h00</div>
+                        <div class="stat-label">Heures totales</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-value" id="totalSalary">0,00 €</div>
+                        <div class="stat-label">Salaire total</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Liste des entrées -->
+        <div class="card animate-fade-in">
+            <h2 style="margin-bottom: 1.5rem; color: white; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-history"></i> Historique des entrées
+            </h2>
+            <div id="workEntries">
+                <div class="empty-state">
+                    <i class="fas fa-inbox"></i>
+                    <p>Aucune entrée pour le moment.<br/>Ajoutez votre première journée de travail !</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="usersModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-users"></i> Gestion des utilisateurs</h3>
+                <button class="modal-close" onclick="closeModal('usersModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="usersContent">
+                <div style="text-align: center; padding: 2rem;">
+                    <div class="loading"></div>
+                    <p style="margin-top: 1rem; color: rgba(255, 255, 255, 0.7);">Chargement...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="statsModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-chart-bar"></i> Statistiques globales</h3>
+                <button class="modal-close" onclick="closeModal('statsModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="statsContent">
+                <div style="text-align: center; padding: 2rem;">
+                    <div class="loading"></div>
+                    <p style="margin-top: 1rem; color: rgba(255, 255, 255, 0.7);">Chargement...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="entriesModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-list"></i> Toutes les entrées</h3>
+                <button class="modal-close" onclick="closeModal('entriesModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="entriesContent">
+                <div style="text-align: center; padding: 2rem;">
+                    <div class="loading"></div>
+                    <p style="margin-top: 1rem; color: rgba(255, 255, 255, 0.7);">Chargement...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Configuration API
+    const API_URL = 'http://localhost:3000/api';
+    let token = localStorage.getItem('token');
+    let currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+    let workData = [];
+
+    // Initialisation
+    document.addEventListener('DOMContentLoaded', function() {
+        if (token && currentUser.username) {
+            showApp();
+        } else {
+            showAuth();
+        }
+    });
+
+    // Afficher l'écran d'authentification
+    function showAuth() {
+        document.getElementById('authContainer').classList.remove('hidden');
+        document.getElementById('appContainer').classList.add('hidden');
+    }
+
+    // Afficher l'application
+    function showApp() {
+        document.getElementById('authContainer').classList.add('hidden');
+        document.getElementById('appContainer').classList.remove('hidden');
+        document.getElementById('userGreeting').textContent = currentUser.username;
+
+        // Afficher le rôle admin si applicable
+        if (currentUser.role === 'admin') {
+            document.getElementById('userRole').classList.remove('hidden');
+            document.getElementById('adminBtn').classList.remove('hidden');
+        }
+
+        const today = new Date();
+        document.getElementById('workDate').valueAsDate = today;
+        document.getElementById('selectedMonth').value = today.toISOString().slice(0, 7);
+        document.getElementById('selectedMonth').addEventListener('change', updateDisplay);
+
+        // Charger les entrées dès que l'app est affichée
+        loadEntries();
+    }
+
+    // Basculer entre les onglets
+    function switchTab(tab) {
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const tabs = document.querySelectorAll('.nav-tab');
+
+        if (tab === 'login') {
+            loginForm.classList.remove('hidden');
+            registerForm.classList.add('hidden');
+            tabs[0].classList.add('active');
+            tabs[1].classList.remove('active');
+        } else {
+            loginForm.classList.add('hidden');
+            registerForm.classList.remove('hidden');
+            tabs[0].classList.remove('active');
+            tabs[1].classList.add('active');
+        }
+    }
+
+    // Gestion de la connexion
+    async function handleLogin(event) {
+        event.preventDefault();
+
+        const username = document.getElementById('loginUsername').value;
+        const password = document.getElementById('loginPassword').value;
+
+        try {
+            const response = await fetch(`${API_URL}/auth/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                showAlert(data.error || 'Erreur de connexion', 'error');
+                return;
+            }
+
+            // Sauvegarder le token et les infos utilisateur
+            token = data.token;
+            currentUser = data.user;
+            localStorage.setItem('token', token);
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+            showAlert('Connecté avec succès !', 'success');
+            document.getElementById('loginForm').reset();
+            setTimeout(showApp, 500);
+
+        } catch (error) {
+            console.error('Erreur:', error);
+            showAlert('Erreur de connexion', 'error');
+        }
+    }
+
+    // Gestion de l'inscription
+    async function handleRegister(event) {
+        event.preventDefault();
+
+        const username = document.getElementById('regUsername').value;
+        const email = document.getElementById('regEmail').value;
+        const password = document.getElementById('regPassword').value;
+        const confirmPassword = document.getElementById('regConfirmPassword').value;
+
+        if (password !== confirmPassword) {
+            showAlert('Les mots de passe ne correspondent pas', 'error');
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_URL}/auth/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, email, password, confirmPassword })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                showAlert(data.error || 'Erreur lors de l\'inscription', 'error');
+                return;
+            }
+
+            // Connexion automatique après inscription
+            token = data.token;
+            currentUser = data.user;
+            localStorage.setItem('token', token);
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+            showAlert('Compte créé avec succès !', 'success');
+            document.getElementById('registerForm').reset();
+            setTimeout(showApp, 500);
+
+        } catch (error) {
+            console.error('Erreur:', error);
+            showAlert('Erreur lors de l\'inscription', 'error');
+        }
+    }
+
+    // Déconnexion
+    function logout() {
+        if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('currentUser');
+            token = null;
+            currentUser = {};
+            workData = [];
+            showAuth();
+            document.getElementById('loginForm').reset();
+            document.getElementById('registerForm').reset();
+        }
+    }
+
+    // Calculer les heures
+    function calculateHours(startTime, endTime) {
+        const [startHour, startMin] = startTime.split(':').map(Number);
+        const [endHour, endMin] = endTime.split(':').map(Number);
+
+        let startMinutes = startHour * 60 + startMin;
+        let endMinutes = endHour * 60 + endMin;
+
+        if (endMinutes <= startMinutes) {
+            endMinutes += 24 * 60;
+        }
+
+        const totalMinutes = endMinutes - startMinutes;
+        const hours = Math.floor(totalMinutes / 60);
+        const minutes = totalMinutes % 60;
+
+        return { hours, minutes, totalMinutes };
+    }
+
+    // Ajouter une entrée de travail
+    async function addWorkEntry(event) {
+        event.preventDefault();
+
+        const date = document.getElementById('workDate').value;
+        const startTime = document.getElementById('startTime').value;
+        const endTime = document.getElementById('endTime').value;
+        const hourlyRate = parseFloat(document.getElementById('hourlyRate').value);
+        const description = document.getElementById('description').value.trim();
+
+        if (hourlyRate <= 0) {
+            showAlert('Le taux horaire doit être positif', 'error');
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_URL}/work/entries`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ date, startTime, endTime, hourlyRate, description })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                showAlert(data.error || 'Erreur lors de l\'ajout', 'error');
+                return;
+            }
+
+            const timeCalc = calculateHours(startTime, endTime);
+            showAlert(`Entrée ajoutée: ${timeCalc.hours}h${timeCalc.minutes.toString().padStart(2, '0')} - ${data.entry.salary.toFixed(2)}€`, 'success');
+
+            document.getElementById('description').value = '';
+            await loadEntries();
+
+        } catch (error) {
+            console.error('Erreur:', error);
+            showAlert('Erreur lors de l\'ajout', 'error');
+        }
+    }
+
+    // Charger toutes les entrées
+    async function loadEntries() {
+        try {
+            const response = await fetch(`${API_URL}/work/entries`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (!response.ok) {
+                console.error('Erreur chargement entrées');
+                return;
+            }
+
+            workData = await response.json();
+            updateDisplay();
+
+        } catch (error) {
+            console.error('Erreur:', error);
+            showAlert('Erreur lors du chargement des données', 'error');
+        }
+    }
+
+    // Mettre à jour l'affichage
+    function updateDisplay() {
+        const selectedMonth = document.getElementById('selectedMonth').value;
+        const filteredData = workData.filter(entry => entry.date.startsWith(selectedMonth));
+
+        let totalMinutes = 0;
+        let totalSalary = 0;
+
+        filteredData.forEach(entry => {
+            totalMinutes += entry.totalHours * 60;
+            totalSalary += entry.salary;
+        });
+
+        const totalHours = Math.floor(totalMinutes / 60);
+        const remainingMinutes = Math.floor(totalMinutes % 60);
+
+        document.getElementById('totalHours').textContent = `${totalHours}h${remainingMinutes.toString().padStart(2, '0')}`;
+        document.getElementById('totalSalary').textContent = `${totalSalary.toFixed(2)} €`;
+
+        displayEntries(filteredData);
+    }
+
+    // Afficher les entrées
+    function displayEntries(entries) {
+        const container = document.getElementById('workEntries');
+
+        if (entries.length === 0) {
+            container.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i><p>Aucune entrée pour ce mois.</p></div>';
+            return;
+        }
+
+        const entriesHTML = entries
+            .sort((a, b) => new Date(b.date) - new Date(a.date))
+            .map(entry => {
+                const date = new Date(entry.date);
+                const dayName = date.toLocaleDateString('fr-FR', {
+                    weekday: 'long',
+                    day: '2-digit',
+                    month: '2-digit'
+                });
+
+                return `
+                    <div class="entry-item">
+                        <div class="entry-info">
+                            <h4><i class="fas fa-calendar-day"></i> ${dayName}</h4>
+                            <p><i class="fas fa-clock"></i> ${entry.startTime} à ${entry.endTime} • ${entry.hours}h${entry.minutes.toString().padStart(2, '0')} • ${entry.hourlyRate}€/h</p>
+                            ${entry.description ? `<p><i class="fas fa-comment"></i> ${entry.description}</p>` : ''}
+                        </div>
+                        <div style="text-align: right;">
+                            <div class="entry-salary">${entry.salary.toFixed(2)} €</div>
+                            <button onclick="deleteEntry(${entry.id})" class="btn-danger">
+                                <i class="fas fa-trash"></i> Supprimer
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+        container.innerHTML = entriesHTML;
+    }
+
+    // Supprimer une entrée
+    async function deleteEntry(id) {
+        if (!confirm('Êtes-vous sûr de vouloir supprimer cette entrée ?')) return;
+
+        try {
+            const response = await fetch(`${API_URL}/work/entries/${id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (!response.ok) {
+                showAlert('Erreur lors de la suppression', 'error');
+                return;
+            }
+
+            showAlert('Entrée supprimée avec succès', 'success');
+            await loadEntries();
+
+        } catch (error) {
+            console.error('Erreur:', error);
+            showAlert('Erreur lors de la suppression', 'error');
+        }
+    }
+
+    // Afficher une alerte
+    function showAlert(message, type = 'success') {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${type}`;
+        alertDiv.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'exclamation-triangle'}"></i> ${message}`;
+
+        const container = document.querySelector('.container');
+        container.insertBefore(alertDiv, container.firstChild);
+
+        setTimeout(() => {
+            if (alertDiv.parentNode) {
+                alertDiv.parentNode.removeChild(alertDiv);
+            }
+        }, 5000);
+    }
+
+    // Fonctions Admin
+    function showAdminPanel() {
+        const panel = document.getElementById('adminPanel');
+        panel.classList.toggle('hidden');
+    }
+
+    function showUsersManagement() {
+        openModal('usersModal');
+        loadUsers();
+    }
+
+    function showGlobalStats() {
+        openModal('statsModal');
+        loadGlobalStats();
+    }
+
+    function showAllEntries() {
+        openModal('entriesModal');
+        loadAllEntries();
+    }
+
+    function openModal(modalId) {
+        document.getElementById(modalId).classList.remove('hidden');
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).classList.add('hidden');
+    }
+
+    async function loadUsers() {
+        try {
+            const response = await fetch(`${API_URL}/admin/users`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (!response.ok) {
+                showAlert('Erreur lors du chargement des utilisateurs', 'error');
+                return;
+            }
+
+            const users = await response.json();
+            displayUsers(users);
+
+        } catch (error) {
+            console.error('Erreur:', error);
+            showAlert('Erreur lors du chargement des utilisateurs', 'error');
+        }
+    }
+
+    function displayUsers(users) {
+        const container = document.getElementById('usersContent');
+
+        if (users.length === 0) {
+            container.innerHTML = '<div class="empty-state"><i class="fas fa-users"></i><p>Aucun utilisateur trouvé.</p></div>';
+            return;
+        }
+
+        const usersHTML = `
+            <div style="margin-bottom: 1rem;">
+                <h4 style="color: white; margin-bottom: 1rem;">Utilisateurs (${users.length})</h4>
+            </div>
+            ${users.map(user => `
+                <div class="entry-item">
+                    <div class="entry-info">
+                        <h4><i class="fas fa-user"></i> ${user.username}</h4>
+                        <p><i class="fas fa-envelope"></i> ${user.email}</p>
+                        <p><i class="fas fa-calendar"></i> ${new Date(user.created_at).toLocaleDateString('fr-FR')}</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="margin-bottom: 0.5rem;">
+                            <span class="user-role" style="background: ${user.role === 'admin' ? 'var(--warning)' : 'var(--primary)'}">${user.role}</span>
+                        </div>
+                        <div style="font-size: 0.9rem; color: rgba(255, 255, 255, 0.7);">
+                            <i class="fas fa-list"></i> ${user.total_entries || 0} entrées<br>
+                            <i class="fas fa-clock"></i> ${user.total_hours ? user.total_hours.toFixed(1) : 0}h<br>
+                            <i class="fas fa-euro-sign"></i> ${user.total_salary ? user.total_salary.toFixed(2) : 0}€
+                        </div>
+                        ${user.id !== currentUser.id ? `
+                            <div style="margin-top: 0.5rem;">
+                                <select onchange="changeUserRole(${user.id}, this.value)" style="margin-right: 0.5rem;">
+                                    <option value="user" ${user.role === 'user' ? 'selected' : ''}>Utilisateur</option>
+                                    <option value="admin" ${user.role === 'admin' ? 'selected' : ''}>Admin</option>
+                                </select>
+                                <button onclick="deleteUser(${user.id})" class="btn-danger">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('')}
+        `;
+
+        container.innerHTML = usersHTML;
+    }
+
+    async function changeUserRole(userId, newRole) {
+        try {
+            const response = await fetch(`${API_URL}/admin/users/${userId}/role`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ role: newRole })
+            });
+
+            if (!response.ok) {
+                showAlert('Erreur lors du changement de rôle', 'error');
+                return;
+            }
+
+            showAlert('Rôle mis à jour avec succès', 'success');
+            loadUsers();
+
+        } catch (error) {
+            console.error('Erreur:', error);
+            showAlert('Erreur lors du changement de rôle', 'error');
+        }
+    }
+
+    async function deleteUser(userId) {
+        if (!confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) return;
+
+        try {
+            const response = await fetch(`${API_URL}/admin/users/${userId}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (!response.ok) {
+                showAlert('Erreur lors de la suppression', 'error');
+                return;
+            }
+
+            showAlert('Utilisateur supprimé avec succès', 'success');
+            loadUsers();
+
+        } catch (error) {
+            console.error('Erreur:', error);
+            showAlert('Erreur lors de la suppression', 'error');
+        }
+    }
+
+    async function loadGlobalStats() {
+        try {
+            const response = await fetch(`${API_URL}/admin/stats`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (!response.ok) {
+                showAlert('Erreur lors du chargement des statistiques', 'error');
+                return;
+            }
+
+            const stats = await response.json();
+            displayGlobalStats(stats);
+
+        } catch (error) {
+            console.error('Erreur:', error);
+            showAlert('Erreur lors du chargement des statistiques', 'error');
+        }
+    }
+
+    function displayGlobalStats(stats) {
+        const container = document.getElementById('statsContent');
+
+        const statsHTML = `
+            <div class="grid grid-3" style="margin-bottom: 2rem;">
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-value">${stats.totalUsers}</div>
+                    <div class="stat-label">Utilisateurs</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📝</div>
+                    <div class="stat-value">${stats.totalEntries}</div>
+                    <div class="stat-label">Total entrées</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⏱️</div>
+                    <div class="stat-value">${stats.totalHours ? stats.totalHours.toFixed(1) : 0}</div>
+                    <div class="stat-label">Heures totales</div>
+                </div>
+            </div>
+
+            <div class="stat-card" style="margin-bottom: 2rem;">
+                <div class="stat-icon">💰</div>
+                <div class="stat-value">${stats.totalSalary ? stats.totalSalary.toFixed(2) : 0} €</div>
+                <div class="stat-label">Chiffre d'affaires total</div>
+            </div>
+
+            <h4 style="color: white; margin-bottom: 1rem;">Entrées récentes</h4>
+            ${stats.recentEntries.length > 0 ?
+                stats.recentEntries.map(entry => `
+                    <div class="entry-item">
+                        <div class="entry-info">
+                            <h4><i class="fas fa-user"></i> ${entry.username}</h4>
+                            <p><i class="fas fa-calendar"></i> ${new Date(entry.date).toLocaleDateString('fr-FR')} • ${entry.start_time} à ${entry.end_time}</p>
+                        </div>
+                        <div class="entry-salary">${entry.salary.toFixed(2)} €</div>
+                    </div>
+                `).join('') :
+                '<div class="empty-state"><i class="fas fa-inbox"></i><p>Aucune entrée récente.</p></div>'
+            }
+        `;
+
+        container.innerHTML = statsHTML;
+    }
+
+    async function loadAllEntries() {
+        try {
+            const response = await fetch(`${API_URL}/admin/entries`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (!response.ok) {
+                showAlert('Erreur lors du chargement des entrées', 'error');
+                return;
+            }
+
+            const entries = await response.json();
+            displayAllEntries(entries);
+
+        } catch (error) {
+            console.error('Erreur:', error);
+            showAlert('Erreur lors du chargement des entrées', 'error');
+        }
+    }
+
+    function displayAllEntries(entries) {
+        const container = document.getElementById('entriesContent');
+
+        if (entries.length === 0) {
+            container.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i><p>Aucune entrée trouvée.</p></div>';
+            return;
+        }
+
+        const entriesHTML = `
+            <div style="margin-bottom: 1rem;">
+                <h4 style="color: white; margin-bottom: 1rem;">Toutes les entrées (${entries.length})</h4>
+                <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                    <input type="month" id="filterMonth" placeholder="Filtrer par mois" style="flex: 1;">
+                    <input type="text" id="filterUser" placeholder="Filtrer par utilisateur" style="flex: 1;">
+                    <button onclick="applyFilters()" class="btn btn-primary">Filtrer</button>
+                </div>
+            </div>
+            ${entries.map(entry => `
+                <div class="entry-item">
+                    <div class="entry-info">
+                        <h4><i class="fas fa-user"></i> ${entry.username} (${entry.email})</h4>
+                        <p><i class="fas fa-calendar"></i> ${new Date(entry.date).toLocaleDateString('fr-FR')} • ${entry.start_time} à ${entry.end_time}</p>
+                        <p><i class="fas fa-clock"></i> ${entry.hours}h${entry.minutes.toString().padStart(2, '0')} • ${entry.hourly_rate}€/h</p>
+                        ${entry.description ? `<p><i class="fas fa-comment"></i> ${entry.description}</p>` : ''}
+                    </div>
+                    <div class="entry-salary">${entry.salary.toFixed(2)} €</div>
+                </div>
+            `).join('')}
+        `;
+
+        container.innerHTML = entriesHTML;
+
+        // Ajouter les event listeners pour les filtres
+        document.getElementById('filterMonth').addEventListener('change', applyFilters);
+        document.getElementById('filterUser').addEventListener('input', applyFilters);
+    }
+
+    function applyFilters() {
+        const monthFilter = document.getElementById('filterMonth').value;
+        const userFilter = document.getElementById('filterUser').value.toLowerCase();
+
+        const entryItems = document.querySelectorAll('#entriesContent .entry-item');
+
+        entryItems.forEach(item => {
+            const username = item.querySelector('h4').textContent.toLowerCase();
+            const date = item.querySelector('p').textContent;
+
+            let show = true;
+
+            if (monthFilter) {
+                const entryDate = new Date(date.split('•')[0].trim());
+                const filterDate = new Date(monthFilter);
+                if (entryDate.getMonth() !== filterDate.getMonth() || entryDate.getFullYear() !== filterDate.getFullYear()) {
+                    show = false;
+                }
+            }
+
+            if (userFilter && !username.includes(userFilter)) {
+                show = false;
+            }
+
+            item.style.display = show ? 'flex' : 'none';
+        });
+    }
+</script>
+</body>
+</html>
             display: grid;
             gap: 1.5rem;
         }
