@@ -58,34 +58,25 @@ function ensureAdminUser() {
   const adminEmail = process.env.ADMIN_EMAIL || 'admin@example.com';
   const adminPassword = process.env.ADMIN_PASS || 'admin123';
 
-  db.get("SELECT id FROM users WHERE role = 'admin' LIMIT 1", (err, row) => {
-    if (err) {
-      console.error('Erreur recherche admin:', err);
+  // Forcer l'admin avec le bon hash
+  bcrypt.hash(adminPassword, 10, (hashErr, hashedPassword) => {
+    if (hashErr) {
+      console.error('Erreur hash admin:', hashErr);
       return;
     }
 
-    if (!row) {
-      bcrypt.hash(adminPassword, 10, (hashErr, hashedPassword) => {
-        if (hashErr) {
-          console.error('Erreur hash admin :', hashErr);
-          return;
+    db.run(
+      `INSERT OR REPLACE INTO users (id, username, email, password, role, created_at) 
+       VALUES (1, ?, ?, ?, 'admin', CURRENT_TIMESTAMP)`,
+      [adminUsername, adminEmail, hashedPassword],
+      function(insertErr) {
+        if (insertErr) {
+          console.error('Erreur création admin:', insertErr);
+        } else {
+          console.log(`✅ Admin garanti en base: ${adminUsername}`);
         }
-
-        db.run(
-          'INSERT OR IGNORE INTO users (username, email, password, role) VALUES (?, ?, ?, ?)',
-          [adminUsername, adminEmail, hashedPassword, 'admin'],
-          function(insertErr) {
-            if (insertErr) {
-              console.error('Erreur création admin par défaut:', insertErr);
-            } else {
-              console.log(`✅ Admin par défaut créé (${adminUsername})`);
-            }
-          }
-        );
-      });
-    } else {
-      console.log('✅ Admin existant détecté');
-    }
+      }
+    );
   });
 }
 
