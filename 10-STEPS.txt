@@ -1,0 +1,89 @@
+# ⚡ 10 ÉTAPES - DÉPLOIEMENT VESTACP FINAL
+
+**30 minutes pour passer du code local à la production!**
+
+---
+
+## ÉTAPE 1: SSH (30 sec)
+```bash
+ssh admin@185.171.202.132
+```
+
+## ÉTAPE 2: Créer dossier app (30 sec)
+```bash
+mkdir -p /home/admin/web/heurejo.fivehosting.net/calcul-heure
+cd /home/admin/web/heurejo.fivehosting.net/calcul-heure
+```
+
+## ÉTAPE 3: Télécharger code (1 min)
+```bash
+git clone https://github.com/votre_user/calcul-heure .
+```
+
+## ÉTAPE 4: npm install (3 min)
+```bash
+npm install
+```
+
+## ÉTAPE 5: Config .env (2 min)
+```bash
+nano .env
+# PORT=3001
+# JWT_SECRET=openssl rand -base64 32 (copier/coller résultat)
+# NODE_ENV=production
+```
+
+## ÉTAPE 6: Installer PM2 (1 min)
+```bash
+npm install -g pm2
+```
+
+## ÉTAPE 7: Config PM2 (2 min)
+```bash
+nano ecosystem.config.js
+# Copier contenu de DEPLOY-FINAL-vestacp.md section 5
+```
+
+## ÉTAPE 8: Démarrer app (30 sec)
+```bash
+pm2 start ecosystem.config.js
+pm2 status  # Doit afficher: online ✅
+```
+
+## ÉTAPE 9: Adapter Nginx (5 min)
+```bash
+sudo nano /home/admin/conf/web/nginx.heurejo.fivehosting.net.conf
+# Option A: Copier nginx-vestacp-PROD.conf complet
+# Option B: Changer proxy_pass https://...8443 → http://127.0.0.1:3001
+```
+
+## ÉTAPE 10: Tester (3 min)
+```bash
+sudo nginx -t     # syntax ok
+sudo systemctl reload nginx
+# Ouvrir navigateur: https://heurejo.fivehosting.net
+```
+
+---
+
+## ✅ Résultat attendu
+
+- ✅ PM2 status: "online"
+- ✅ https://heurejo.fivehosting.net accessible
+- ✅ Pas d'erreur SSL
+- ✅ Login/Register fonctionnent
+- ✅ Base de données persiste
+
+---
+
+## 📚 Documentation complète
+
+Lire: **DEPLOY-FINAL-vestacp.md** (troubleshooting + détails)
+
+---
+
+## 🚀 C'EST PRÊT!
+
+Vous avez tout ce qu'il faut. Les 10 étapes prennent 30 min max.
+
+Bonne chance! 🎊
