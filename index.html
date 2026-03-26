@@ -563,7 +563,8 @@
                     })
                 });
                 const data = await res.json();
-                if (!res.ok) throw new Error(data.error);
+                console.log('LOGIN RESPONSE', res.status, data);
+                if (!res.ok) throw new Error(data.error || 'Erreur login');
                 token = data.token;
                 currentUser = data.user;
                 localStorage.setItem('token', token);
@@ -595,7 +596,8 @@
                     })
                 });
                 const data = await res.json();
-                if (!res.ok) throw new Error(data.error);
+                console.log('REGISTER RESPONSE', res.status, data);
+                if (!res.ok) throw new Error(data.error || 'Erreur inscription');
                 token = data.token;
                 currentUser = data.user;
                 localStorage.setItem('token', token);

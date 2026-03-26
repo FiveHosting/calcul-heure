@@ -15,6 +15,12 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname)));
 
+// Journalisation des requêtes API
+app.use('/api', (req, res, next) => {
+  console.log(`[API] ${req.method} ${req.originalUrl}`);
+  next();
+});
+
 // Routes API
 app.use('/api/auth', authRoutes);
 app.use('/api/entries', entriesRoutes);
