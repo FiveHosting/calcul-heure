@@ -117,7 +117,7 @@ router.get('/entries', authenticateToken, (req, res) => {
 });
 
 // Récupérer les entrées d'un mois spécifique
-router.get('/entries/:month', authenticateToken, (req, res) => {
+router.get('/:month', authenticateToken, (req, res) => {
   try {
     const userId = req.user.id;
     const month = req.params.month; // format: YYYY-MM
@@ -156,7 +156,7 @@ router.get('/entries/:month', authenticateToken, (req, res) => {
 });
 
 // Supprimer une entrée
-router.delete('/entries/:id', authenticateToken, (req, res) => {
+router.delete('/:id', authenticateToken, (req, res) => {
   try {
     const entryId = req.params.id;
     const userId = req.user.id;
@@ -195,7 +195,7 @@ router.delete('/entries/:id', authenticateToken, (req, res) => {
 });
 
 // Mettre à jour une entrée
-router.put('/entries/:id', authenticateToken, (req, res) => {
+router.put('/:id', authenticateToken, (req, res) => {
   try {
     const entryId = req.params.id;
     const userId = req.user.id;
