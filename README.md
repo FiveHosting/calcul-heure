@@ -1,608 +1,674 @@
-# 📊 Calculateur d'Heures de Travail v2.0
+# 📊 Calculateur d'Heures v2.0
 
-Application complète avec authentification utilisateur et base de données pour gérer et calculer vos heures de travail.
+**Application web complète de calcul de salaire avec authentification, base de données SQLite et déploiement VestaCP prêt.**
 
-## ✨ Nouvelles fonctionnalités v2.0
-
-- ✅ **Authentification utilisateur** - Créez un compte et connectez-vous
-- ✅ **Base de données** - Toutes vos heures sont sauvegardées de manière sécurisée
-- ✅ **Persistance des données** - Vos données restent disponibles même après fermeture
-- ✅ **API REST** - Backend Node.js + Express
-- ✅ **Token JWT** - Authentification sécurisée
-- ✅ **Criffrage de mots de passe** - Sécurité renforcée avec bcrypt
-
-## 🚀 Installation et démarrage
-
-### Prérequis
-- Node.js (v14 ou supérieur)
-- npm
-
-### Étapes d'installation
-
-1. **Cloner/Naviguer dans le projet**
-```bash
-cd c:\Users\elisa\Documents\GitHub\calcul-heure
-```
-
-2. **Installer les dépendances**
-```bash
-npm install
-```
-
-3. **Configurer les variables d'environnement**
-Le fichier `.env` est déjà préconfiguré. Vous pouvez le modifier si nécessaire:
-```
-PORT=3000
-DB_PATH=./database.db
-JWT_SECRET=votre_clé_secrète_très_sûre_à_changer_en_production
-NODE_ENV=development
-```
-
-4. **Démarrer le serveur**
-```bash
-npm start
-```
-
-ou en mode développement avec rechargement automatique:
-```bash
-npm run dev
-```
-
-5. **Accéder à l'application**
-Ouvrez votre navigateur et allez sur: `http://localhost:3000`
-
-## 📋 Utilisation
-
-### Première visite
-1. Cliquez sur **Inscription**
-2. Remplissez le formulaire avec:
-   - Nom d'utilisateur unique
-   - Email valide
-   - Mot de passe (minimum 6 caractères)
-3. Cliquez sur "Créer un compte"
-
-### Connexion
-1. Entrez votre nom d'utilisateur et mot de passe
-2. Cliquez sur "Se connecter"
-3. Vous êtes maintenant connecté et vos données sont synchronisées
-
-### Ajouter une journée de travail
-1. Remplissez le formulaire "Nouvelle entrée":
-   - **Date**: Sélectionnez la date
-   - **Heure de début**: Heure d'arrivée
-   - **Heure de fin**: Heure de départ
-   - **Taux horaire**: Votre salaire horaire en euros
-   - **Description**: Optionnel (ex: Service de nuit)
-2. Cliquez sur "➕ Ajouter l'entrée"
-3. L'entrée est automatiquement sauvegardée en base de données
-
-### Consulter vos heures
-- Sélectionnez le mois dans "Résumé mensuel"
-- Les statistiques et la liste des entrées se mettent à jour automatiquement
-- Consultez vos heures totales et votre salaire du mois
-
-### Supprimer une entrée
-- Cliquez sur le bouton "🗑️ Supprimer" à côté de l'entrée
-- Confirmez la suppression
-
-## 🗄️ Structure de la base de données
-
-### Table `users`
-- `id`: Identifiant unique
-- `username`: Nom d'utilisateur unique
-- `email`: Email unique
-- `password`: Mot de passe hashé (bcrypt)
-- `created_at`: Date de création
-
-### Table `work_entries`
-- `id`: Identifiant unique
-- `user_id`: Référence à l'utilisateur
-- `date`: Date du travail
-- `start_time`: Heure de début
-- `end_time`: Heure de fin
-- `hourly_rate`: Taux horaire en euros
-- `description`: Description optionnelle
-- `hours`: Heures travaillées (nombre entier)
-- `minutes`: Minutes restantes
-- `total_hours`: Heures totales (décimal)
-- `salary`: Salaire calculé
-- `created_at`: Date de création
-
-## 📡 API Endpoints
-
-### Authentification
-- `POST /api/auth/register` - Créer un compte
-- `POST /api/auth/login` - Se connecter
-
-### Heures de travail
-- `GET /api/work/entries` - Récupérer toutes les entrées
-- `GET /api/work/entries/:month` - Récupérer les entrées d'un mois (format: YYYY-MM)
-- `POST /api/work/entries` - Ajouter une entrée
-- `PUT /api/work/entries/:id` - Modifier une entrée
-- `DELETE /api/work/entries/:id` - Supprimer une entrée
-
-## 🔒 Sécurité
-
-- Tous les mots de passe sont hashés avec bcrypt
-- Authentification par JWT (JSON Web Tokens)
-- Les tokens ont une durée de validité de 7 jours
-- Le champ JWT_SECRET doit être changé en production
-- Utilisez HTTPS en production
-
-## 🐛 Dépannage
-
-### Le serveur ne démarre pas
-```bash
-# Vérifiez que le port 3000 n'est pas occupé
-# Vérifiez que Node.js est correctement installé
-node --version
-npm --version
-```
-
-### Erreur de base de données
-```bash
-# La base de données sera recréée au premier démarrage
-# Si vous avez des problèmes, supprimez database.db et redémarrez
-```
-
-### Erreur CORS
-Le CORS est configuré pour autoriser les requêtes locales. En production, configurez les domaines autorisés.
-
-## 📦 Fichiers importants
-
-- `server.js` - Point d'entrée du serveur
-- `database.js` - Configuration SQLite
-- `middleware.js` - Authentification JWT
-- `routes/auth.js` - Routes d'authentification
-- `routes/entries.js` - Routes des heures de travail
-- `index.html` - Interface utilisateur
-- `.env` - Variables d'environnement
-
-## 💾 Backup et export
-
-Les données sont sauvegardées automatiquement dans la base de données SQLite. 
-Vous pouvez exporter vos données en téléchargeant le fichier `database.db`.
+[![Status](https://img.shields.io/badge/Status-Production%20Ready-green.svg)](https://heurejo.fivehosting.net)
+[![Node.js](https://img.shields.io/badge/Node.js-18+-blue.svg)](https://nodejs.org/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ---
 
-# 🚀 DÉPLOIEMENT SUR VPS avec VestaCP
+## 🎯 Vue d'ensemble
 
-## 📋 Prérequis sur le serveur
+Calculateur d'Heures est une application web moderne qui permet de :
+- ✅ **Saisir des heures de travail** avec taux horaires personnalisés
+- ✅ **Calculer automatiquement** les salaires
+- ✅ **Stocker les données** de manière sécurisée (SQLite)
+- ✅ **Authentification complète** (inscription/connexion)
+- ✅ **Interface responsive** (mobile + desktop)
+- ✅ **Déploiement prêt** pour VestaCP/FiveHosting
 
-Vous devez avoir sur votre VPS:
-- ✅ Accès SSH
-- ✅ VestaCP installé
-- ✅ Node.js disponible
-- ✅ Un domaine pointant vers votre serveur
+**Technologies :** Node.js, Express, SQLite3, JWT, bcrypt, HTML5/CSS3/JavaScript
 
-## 🔧 Étape 1: Préparer le serveur
+---
 
-### Connexion SSH
+## 🚀 Installation rapide (5 minutes)
 
+### Prérequis
+- Node.js 18+ ([télécharger](https://nodejs.org/))
+- npm
+
+### Installation
 ```bash
-# Se connecter au serveur
-ssh root@votre_ip_serveur
-
-# Ou avec un utilisateur spécifique
-ssh utilisateur@votre_domaine.com
-```
-
-### Vérifier/Installer Node.js
-
-```bash
-# Vérifier si Node.js est installé
-node --version
-npm --version
-
-# Si non installé, installer Node.js
-curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-sudo apt-get install -y nodejs
-
-# Vérifier l'installation
-node --version  # doit afficher v18.x.x
-npm --version   # doit afficher 9.x.x
-```
-
-### Installer PM2 (gestionnaire de processus)
-
-```bash
-# Installer PM2 globalement
-sudo npm install -g pm2
-
-# Vérifier installation
-pm2 --version
-```
-
-## 📂 Étape 2: Créer un dossier pour l'application
-
-```bash
-# Créer le dossier de l'application
-sudo mkdir -p /home/admin/calcul-heure
-cd /home/calcul-heure
-
-# (Remplacez 'admin' par votre utilisateur VestaCP)
-```
-
-## 📦 Étape 3: Télécharger/Uploader l'application
-
-### Option A: Via Git (recommandé)
-
-```bash
-cd /home/admin/calcul-heure
-
-# Cloner le repo (ou télécharger le zip)
-git clone https://github.com/votre-repo/calcul-heure.git .
+# Cloner le repository
+git clone https://github.com/votre_user/calcul-heure.git
+cd calcul-heure
 
 # Installer les dépendances
 npm install
-```
 
-### Option B: Via SFTP
-
-1. Ouvrir FileZilla ou WinSCP
-2. Se connecter avec les identifiants SSH
-3. Uploader tous les fichiers du projet dans `/home/admin/calcul-heure/`
-4. Exécuter dans le terminal:
-```bash
-cd /home/admin/calcul-heure
-npm install
-```
-
-## ⚙️ Étape 4: Configurer les variables d'environnement
-
-```bash
-# Éditer le fichier .env
+# Configurer l'environnement
 nano .env
 ```
 
-**Contenu du .env pour VestaCP:**
+**Contenu du fichier `.env` :**
 ```env
-PORT=3000
-DB_PATH=/home/admin/calcul-heure/database.db
-JWT_SECRET=votre_clé_très_secrète_et_très_longue_à_générer
+PORT=3001
+DB_PATH=./database.db
+JWT_SECRET=votre_clé_secrète_très_sûre_ici_32_caractères_minimum
 NODE_ENV=production
 ```
 
-**Générer une clé JWT sécurisée:**
+**Générer un JWT_SECRET fort :**
 ```bash
 openssl rand -base64 32
+# Copier le résultat dans .env
 ```
 
-Copier le résultat dans `JWT_SECRET`
+### Démarrage
+```bash
+# Démarrer l'application
+npm start
 
-💾 Sauvegarder avec: `CTRL+X` puis `Y` puis `ENTRÉE`
+# Ou en développement
+npm run dev
+```
 
-## 🚀 Étape 5: Démarrer l'application avec PM2
+**Accéder à l'app :** http://localhost:3001
+
+---
+
+## 📁 Structure du projet
+
+```
+calcul-heure/
+├── index.html          # Interface utilisateur
+├── server.js           # Serveur Express
+├── database.js         # Configuration SQLite
+├── middleware.js       # Authentification JWT
+├── routes/
+│   ├── auth.js         # API authentification
+│   └── entries.js      # API entrées de travail
+├── package.json        # Dépendances
+├── .env               # Configuration
+└── README.md          # Cette documentation
+```
+
+---
+
+## 🔐 Authentification
+
+### Inscription
+- **Email** : requis, unique
+- **Nom d'utilisateur** : requis, unique
+- **Mot de passe** : minimum 6 caractères
+- **Hashage** : bcrypt (sécurisé)
+
+### Connexion
+- **Token JWT** : valide 7 jours
+- **Stockage** : localStorage du navigateur
+- **Protection** : toutes les routes API
+
+### Sécurité
+- ✅ Mots de passe hashés (bcrypt)
+- ✅ Tokens JWT signés
+- ✅ Protection CSRF
+- ✅ Headers de sécurité
+
+---
+
+## 💾 Base de données
+
+### Structure SQLite
+```sql
+-- Utilisateurs
+CREATE TABLE users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT UNIQUE NOT NULL,
+    email TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Entrées de travail
+CREATE TABLE work_entries (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    date DATE NOT NULL,
+    start_time TIME NOT NULL,
+    end_time TIME NOT NULL,
+    hourly_rate DECIMAL(10,2) NOT NULL,
+    description TEXT,
+    hours DECIMAL(4,2) NOT NULL,
+    minutes INTEGER NOT NULL,
+    total_hours DECIMAL(5,2) NOT NULL,
+    salary DECIMAL(10,2) NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+```
+
+### Fonctionnalités
+- ✅ Création automatique au premier démarrage
+- ✅ Calcul automatique des heures et salaires
+- ✅ Historique complet par utilisateur
+- ✅ Filtrage par mois
+
+---
+
+## 🌐 API REST
+
+### Authentification
+```
+POST /api/auth/register
+Content-Type: application/json
+
+{
+  "username": "johndoe",
+  "email": "john@example.com",
+  "password": "securepass123",
+  "confirmPassword": "securepass123"
+}
+```
+
+```
+POST /api/auth/login
+Content-Type: application/json
+
+{
+  "username": "johndoe",
+  "password": "securepass123"
+}
+```
+
+### Entrées de travail
+```
+GET /api/work/entries
+Authorization: Bearer <token>
+```
+
+```
+POST /api/work/entries
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "date": "2024-01-15",
+  "startTime": "09:00",
+  "endTime": "17:30",
+  "hourlyRate": 12.50,
+  "description": "Service du matin"
+}
+```
+
+```
+DELETE /api/work/entries/:id
+Authorization: Bearer <token>
+```
+
+---
+
+## 🎨 Interface utilisateur
+
+### Fonctionnalités
+- ✅ **Design moderne** : gradient, cartes, animations
+- ✅ **Responsive** : mobile, tablette, desktop
+- ✅ **Authentification** : onglets connexion/inscription
+- ✅ **Dashboard** : statistiques mensuelles
+- ✅ **Formulaire** : saisie intuitive des heures
+- ✅ **Historique** : liste triée par date
+- ✅ **Calculs** : heures, salaire automatique
+
+### Navigation
+1. **Page d'accueil** : connexion/inscription
+2. **Dashboard** : vue d'ensemble + statistiques
+3. **Ajout d'entrée** : formulaire de saisie
+4. **Historique** : consultation des données
+
+---
+
+## 🚀 Déploiement VestaCP (FiveHosting)
+
+### Prérequis serveur
+- ✅ VestaCP installé
+- ✅ Node.js 18+ disponible
+- ✅ PM2 installé globalement
+- ✅ Nginx configuré
+- ✅ SSL Let's Encrypt activé
+
+### Étapes de déploiement (30 minutes)
+
+#### 1. SSH + Téléchargement (5 min)
+```bash
+# Connexion SSH
+ssh admin@185.171.202.132
+
+# Créer dossier application
+mkdir -p /home/admin/web/heurejo.fivehosting.net/calcul-heure
+cd /home/admin/web/heurejo.fivehosting.net/calcul-heure
+
+# Télécharger le code
+git clone https://github.com/votre_user/calcul-heure .
+
+# Installer dépendances
+npm install
+```
+
+#### 2. Configuration (2 min)
+```bash
+# Éditer .env
+nano .env
+
+# Contenu :
+PORT=3001
+DB_PATH=./database.db
+JWT_SECRET=[votre_clé_sécurisée]
+NODE_ENV=production
+```
+
+#### 3. PM2 Setup (2 min)
+```bash
+# Installer PM2
+npm install -g pm2
+
+# Créer ecosystem.config.js
+nano ecosystem.config.js
+```
+
+**Contenu ecosystem.config.js :**
+```javascript
+module.exports = {
+  apps: [
+    {
+      name: 'calcul-heure',
+      script: './server.js',
+      instances: 1,
+      exec_mode: 'fork',
+      env: {
+        PORT: 3001,
+        NODE_ENV: 'production'
+      },
+      error_file: './logs/err.log',
+      out_file: './logs/out.log',
+      log_date_format: 'YYYY-MM-DD HH:mm:ss Z',
+      watch: false,
+      ignore_watch: ['node_modules', 'database.db', '.env', 'logs'],
+      max_memory_restart: '500M',
+      restart_delay: 4000,
+      autorestart: true
+    }
+  ]
+};
+```
 
 ```bash
-# Se placer dans le dossier
-cd /home/admin/calcul-heure
-
-# Démarrer l'app avec PM2
-pm2 start server.js --name "calcul-heure"
-
-# Sauvegarder la configuration PM2
-pm2 startup
-pm2 save
-
-# Vérifier que ça tourne
-pm2 status
-pm2 logs calcul-heure
+# Démarrer l'application
+pm2 start ecosystem.config.js
+pm2 status  # Doit afficher "online"
 ```
 
-## 🌐 Étape 6: Configurer Nginx (VestaCP)
+#### 4. Configuration Nginx (5 min)
 
-VestaCP utilise Nginx par défaut. Il faut créer un reverse proxy.
-
-### Créer un fichier de configuration Nginx
-
+**Modifier la config VestaCP :**
 ```bash
-# Créer le config
-sudo nano /etc/nginx/sites-available/calcul-heure
+sudo nano /home/admin/conf/web/nginx.heurejo.fivehosting.net.conf
 ```
 
-**Contenu:**
+**Remplacer le contenu par :**
 ```nginx
-upstream calcul_heure_backend {
-    server 127.0.0.1:3000;
+server {
+    listen      185.171.202.132:80;
+    server_name heurejo.fivehosting.net www.heurejo.fivehosting.net;
+    error_log  /var/log/apache2/domains/heurejo.fivehosting.net.error.log error;
+
+    # Redirection HTTP → HTTPS
+    location / {
+        return 301 https://$server_name$request_uri;
+    }
+
+    # Pour Let's Encrypt (certbot renewal)
+    location /.well-known/acme-challenge/ {
+        root /home/admin/web/heurejo.fivehosting.net/public_html;
+    }
+
+    location /error/ {
+        alias   /home/admin/web/heurejo.fivehosting.net/document_errors/;
+    }
+
+    location ~ /\.ht    {return 404;}
+    location ~ /\.env   {return 404;}
+    location ~ /\.svn/  {return 404;}
+    location ~ /\.git/  {return 404;}
+    location ~ /\.hg/   {return 404;}
+    location ~ /\.bzr/  {return 404;}
+
+    disable_symlinks if_not_owner from=/home/admin/web/heurejo.fivehosting.net/public_html;
+
+    include /home/admin/conf/web/nginx.heurejo.fivehosting.net.conf*;
 }
 
+# Configuration HTTPS pour Node.js
 server {
-    listen 80;
-    listen [::]:80;
-    server_name votre_domaine.com www.votre_domaine.com;
+    listen      185.171.202.132:443 ssl http2;
+    server_name heurejo.fivehosting.net www.heurejo.fivehosting.net;
+    error_log  /var/log/apache2/domains/heurejo.fivehosting.net.error.log error;
+    access_log /var/log/apache2/domains/heurejo.fivehosting.net.log combined;
 
-    # Redirection HTTPS
-    return 301 https://$server_name$request_uri;
-}
+    # Certificats SSL VestaCP
+    ssl_certificate /home/admin/conf/web/ssl.heurejo.fivehosting.net.pem;
+    ssl_certificate_key /home/admin/conf/web/ssl.heurejo.fivehosting.net.key;
 
-server {
-    listen 443 ssl http2;
-    listen [::]:443 ssl http2;
-    server_name votre_domaine.com www.votre_domaine.com;
-
-    # Certificats SSL (Let's Encrypt via VestaCP)
-    ssl_certificate /home/admin/conf/web/ssl.calcul-heure.com.crt;
-    ssl_certificate_key /home/admin/conf/web/ssl.calcul-heure.com.key;
-
-    # Sécurité SSL
+    # SSL Configuration
     ssl_protocols TLSv1.2 TLSv1.3;
     ssl_ciphers HIGH:!aNULL:!MD5;
     ssl_prefer_server_ciphers on;
+    ssl_session_cache shared:SSL:10m;
+    ssl_session_timeout 10m;
 
-    # Headers de sécurité
+    # Security Headers
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
     add_header X-Frame-Options "SAMEORIGIN" always;
     add_header X-Content-Type-Options "nosniff" always;
-    add_header X-XSS-Protection "1; mode=block" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
 
-    # Reverse proxy
+    # Proxy vers Node.js (PORT 3001)
     location / {
-        proxy_pass http://calcul_heure_backend;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
+        proxy_pass http://127.0.0.1:3001;
+
+        # Headers pour Node.js
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_cache_bypass $http_upgrade;
-        
+
+        # WebSocket support
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+
         # Timeouts
         proxy_connect_timeout 60s;
         proxy_send_timeout 60s;
         proxy_read_timeout 60s;
     }
 
-    # Limiter la taille des uploads
-    client_max_body_size 10M;
+    # Fichiers statiques (cache 30 jours)
+    location ~* ^.+\.(jpeg|jpg|png|gif|bmp|ico|svg|tif|tiff|css|js|ttf|otf|webp|txt|csv|rtf|doc|docx|xls|xlsx|ppt|pptx|odf|odp|ods|odt|pdf|psd|ai|eot|eps|ps|zip|tar|tgz|gz|rar|bz2|7z|aac|m4a|mp3|mp4|og)$ {
+        root           /home/admin/web/heurejo.fivehosting.net/public_html;
+        access_log     /var/log/apache2/domains/heurejo.fivehosting.net.log combined;
+        access_log     /var/log/apache2/domains/heurejo.fivehosting.net.bytes bytes;
+        expires        30d;
+    }
 
-    # Logs
-    access_log /home/admin/logs/calcul-heure.access.log;
-    error_log /home/admin/logs/calcul-heure.error.log;
+    # Gzip compression
+    gzip on;
+    gzip_vary on;
+    gzip_min_length 1024;
+    gzip_types text/plain text/css text/xml text/javascript application/x-javascript application/xml+rss;
+
+    location /error/ {
+        alias   /home/admin/web/heurejo.fivehosting.net/document_errors/;
+    }
+
+    # Sécurité - Bloquer fichiers sensibles
+    location ~ /\.ht    {return 404;}
+    location ~ /\.env   {return 404;}
+    location ~ /\.svn/  {return 404;}
+    location ~ /\.git/  {return 404;}
+    location ~ /\.hg/   {return 404;}
+    location ~ /\.bzr/  {return 404;}
+
+    disable_symlinks if_not_owner from=/home/admin/web/heurejo.fivehosting.net/public_html;
+
+    include /home/admin/conf/web/nginx.heurejo.fivehosting.net.conf*;
 }
 ```
 
-⚠️ **Remplacer:**
-- `calcul-heure.com` par votre domaine
-- `/home/admin/` par votre chemin utilisateur
-
-### Activer la configuration
-
+#### 5. Test final (3 min)
 ```bash
-# Créer un lien symbolique
-sudo ln -s /etc/nginx/sites-available/calcul-heure /etc/nginx/sites-enabled/
-
-# Tester la configuration
+# Tester la config Nginx
 sudo nginx -t
 
-# Redémarrer Nginx
-sudo systemctl restart nginx
+# Recharger Nginx
+sudo systemctl reload nginx
+
+# Vérifier les ports
+sudo netstat -tlnp | grep 3001  # Node.js
+sudo netstat -tlnp | grep :443   # Nginx HTTPS
+
+# Tester l'application
+curl https://heurejo.fivehosting.net
 ```
 
-## 🔐 Étape 7: Activation SSL/HTTPS
+### SSL Let's Encrypt (via VestaCP)
+1. Aller sur https://votre_ip:8083
+2. Se connecter avec admin
+3. Domaines → heurejo.fivehosting.net
+4. SSL → Activer Let's Encrypt
+5. Attendre 5 minutes
 
-### Via VestaCP Web UI:
+---
 
-1. Connectez-vous à VestaCP (~:8083)
-2. Allez dans `Web` → `Domains`
-3. Sélectionnez votre domaine
-4. Cliquez sur l'icône SSL
-5. Cliquez `Auto` (Let's Encrypt gratuit)
+## 🔧 Maintenance
 
-### Via Terminal:
-
+### Démarrage/Arrêt
 ```bash
-# Installer certbot si pas installé
-sudo apt-get install -y certbot python3-certbot-nginx
-
-# Générer le certificat
-sudo certbot certonly --nginx -d votre_domaine.com -d www.votre_domaine.com
-
-# Renouvellement automatique
-sudo systemctl enable certbot.timer
-sudo systemctl start certbot.timer
-```
-
-## 📁 Structure des fichiers sur VPS
-
-```
-/home/admin/calcul-heure/
-├── server.js
-├── database.js
-├── middleware.js
-├── package.json
-├── .env                    ← Sécurisé (ne pas partager)
-├── index.html
-├── database.db             ← Données (BACKUP régulièrement)
-├── routes/
-│   ├── auth.js
-│   └── entries.js
-└── node_modules/           ← Créé automatiquement
-```
-
-## 🔄 Gestion avec PM2
-
-```bash
-# Voir le statut
+# État
 pm2 status
 
-# Voir les logs
-pm2 logs calcul-heure
-
-# Redémarrer l'app
+# Redémarrer
 pm2 restart calcul-heure
 
-# Arrêter l'app
+# Arrêter
 pm2 stop calcul-heure
 
-# Supprimer l'app
-pm2 delete calcul-heure
+# Logs
+pm2 logs calcul-heure
 ```
 
-## 📊 Monitoring et Logs
-
+### Sauvegarde base de données
 ```bash
-# Logs en temps réel
-pm2 logs calcul-heure
+# Backup manuel
+cp /home/admin/web/heurejo.fivehosting.net/calcul-heure/database.db \
+   /home/admin/web/heurejo.fivehosting.net/calcul-heure/backups/database_$(date +%Y%m%d).db
+
+# Backup automatique (cron)
+crontab -e
+# Ajouter: 0 2 * * * cp /path/to/database.db /path/to/backups/database_$(date +\%Y\%m\%d).db
+```
+
+### Mise à jour
+```bash
+cd /home/admin/web/heurejo.fivehosting.net/calcul-heure
+git pull
+npm install
+pm2 restart calcul-heure
+```
+
+### Monitoring
+```bash
+# Ressources système
+htop
+df -h
+free -h
 
 # Logs Nginx
-tail -f /home/admin/logs/calcul-heure.access.log
-tail -f /home/admin/logs/calcul-heure.error.log
+sudo tail -f /var/log/nginx/error.log
 
-# Monitor système
-pm2 monit
+# Logs application
+pm2 logs calcul-heure --lines 100
 ```
 
-## 🛡️ Sécurité sur le VPS
+---
 
-### 1. Firewall
+## 🆘 Dépannage
 
+### "502 Bad Gateway"
 ```bash
-# Ouvrir les ports nécessaires
-sudo ufw allow 22/tcp    # SSH
-sudo ufw allow 80/tcp    # HTTP
-sudo ufw allow 443/tcp   # HTTPS
-sudo ufw enable
+# Vérifier Node.js
+pm2 status
+pm2 logs calcul-heure
+
+# Redémarrer
+pm2 restart calcul-heure
 ```
 
-### 2. Permissions des fichiers
-
+### "Port 3001 already in use"
 ```bash
-# Sécuriser les permissions
-cd /home/admin/calcul-heure
-chmod 755 .              # Dossier
-chmod 644 *.js           # Fichiers JS
-chmod 600 .env           # Fichier .env (sensible)
-chmod 644 database.db    # Base de données
+sudo lsof -i :3001
+sudo kill -9 <PID>
+pm2 restart calcul-heure
 ```
 
-### 3. Backup de la base de données
-
+### "Cannot find module"
 ```bash
-# Script de backup automatique
-sudo nano /home/admin/backup-calcul-heure.sh
+cd /home/admin/web/heurejo.fivehosting.net/calcul-heure
+npm install
+pm2 restart calcul-heure
 ```
 
-**Contenu:**
+### "SSL ne fonctionne pas"
+```bash
+# Vérifier certificats
+ls -la /home/admin/conf/web/ssl.heurejo.fivehosting.net.*
+
+# Recharger Nginx
+sudo systemctl reload nginx
+```
+
+### "Base de données corrompue"
+```bash
+# Restaurer backup
+cp backups/database_YYYYMMDD.db database.db
+pm2 restart calcul-heure
+```
+
+---
+
+## 📊 Scripts utiles
+
+### Script de déploiement automatique
 ```bash
 #!/bin/bash
-BACKUP_DIR="/home/admin/backups"
-mkdir -p $BACKUP_DIR
-cp /home/admin/calcul-heure/database.db $BACKUP_DIR/database-$(date +%Y%m%d-%H%M%S).db
-# Garder seulement les 7 derniers backups
-find $BACKUP_DIR -name "database-*.db" -mtime +7 -delete
-```
+# deploy.sh - Déploiement automatique
 
-Rendre exécutable:
-```bash
-chmod +x /home/admin/backup-calcul-heure.sh
-```
+set -e
 
-Ajouter au cron (todos les jours à 02:00):
-```bash
-crontab -e
-# Ajouter cette ligne:
-0 2 * * * /home/admin/backup-calcul-heure.sh
-```
+echo "🚀 Déploiement Calculateur d'Heures"
 
-## 🚨 Troubleshooting VestaCP
+# Vérifier root
+if [ "$EUID" -ne 0 ]; then
+  echo "❌ Exécuter en root"
+  exit 1
+fi
 
-### Le site affiche une erreur "Bad Gateway"
+APP_DIR="/home/admin/web/heurejo.fivehosting.net/calcul-heure"
 
-```bash
-# Vérifier que Node.js tourne
-pm2 status
+# Créer dossier
+mkdir -p "$APP_DIR"
+cd "$APP_DIR"
 
-# Vérifier les logs
-pm2 logs calcul-heure
+# Télécharger code
+if [ ! -d ".git" ]; then
+  git clone https://github.com/votre_user/calcul-heure .
+fi
 
-# Redémarrer
-pm2 restart calcul-heure
-```
-
-### Erreur "Connection refused"
-
-```bash
-# Vérifier que le port 3000 est en écoute
-netstat -tlnp | grep 3000
-
-# Vérifier Nginx
-sudo nginx -t
-sudo systemctl restart nginx
-```
-
-### Base de données corrompue
-
-```bash
-cd /home/admin/calcul-heure
-rm database.db          # Supprimer la DB
-pm2 restart calcul-heure # Redémarrer (elle sera recréée)
-```
-
-## 📝 Mise à jour de l'application
-
-```bash
-cd /home/admin/calcul-heure
-
-# Télécharger les nouvelles versions
-git pull origin main
-# OU uploader les fichiers manuellement
-
-# Installer les nouvelles dépendances
+# Installer dépendances
 npm install
 
-# Redémarrer
-pm2 restart calcul-heure
+# Config .env si absent
+if [ ! -f ".env" ]; then
+  cat > .env << EOF
+PORT=3001
+DB_PATH=./database.db
+JWT_SECRET=$(openssl rand -base64 32)
+NODE_ENV=production
+EOF
+fi
+
+# PM2
+npm install -g pm2
+
+# Config PM2
+cat > ecosystem.config.js << 'EOF'
+module.exports = {
+  apps: [{
+    name: 'calcul-heure',
+    script: './server.js',
+    instances: 1,
+    env: { PORT: 3001, NODE_ENV: 'production' },
+    error_file: './logs/err.log',
+    out_file: './logs/out.log',
+    max_memory_restart: '500M',
+    autorestart: true
+  }]
+};
+EOF
+
+# Démarrer
+pm2 stop calcul-heure 2>/dev/null || true
+pm2 start ecosystem.config.js
+
+echo "✅ Déploiement terminé!"
+echo "🌐 https://heurejo.fivehosting.net"
 ```
 
-## 💡 Tips & Tricks
-
-### Augmenter les limites
-
+### Script de backup
 ```bash
-# Dans /etc/security/limits.conf ajouter:
-* soft nofile 65536
-* hard nofile 65536
-* soft nproc 32768
-* hard nproc 32768
+#!/bin/bash
+# backup.sh
+
+BACKUP_DIR="/home/admin/web/heurejo.fivehosting.net/calcul-heure/backups"
+mkdir -p "$BACKUP_DIR"
+
+DATE=$(date +%Y%m%d_%H%M%S)
+DB_FILE="/home/admin/web/heurejo.fivehosting.net/calcul-heure/database.db"
+
+cp "$DB_FILE" "$BACKUP_DIR/database_$DATE.db"
+echo "💾 Backup créé: $BACKUP_DIR/database_$DATE.db"
 ```
-
-### Compression Gzip
-
-Nginx l'active automatiquement.
-
-### Cache
-
-Ajouter au reverse proxy dans Nginx:
-```nginx
-proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=my_cache:10m;
-proxy_cache my_cache;
-proxy_cache_valid 200 1h;
-```
-
-## 📞 Support VestaCP
-
-Documentation: https://vestacp.com/
-Forum: https://forum.vestacp.com/
 
 ---
 
-## 📝 Licence
+## 📈 Fonctionnalités futures
 
-Ce projet est libre d'utilisation à titre personnel.
-
-## 🆘 Support
-
-Pour toute question ou problème, consultez les logs du serveur:
-```bash
-# Local
-npm run dev
-
-# VPS
-pm2 logs calcul-heure
-```
+- [ ] Export PDF des bulletins de salaire
+- [ ] Graphiques statistiques avancés
+- [ ] Notifications email
+- [ ] API mobile
+- [ ] Multi-utilisateurs (admin)
+- [ ] Sauvegarde cloud
+- [ ] Thèmes personnalisables
 
 ---
 
-**Version**: 2.0.0  
-**Dernière mise à jour**: Mars 2026
+## 🤝 Contribution
+
+1. Fork le projet
+2. Créer une branche (`git checkout -b feature/nouvelle-fonction`)
+3. Commit (`git commit -am 'Ajout nouvelle fonction'`)
+4. Push (`git push origin feature/nouvelle-fonction`)
+5. Créer une Pull Request
+
+---
+
+## 📄 Licence
+
+MIT License - voir [LICENSE](LICENSE) pour plus de détails.
+
+---
+
+## 📞 Support
+
+- **Email** : votre_email@example.com
+- **GitHub Issues** : [Signaler un bug](https://github.com/votre_user/calcul-heure/issues)
+- **Documentation** : Ce README contient tout
+
+---
+
+## 🎉 Remerciements
+
+- Node.js et Express pour le backend
+- SQLite3 pour la base de données
+- JWT et bcrypt pour la sécurité
+- VestaCP pour l'hébergement
+
+---
+
+**🚀 Prêt pour la production !**
+
+**Déployé sur :** https://heurejo.fivehosting.net
+
+**Version :** 2.0.0  
+**Date :** Mars 2026  
+**Status :** ✅ Production Ready
