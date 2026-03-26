@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const db = require('../database');
+const { authenticateToken } = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -176,6 +177,53 @@ router.post('/create-admin', async (req, res) => {
 
   } catch (error) {
     console.error('Erreur création admin:', error);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+});
+
+// Changer le mot de passe (authentifié)
+router.post('/change-password', authenticateToken, async (req, res) => {
+  try {
+    const { oldPassword, newPassword } = req.body;
+    const userId = req.user.id;
+
+    // Validation
+    if (!oldPassword || !newPassword) {
+      return res.status(400).json({ error: 'Tous les champs sont obligatoires' });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({ error: 'Le mot de passe doit contenir au moins 6 caractères' });
+    }
+
+    // Récupérer l'utilisateur
+    db.get('SELECT * FROM users WHERE id = ?', [userId], async (err, user) => {
+      if (err || !user) {
+        return res.status(404).json({ error: 'Utilisateur non trouvé' });
+      }
+
+      // Vérifier l'ancien mot de passe
+      const validOldPassword = await bcrypt.compare(oldPassword, user.password);
+      if (!validOldPassword) {
+        return res.status(401).json({ error: 'Ancien mot de passe incorrect' });
+      }
+
+      // Hash le nouveau mot de passe
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+      // Mettre à jour la base de données
+      db.run('UPDATE users SET password = ? WHERE id = ?', [hashedPassword, userId], function(err) {
+        if (err) {
+          console.error('Erreur mise à jour mot de passe:', err);
+          return res.status(500).json({ error: 'Erreur lors de la mise à jour' });
+        }
+
+        res.json({ message: 'Mot de passe changé avec succès' });
+      });
+    });
+
+  } catch (error) {
+    console.error('Erreur changement mot de passe:', error);
     res.status(500).json({ error: 'Erreur serveur' });
   }
 });

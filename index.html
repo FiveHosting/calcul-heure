@@ -637,6 +637,9 @@
                     <div class="username" id="headerUsername"></div>
                     <div class="role" id="headerRole"></div>
                 </div>
+                <button class="btn" style="background: var(--primary); color: white; padding: 10px 16px; font-size: 12px;" onclick="changePassword()">
+                    <i class="fas fa-key"></i> Mot de passe
+                </button>
                 <button class="btn-logout" onclick="logout()">
                     <i class="fas fa-sign-out-alt"></i> Déconnexion
                 </button>
@@ -645,13 +648,13 @@
 
         <!-- Navigation -->
         <div class="nav-tabs">
-                    <button class="nav-tab active" data-tab="entries" onclick="showTab(this)">
+                    <button class="nav-tab active" data-tab="entries" onclick="showTab(event)">
                         <i class="fas fa-list"></i> Mes Heures
                     </button>
-                    <button class="nav-tab" data-tab="add" onclick="showTab(this)">
+                    <button class="nav-tab" data-tab="add" onclick="showTab(event)">
                         <i class="fas fa-plus"></i> Ajouter une entrée
                     </button>
-                    <button class="nav-tab" id="adminBtn" data-tab="admin" style="display:none;" onclick="showTab(this)">
+                    <button class="nav-tab" id="adminBtn" data-tab="admin" style="display:none;" onclick="showTab(event)">
                         <i class="fas fa-cog"></i> Administration
                     </button>
         </div>
@@ -661,6 +664,13 @@
             <!-- Mes Heures -->
             <div id="entriesTab" class="tab-content active">
                 <h2 style="margin-bottom: 20px;">Vos entrées de travail</h2>
+                
+                <div style="margin-bottom: 30px; padding: 20px; background: var(--bg-light); border-radius: 12px;">
+                    <h3 style="margin-bottom: 15px; color: var(--text-primary);">Statistiques mensuelles</h3>
+                    <div id="monthlyStats"></div>
+                </div>
+                
+                <h3 style="margin-bottom: 15px; color: var(--text-primary);">Détail des entrées</h3>
                 <div id="entriesList" class="entries-grid"></div>
             </div>
 
@@ -700,12 +710,6 @@
             <div id="adminTab" class="tab-content">
                 <h2 style="margin-bottom: 20px;">Tableau de bord administrateur</h2>
                 
-                <div style="margin-bottom: 20px;">
-                    <button class="btn btn-primary" onclick="changePassword()" style="width: auto;">
-                        <i class="fas fa-key"></i> Changer mon mot de passe
-                    </button>
-                </div>
-                
                 <div class="admin-grid">
                     <div class="stat-card">
                         <div class="stat-card-label">Utilisateurs</div>
@@ -724,9 +728,6 @@
                         <div class="stat-card-value" id="totalSalary">0€</div>
                     </div>
                 </div>
-
-                <h3 style="margin-top: 30px; margin-bottom: 15px;">Statistiques mensuelles</h3>
-                <div id="monthlyStats" style="margin-bottom: 30px;"></div>
 
                 <h3 style="margin-top: 30px; margin-bottom: 15px;">Gestion des utilisateurs</h3>
                 <table class="users-table">
@@ -987,33 +988,49 @@
         async function changePassword() {
             const oldPwd = prompt('Ancien mot de passe:');
             if (!oldPwd) return;
-            const newPwd = prompt('Nouveau mot de passe:');
-            if (!newPwd) return;
+            const newPwd = prompt('Nouveau mot de passe (min. 6 caractères):');
+            if (!newPwd || newPwd.length < 6) {
+                showAlert('Le mot de passe doit contenir au moins 6 caractères', 'error');
+                return;
+            }
             const confirmPwd = prompt('Confirmer le nouveau mot de passe:');
             if (confirmPwd !== newPwd) {
                 showAlert('Les mots de passe ne correspondent pas', 'error');
                 return;
             }
             try {
-                // Cette route n'existe pas encore, à ajouter au backend
-                showAlert('Fonctionnalité de changement de mot de passe à ajouter au backend', 'warning');
+                const res = await fetch(API_URL + '/auth/change-password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({
+                        oldPassword: oldPwd,
+                        newPassword: newPwd
+                    })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Erreur');
+                showAlert('Mot de passe changé avec succès!', 'success');
             } catch (err) {
                 showAlert(err.message, 'error');
             }
         }
 
         // ===== NAVIGATION =====
-        function showTab(element) {
+        function showTab(event) {
+            const element = event.currentTarget || event.target;
             const tab = element.getAttribute('data-tab');
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
             document.getElementById(tab + 'Tab').classList.add('active');
             element.classList.add('active');
-            if (tab === 'admin') {
-                loadAdminData();
+            if (tab === 'admin') loadAdminData();
+            if (tab === 'entries') {
+                loadEntries();
                 loadMonthlyStats();
             }
-            if (tab === 'entries') loadEntries();
         }
 
         function showApp() {
@@ -1025,6 +1042,7 @@
                 document.getElementById('adminBtn').style.display = 'flex';
             }
             loadEntries();
+            loadMonthlyStats();
         }
 
         function logout() {
