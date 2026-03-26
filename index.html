@@ -1,17 +1,22 @@
 ﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>â° Calculateur d'Heures Pro</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculateur d'Heures</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         :root {
             --primary: #6366f1;
             --primary-dark: #4f46e5;
             --secondary: #ec4899;
             --success: #10b981;
-            --warning: #f59e0b;
             --error: #ef4444;
             --gray-50: #f9fafb;
             --gray-100: #f3f4f6;
@@ -23,125 +28,40 @@
             --gray-700: #374151;
             --gray-800: #1f2937;
             --gray-900: #111827;
-            --glass: rgba(255, 255, 255, 0.1);
-            --glass-border: rgba(255, 255, 255, 0.2);
-            --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.15);
-            --radius: 16px;
-            --radius-sm: 8px;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
             min-height: 100vh;
-            color: var(--gray-800);
-            overflow-x: hidden;
+            color: #111827;
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 1rem;
+            padding: 20px;
         }
 
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(-20px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        .animate-fade-in {
-            animation: fadeIn 0.6s ease-out;
-        }
-
-        .animate-slide-in {
-            animation: slideIn 0.4s ease-out;
-        }
-
-        /* Glassmorphism Cards */
         .card {
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--radius);
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             padding: 2rem;
-            box-shadow: var(--shadow);
-            transition: all 0.3s ease;
+            margin-bottom: 2rem;
         }
 
-        .card:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        /* Modern Header */
         .header {
             text-align: center;
+            color: white;
             margin-bottom: 2rem;
-            position: relative;
-        }
-
-        .header::before {
-            content: '';
-            position: absolute;
-            top: -20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            border-radius: 2px;
         }
 
         .header h1 {
-            font-size: 3rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-size: 2.5rem;
             margin-bottom: 0.5rem;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        .header p {
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 1.2rem;
-            font-weight: 500;
-        }
-
-        /* Modern Grid */
-        .grid {
-            display: grid;
-            gap: 2rem;
-        }
-
-        .grid-2 {
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-        }
-
-        .grid-3 {
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        }
-
-        /* Modern Form Elements */
         .form-group {
             margin-bottom: 1.5rem;
         }
@@ -149,1340 +69,682 @@
         .form-group label {
             display: block;
             font-weight: 600;
-            color: rgba(255, 255, 255, 0.9);
             margin-bottom: 0.5rem;
-            font-size: 0.9rem;
+            color: #111827;
         }
 
-        .form-group input, .form-group select {
+        .form-group input,
+        .form-group select {
             width: 100%;
-            padding: 1rem 1.2rem;
-            border: 2px solid var(--glass-border);
-            border-radius: var(--radius-sm);
+            padding: 0.75rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
             font-size: 1rem;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
+            transition: border-color 0.3s;
         }
 
-        .form-group input::placeholder, .form-group select {
-            color: rgba(255, 255, 255, 0.6);
-        }
-
-        .form-group input:focus, .form-group select:focus {
+        .form-group input:focus,
+        .form-group select:focus {
             outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-            background: rgba(255, 255, 255, 0.15);
+            border-color: #6366f1;
         }
 
-        /* Modern Buttons */
         .btn {
             display: inline-flex;
             align-items: center;
-            justify-content: center;
             gap: 0.5rem;
-            padding: 1rem 2rem;
+            padding: 0.75rem 1.5rem;
             border: none;
-            border-radius: var(--radius-sm);
+            border-radius: 8px;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
             text-decoration: none;
-            min-height: 48px;
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            background: #6366f1;
             color: white;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
         }
 
         .btn-primary:hover {
+            background: #4f46e5;
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
         }
 
-        .btn-success {
-            background: linear-gradient(135deg, var(--success), #059669);
-            color: white;
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #111827;
         }
 
-        .btn-success:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
-        }
-
-        .btn-admin {
-            background: linear-gradient(135deg, var(--warning), #d97706);
-            color: white;
-            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
-        }
-
-        .btn-admin:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
-        }
-
-        .btn-logout {
-            background: linear-gradient(135deg, var(--error), #dc2626);
-            color: white;
-            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
-        }
-
-        .btn-logout:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+        .btn-secondary:hover {
+            background: #d1d5db;
         }
 
         .btn-danger {
-            background: linear-gradient(135deg, var(--error), #dc2626);
+            background: #ef4444;
             color: white;
-            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
         }
 
         .btn-danger:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+            background: #dc2626;
         }
 
-        /* Modern Stats Cards */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin: 2rem 0;
-        }
-
-        .stat-card {
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--radius);
-            padding: 1.5rem;
-            text-align: center;
-            box-shadow: var(--shadow);
-            transition: all 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .stat-icon {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-            opacity: 0.8;
-        }
-
-        .stat-value {
-            font-size: 2.5rem;
-            font-weight: 800;
+        .btn-success {
+            background: #10b981;
             color: white;
-            margin-bottom: 0.25rem;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
-        .stat-label {
-            font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.8);
-            font-weight: 500;
+        .btn-success:hover {
+            background: #059669;
         }
 
-        /* Modern Entry Cards */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .entries-list {
+            display: grid;
+            gap: 1rem;
+        }
+
         .entry-item {
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--radius);
-            padding: 1.5rem;
-            margin-bottom: 1rem;
+            background: #f9fafb;
+            border-left: 4px solid #6366f1;
+            padding: 1rem;
+            border-radius: 8px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-            box-shadow: var(--shadow);
-            transition: all 0.3s ease;
         }
 
-        .entry-item:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-            border-color: rgba(255, 255, 255, 0.3);
+        .entry-info {
+            flex: 1;
         }
 
-        .entry-info h4 {
-            color: white;
-            font-size: 1.1rem;
+        .entry-info strong {
+            display: block;
+            color: #111827;
             margin-bottom: 0.25rem;
-            font-weight: 600;
         }
 
-        .entry-info p {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.9rem;
+        .entry-info small {
+            color: #6b7280;
+            display: block;
+            margin-bottom: 0.25rem;
         }
 
-        .entry-salary {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--success);
-            margin-bottom: 0.5rem;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Modern Navigation */
-        .nav-tabs {
+        .entry-actions {
             display: flex;
             gap: 0.5rem;
-            margin-bottom: 2rem;
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--radius);
-            padding: 0.5rem;
         }
 
-        .nav-tab {
-            flex: 1;
-            padding: 0.75rem 1rem;
-            border: none;
-            background: transparent;
-            color: rgba(255, 255, 255, 0.7);
-            cursor: pointer;
-            border-radius: calc(var(--radius) - 4px);
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .nav-tab.active {
-            background: var(--primary);
-            color: white;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
-        }
-
-        .nav-tab:hover:not(.active) {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-        }
-
-        /* Modern User Info */
-        .user-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            padding: 1.5rem;
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-        }
-
-        .user-welcome {
-            color: white;
-            font-weight: 600;
-            font-size: 1.1rem;
-        }
-
-        .user-role {
-            background: var(--primary);
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        /* Modern Modal */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(10px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-            z-index: 1000;
-            animation: fadeIn 0.3s ease-out;
-        }
-
-        .modal-content {
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--radius);
-            padding: 2rem;
-            max-width: 600px;
-            width: 100%;
-            max-height: 80vh;
-            overflow-y: auto;
-            box-shadow: var(--shadow-lg);
-            animation: slideIn 0.3s ease-out;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--glass-border);
-        }
-
-        .modal-title {
-            color: white;
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 1.5rem;
-            cursor: pointer;
-            padding: 0.5rem;
-            border-radius: 50%;
-            transition: all 0.2s ease;
-        }
-
-        .modal-close:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-        }
-
-        /* Modern Alerts */
         .alert {
-            padding: 1rem 1.5rem;
-            border-radius: var(--radius-sm);
+            padding: 1rem;
+            border-radius: 8px;
             margin-bottom: 1rem;
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            font-weight: 500;
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
+            gap: 0.5rem;
         }
 
         .alert-success {
-            background: rgba(16, 185, 129, 0.2);
-            color: #10b981;
-            border-color: rgba(16, 185, 129, 0.3);
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
         }
 
         .alert-error {
-            background: rgba(239, 68, 68, 0.2);
-            color: #ef4444;
-            border-color: rgba(239, 68, 68, 0.3);
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
         }
 
-        .alert-warning {
-            background: rgba(245, 158, 11, 0.2);
-            color: #f59e0b;
-            border-color: rgba(245, 158, 11, 0.3);
+        .tab-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #e5e7eb;
         }
 
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 4rem 2rem;
-            color: rgba(255, 255, 255, 0.7);
+        .tab-btn {
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            padding: 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: #6b7280;
+            transition: all 0.3s;
         }
 
-        .empty-state i {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            opacity: 0.5;
+        .tab-btn.active {
+            color: #6366f1;
+            border-bottom-color: #6366f1;
         }
 
-        /* Loading Animation */
-        .loading {
+        .admin-badge {
             display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
+            background: #fef3c7;
+            color: #92400e;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Admin Panel */
-        .admin-panel {
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(239, 68, 68, 0.1));
-            border: 1px solid rgba(245, 158, 11, 0.3);
-            border-radius: var(--radius);
-            padding: 1.5rem;
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
             margin-bottom: 2rem;
         }
 
-        .admin-panel h3 {
-            color: var(--warning);
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+        .stat-box {
+            background: #f3f4f6;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
         }
 
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 2.5rem;
-            }
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #6366f1;
+        }
 
+        .stat-label {
+            color: #6b7280;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+
+        .user-item {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            padding: 1rem;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-info strong {
+            display: block;
+            color: #111827;
+        }
+
+        .user-info small {
+            color: #6b7280;
+            display: block;
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        @media (max-width: 768px) {
             .grid-2 {
                 grid-template-columns: 1fr;
             }
 
+            .header h1 {
+                font-size: 1.75rem;
+            }
+
             .entry-item {
                 flex-direction: column;
-                text-align: center;
+                align-items: flex-start;
             }
 
-            .user-info {
+            .entry-actions {
+                width: 100%;
+                margin-top: 1rem;
+            }
+
+            .user-item {
                 flex-direction: column;
                 gap: 1rem;
-                text-align: center;
+                align-items: flex-start;
             }
 
-            .nav-tabs {
-                flex-direction: column;
+            .user-actions {
+                width: 100%;
             }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Hidden class */
-        .hidden {
-            display: none !important;
-        }
-
-        /* Scrollbar Styling */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.5);
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <!-- Ã‰cran d'authentification -->
-    <div id="authContainer" class="auth-container">
-        <div class="card header animate-fade-in">
-            <h1><i class="fas fa-clock"></i> Calculateur d'Heures Pro</h1>
-            <p>Gestion intelligente de vos horaires de travail</p>
-        </div>
-
-        <div class="card auth-form animate-slide-in">
-            <div class="nav-tabs">
-                <button class="nav-tab active" onclick="switchTab('login')">
-                    <i class="fas fa-sign-in-alt"></i> Connexion
-                </button>
-                <button class="nav-tab" onclick="switchTab('register')">
-                    <i class="fas fa-user-plus"></i> Inscription
-                </button>
+    <div class="container">
+        <!-- Authentification -->
+        <div id="authSection" class="hidden">
+            <div class="header">
+                <h1>Calculateur d'Heures</h1>
+                <p>Bienvenue - Connectez-vous pour continuer</p>
             </div>
 
-            <!-- Formulaire de connexion -->
-            <form id="loginForm" onsubmit="handleLogin(event)">
-                <div class="form-group">
-                    <label for="loginUsername">
-                        <i class="fas fa-user"></i> Nom d'utilisateur
-                    </label>
-                    <input id="loginUsername" type="text" placeholder="Votre nom d'utilisateur" required/>
+            <div class="grid-2">
+                <!-- Connexion -->
+                <div class="card">
+                    <h2 style="margin-bottom: 1.5rem;">Connexion</h2>
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label>Nom d'utilisateur</label>
+                            <input type="text" id="loginUsername" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Mot de passe</label>
+                            <input type="password" id="loginPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-sign-in-alt"></i> Connexion
+                        </button>
+                    </form>
                 </div>
-                <div class="form-group">
-                    <label for="loginPassword">
-                        <i class="fas fa-lock"></i> Mot de passe
-                    </label>
-                    <input id="loginPassword" type="password" placeholder="Votre mot de passe" required/>
-                </div>
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-sign-in-alt"></i> Se connecter
-                </button>
-            </form>
 
-            <!-- Formulaire d'inscription -->
-            <form id="registerForm" class="hidden" onsubmit="handleRegister(event)">
-                <div class="form-group">
-                    <label for="regUsername">
-                        <i class="fas fa-user"></i> Nom d'utilisateur
-                    </label>
-                    <input id="regUsername" type="text" placeholder="Choisissez un nom d'utilisateur" required/>
+                <!-- Inscription -->
+                <div class="card">
+                    <h2 style="margin-bottom: 1.5rem;">Inscription</h2>
+                    <form id="registerForm">
+                        <div class="form-group">
+                            <label>Nom d'utilisateur</label>
+                            <input type="text" id="registerUsername" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="registerEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Mot de passe</label>
+                            <input type="password" id="registerPassword" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Confirmer mot de passe</label>
+                            <input type="password" id="registerPassword2" required>
+                        </div>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-user-plus"></i> Inscription
+                        </button>
+                    </form>
                 </div>
-                <div class="form-group">
-                    <label for="regEmail">
-                        <i class="fas fa-envelope"></i> Email
-                    </label>
-                    <input id="regEmail" type="email" placeholder="votre.email@example.com" required/>
-                </div>
-                <div class="form-group">
-                    <label for="regPassword">
-                        <i class="fas fa-lock"></i> Mot de passe
-                    </label>
-                    <input id="regPassword" type="password" placeholder="Minimum 6 caractÃ¨res" required minlength="6"/>
-                </div>
-                <div class="form-group">
-                    <label for="regConfirmPassword">
-                        <i class="fas fa-lock"></i> Confirmer le mot de passe
-                    </label>
-                    <input id="regConfirmPassword" type="password" placeholder="RÃ©pÃ©tez votre mot de passe" required/>
-                </div>
-                <button type="submit" class="btn btn-success">
-                    <i class="fas fa-user-plus"></i> CrÃ©er un compte
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Ã‰cran principal aprÃ¨s connexion -->
-    <div id="appContainer" class="hidden">
-        <div class="user-info animate-fade-in">
-            <div>
-                <span class="user-welcome">
-                    <i class="fas fa-user-circle"></i> Bienvenue <span id="userGreeting"></span>
-                </span>
-                <span id="userRole" class="user-role hidden">Admin</span>
             </div>
-            <div>
-                <button id="adminBtn" class="btn btn-admin hidden" onclick="showAdminPanel()">
+        </div>
+
+        <!-- Application -->
+        <div id="appSection" class="hidden">
+            <div class="header">
+                <h1>Calculateur d'Heures
+                    <span id="adminBadge" class="admin-badge hidden">
+                        <i class="fas fa-crown"></i> Admin
+                    </span>
+                </h1>
+                <p id="userDisplay"></p>
+            </div>
+
+            <div id="alertContainer"></div>
+
+            <!-- Onglets -->
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="showTab('entries')">
+                    <i class="fas fa-list"></i> Mes Heures
+                </button>
+                <button class="tab-btn" onclick="showTab('admin')" id="adminTabBtn" class="hidden">
                     <i class="fas fa-cog"></i> Administration
                 </button>
-                <button class="btn btn-logout" onclick="logout()">
-                    <i class="fas fa-sign-out-alt"></i> DÃ©connexion
+                <button class="tab-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Deconnexion
                 </button>
             </div>
-        </div>
 
-        <!-- Panel Admin -->
-        <div id="adminPanel" class="admin-panel hidden animate-slide-in">
-            <h3><i class="fas fa-shield-alt"></i> Panel Administrateur</h3>
-            <div class="grid grid-3">
-                <button class="btn btn-primary" onclick="showUsersManagement()">
-                    <i class="fas fa-users"></i> GÃ©rer les utilisateurs
-                </button>
-                <button class="btn btn-success" onclick="showGlobalStats()">
-                    <i class="fas fa-chart-bar"></i> Statistiques globales
-                </button>
-                <button class="btn btn-warning" onclick="showAllEntries()">
-                    <i class="fas fa-list"></i> Toutes les entrÃ©es
-                </button>
-            </div>
-        </div>
-
-        <div class="card header animate-fade-in">
-            <h1><i class="fas fa-calculator"></i> Calculateur d'Heures</h1>
-            <p>GÃ©rez vos horaires de travail et calculez votre salaire automatiquement</p>
-        </div>
-
-        <div class="grid grid-2">
-            <!-- Formulaire de saisie -->
-            <div class="card animate-slide-in">
-                <h2 style="margin-bottom: 1.5rem; color: white; display: flex; align-items: center; gap: 0.5rem;">
-                    <i class="fas fa-plus-circle"></i> Nouvelle entrÃ©e
-                </h2>
-                <form onsubmit="addWorkEntry(event)">
-                    <div class="form-group">
-                        <label for="workDate">
-                            <i class="fas fa-calendar"></i> Date
-                        </label>
-                        <input id="workDate" type="date" required/>
+            <!-- Tab: Heures -->
+            <div id="entriesTab">
+                <div class="grid-2">
+                    <!-- Formulaire -->
+                    <div class="card">
+                        <h2 style="margin-bottom: 1.5rem;">Ajouter une entree</h2>
+                        <form id="entryForm">
+                            <div class="form-group">
+                                <label>Date</label>
+                                <input type="date" id="entryDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Heure debut</label>
+                                <input type="time" id="startTime" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Heure fin</label>
+                                <input type="time" id="endTime" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Taux horaire (euros)</label>
+                                <input type="number" id="hourlyRate" step="0.01" min="0" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Description (optionnel)</label>
+                                <input type="text" id="description" placeholder="Ex: Travail projet A">
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> Ajouter
+                            </button>
+                        </form>
                     </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                        <div class="form-group">
-                            <label for="startTime">
-                                <i class="fas fa-clock"></i> Heure de dÃ©but
-                            </label>
-                            <input id="startTime" type="time" required/>
+
+                    <!-- Stats -->
+                    <div>
+                        <div class="stats" id="statsContainer"></div>
+                    </div>
+                </div>
+
+                <!-- Liste -->
+                <div class="card">
+                    <h2 style="margin-bottom: 1.5rem;">Historique</h2>
+                    <div class="form-group">
+                        <label>Filtrer par mois</label>
+                        <input type="month" id="monthFilter">
+                    </div>
+                    <div id="entriesList" class="entries-list"></div>
+                </div>
+            </div>
+
+            <!-- Tab: Admin -->
+            <div id="adminTab" class="hidden">
+                <!-- Gestion utilisateurs -->
+                <div class="card">
+                    <h2 style="margin-bottom: 1.5rem;">Gestion des utilisateurs</h2>
+                    <div id="usersList"></div>
+                </div>
+
+                <!-- Stats globales -->
+                <div class="card">
+                    <h2 style="margin-bottom: 1.5rem;">Statistiques globales</h2>
+                    <div class="stats">
+                        <div class="stat-box">
+                            <div class="stat-value" id="totalUsers">0</div>
+                            <div class="stat-label">Utilisateurs</div>
                         </div>
-                        <div class="form-group">
-                            <label for="endTime">
-                                <i class="fas fa-clock"></i> Heure de fin
-                            </label>
-                            <input id="endTime" type="time" required/>
+                        <div class="stat-box">
+                            <div class="stat-value" id="totalEntries">0</div>
+                            <div class="stat-label">Entrees</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value" id="totalHours">0</div>
+                            <div class="stat-label">Heures travaillees</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value" id="totalSalary">0</div>
+                            <div class="stat-label">Total salaires</div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="hourlyRate">
-                            <i class="fas fa-euro-sign"></i> Taux horaire (â‚¬)
-                        </label>
-                        <input id="hourlyRate" min="0" step="0.01" type="number" value="10" required/>
-                    </div>
-                    <div class="form-group">
-                        <label for="description">
-                            <i class="fas fa-comment"></i> Description (optionnel)
-                        </label>
-                        <input id="description" placeholder="Ex: Service de nuit, Formation..." type="text"/>
-                    </div>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-plus"></i> Ajouter l'entrÃ©e
-                    </button>
-                </form>
-            </div>
-
-            <!-- RÃ©sumÃ© mensuel -->
-            <div class="card animate-slide-in">
-                <h2 style="margin-bottom: 1.5rem; color: white; display: flex; align-items: center; gap: 0.5rem;">
-                    <i class="fas fa-calendar-alt"></i> RÃ©sumÃ© mensuel
-                </h2>
-                <div class="form-group">
-                    <label for="selectedMonth">
-                        <i class="fas fa-filter"></i> Mois Ã  afficher
-                    </label>
-                    <input id="selectedMonth" type="month"/>
                 </div>
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon">â±ï¸</div>
-                        <div class="stat-value" id="totalHours">0h00</div>
-                        <div class="stat-label">Heures totales</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">ðŸ’°</div>
-                        <div class="stat-value" id="totalSalary">0,00 â‚¬</div>
-                        <div class="stat-label">Salaire total</div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Liste des entrÃ©es -->
-        <div class="card animate-fade-in">
-            <h2 style="margin-bottom: 1.5rem; color: white; display: flex; align-items: center; gap: 0.5rem;">
-                <i class="fas fa-history"></i> Historique des entrÃ©es
-            </h2>
-            <div id="workEntries">
-                <div class="empty-state">
-                    <i class="fas fa-inbox"></i>
-                    <p>Aucune entrÃ©e pour le moment.<br/>Ajoutez votre premiÃ¨re journÃ©e de travail !</p>
+                <!-- Toutes les entrees -->
+                <div class="card">
+                    <h2 style="margin-bottom: 1.5rem;">Toutes les entrees</h2>
+                    <div id="allEntriesList"></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modals -->
-    <div id="usersModal" class="modal hidden">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title"><i class="fas fa-users"></i> Gestion des utilisateurs</h3>
-                <button class="modal-close" onclick="closeModal('usersModal')">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div id="usersContent">
-                <div style="text-align: center; padding: 2rem;">
-                    <div class="loading"></div>
-                    <p style="margin-top: 1rem; color: rgba(255, 255, 255, 0.7);">Chargement...</p>
-                </div>
-            </div>
-        </div>
-    </div>
+    <script>
+        const API_URL = 'http://localhost:3000/api';
+        let token = localStorage.getItem('token');
+        let currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
-    <div id="statsModal" class="modal hidden">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title"><i class="fas fa-chart-bar"></i> Statistiques globales</h3>
-                <button class="modal-close" onclick="closeModal('statsModal')">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div id="statsContent">
-                <div style="text-align: center; padding: 2rem;">
-                    <div class="loading"></div>
-                    <p style="margin-top: 1rem; color: rgba(255, 255, 255, 0.7);">Chargement...</p>
-                </div>
-            </div>
-        </div>
-    </div>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (token && currentUser.username) {
+                showApp();
+            } else {
+                showAuth();
+            }
+            document.getElementById('entryDate').valueAsDate = new Date();
+        });
 
-    <div id="entriesModal" class="modal hidden">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title"><i class="fas fa-list"></i> Toutes les entrÃ©es</h3>
-                <button class="modal-close" onclick="closeModal('entriesModal')">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div id="entriesContent">
-                <div style="text-align: center; padding: 2rem;">
-                    <div class="loading"></div>
-                    <p style="margin-top: 1rem; color: rgba(255, 255, 255, 0.7);">Chargement...</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    // Configuration API
-    const API_URL = 'http://localhost:3000/api';
-    let token = localStorage.getItem('token');
-    let currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
-    let workData = [];
-
-    // Initialisation
-    document.addEventListener('DOMContentLoaded', function() {
-        if (token && currentUser.username) {
-            showApp();
-        } else {
-            showAuth();
-        }
-    });
-
-    // Afficher l'Ã©cran d'authentification
-    function showAuth() {
-        document.getElementById('authContainer').classList.remove('hidden');
-        document.getElementById('appContainer').classList.add('hidden');
-    }
-
-    // Afficher l'application
-    function showApp() {
-        document.getElementById('authContainer').classList.add('hidden');
-        document.getElementById('appContainer').classList.remove('hidden');
-        document.getElementById('userGreeting').textContent = currentUser.username;
-
-        // Afficher le rÃ´le admin si applicable
-        if (currentUser.role === 'admin') {
-            document.getElementById('userRole').classList.remove('hidden');
-            document.getElementById('adminBtn').classList.remove('hidden');
+        function showAuth() {
+            document.getElementById('authSection').classList.remove('hidden');
+            document.getElementById('appSection').classList.add('hidden');
         }
 
-        const today = new Date();
-        document.getElementById('workDate').valueAsDate = today;
-        document.getElementById('selectedMonth').value = today.toISOString().slice(0, 7);
-        document.getElementById('selectedMonth').addEventListener('change', updateDisplay);
-
-        // Charger les entrÃ©es dÃ¨s que l'app est affichÃ©e
-        loadEntries();
-    }
-
-    // Basculer entre les onglets
-    function switchTab(tab) {
-        const loginForm = document.getElementById('loginForm');
-        const registerForm = document.getElementById('registerForm');
-        const tabs = document.querySelectorAll('.nav-tab');
-
-        if (tab === 'login') {
-            loginForm.classList.remove('hidden');
-            registerForm.classList.add('hidden');
-            tabs[0].classList.add('active');
-            tabs[1].classList.remove('active');
-        } else {
-            loginForm.classList.add('hidden');
-            registerForm.classList.remove('hidden');
-            tabs[0].classList.remove('active');
-            tabs[1].classList.add('active');
+        function showApp() {
+            document.getElementById('authSection').classList.add('hidden');
+            document.getElementById('appSection').classList.remove('hidden');
+            document.getElementById('userDisplay').textContent = currentUser.username;
+            if (currentUser.role === 'admin') {
+                document.getElementById('adminBadge').classList.remove('hidden');
+                document.getElementById('adminTabBtn').classList.remove('hidden');
+            }
+            loadEntries();
+            loadStats();
         }
-    }
 
-    // Gestion de la connexion
-    async function handleLogin(event) {
-        event.preventDefault();
+        function showTab(tab) {
+            document.querySelectorAll('[id$="Tab"]').forEach(el => el.classList.add('hidden'));
+            document.getElementById(tab + 'Tab').classList.remove('hidden');
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            event.target.closest('.tab-btn')?.classList.add('active');
+            if (tab === 'admin' && currentUser.role === 'admin') {
+                loadAdminData();
+            }
+        }
 
-        const username = document.getElementById('loginUsername').value;
-        const password = document.getElementById('loginPassword').value;
+        function showAlert(msg, type = 'success') {
+            const container = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = 'alert alert-' + type;
+            alert.innerHTML = '<i class="fas fa-' + (type === 'error' ? 'exclamation-circle' : 'check-circle') + '"></i><span>' + msg + '</span>';
+            container.appendChild(alert);
+            setTimeout(() => alert.remove(), 4000);
+        }
 
-        try {
-            const response = await fetch(`${API_URL}/auth/login`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password })
-            });
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                const res = await fetch(API_URL + '/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username: document.getElementById('loginUsername').value,
+                        password: document.getElementById('loginPassword').value
+                    })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error);
+                token = data.token;
+                currentUser = data.user;
+                localStorage.setItem('token', token);
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                document.getElementById('loginForm').reset();
+                showAlert('Connecte avec succes');
+                showApp();
+            } catch (err) {
+                showAlert(err.message, 'error');
+            }
+        });
 
-            const data = await response.json();
-
-            if (!response.ok) {
-                showAlert(data.error || 'Erreur de connexion', 'error');
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const pwd = document.getElementById('registerPassword').value;
+            const pwd2 = document.getElementById('registerPassword2').value;
+            if (pwd !== pwd2) {
+                showAlert('Les mots de passe ne correspondent pas', 'error');
                 return;
             }
-
-            // Sauvegarder le token et les infos utilisateur
-            token = data.token;
-            currentUser = data.user;
-            localStorage.setItem('token', token);
-            localStorage.setItem('currentUser', JSON.stringify(currentUser));
-
-            showAlert('ConnectÃ© avec succÃ¨s !', 'success');
-            document.getElementById('loginForm').reset();
-            setTimeout(showApp, 500);
-
-        } catch (error) {
-            console.error('Erreur:', error);
-            showAlert('Erreur de connexion', 'error');
-        }
-    }
-
-    // Gestion de l'inscription
-    async function handleRegister(event) {
-        event.preventDefault();
-
-        const username = document.getElementById('regUsername').value;
-        const email = document.getElementById('regEmail').value;
-        const password = document.getElementById('regPassword').value;
-        const confirmPassword = document.getElementById('regConfirmPassword').value;
-
-        if (password !== confirmPassword) {
-            showAlert('Les mots de passe ne correspondent pas', 'error');
-            return;
-        }
-
-        try {
-            const response = await fetch(`${API_URL}/auth/register`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, email, password, confirmPassword })
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                showAlert(data.error || 'Erreur lors de l\'inscription', 'error');
-                return;
+            try {
+                const res = await fetch(API_URL + '/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username: document.getElementById('registerUsername').value,
+                        email: document.getElementById('registerEmail').value,
+                        password: pwd
+                    })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error);
+                token = data.token;
+                currentUser = data.user;
+                localStorage.setItem('token', token);
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                document.getElementById('registerForm').reset();
+                showAlert('Compte cree');
+                showApp();
+            } catch (err) {
+                showAlert(err.message, 'error');
             }
+        });
 
-            // Connexion automatique aprÃ¨s inscription
-            token = data.token;
-            currentUser = data.user;
-            localStorage.setItem('token', token);
-            localStorage.setItem('currentUser', JSON.stringify(currentUser));
-
-            showAlert('Compte crÃ©Ã© avec succÃ¨s !', 'success');
-            document.getElementById('registerForm').reset();
-            setTimeout(showApp, 500);
-
-        } catch (error) {
-            console.error('Erreur:', error);
-            showAlert('Erreur lors de l\'inscription', 'error');
-        }
-    }
-
-    // DÃ©connexion
-    function logout() {
-        if (confirm('ÃŠtes-vous sÃ»r de vouloir vous dÃ©connecter ?')) {
+        function logout() {
             localStorage.removeItem('token');
             localStorage.removeItem('currentUser');
             token = null;
             currentUser = {};
-            workData = [];
             showAuth();
-            document.getElementById('loginForm').reset();
-            document.getElementById('registerForm').reset();
-        }
-    }
-
-    // Calculer les heures
-    function calculateHours(startTime, endTime) {
-        const [startHour, startMin] = startTime.split(':').map(Number);
-        const [endHour, endMin] = endTime.split(':').map(Number);
-
-        let startMinutes = startHour * 60 + startMin;
-        let endMinutes = endHour * 60 + endMin;
-
-        if (endMinutes <= startMinutes) {
-            endMinutes += 24 * 60;
         }
 
-        const totalMinutes = endMinutes - startMinutes;
-        const hours = Math.floor(totalMinutes / 60);
-        const minutes = totalMinutes % 60;
-
-        return { hours, minutes, totalMinutes };
-    }
-
-    // Ajouter une entrÃ©e de travail
-    async function addWorkEntry(event) {
-        event.preventDefault();
-
-        const date = document.getElementById('workDate').value;
-        const startTime = document.getElementById('startTime').value;
-        const endTime = document.getElementById('endTime').value;
-        const hourlyRate = parseFloat(document.getElementById('hourlyRate').value);
-        const description = document.getElementById('description').value.trim();
-
-        if (hourlyRate <= 0) {
-            showAlert('Le taux horaire doit Ãªtre positif', 'error');
-            return;
-        }
-
-        try {
-            const response = await fetch(`${API_URL}/work/entries`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({ date, startTime, endTime, hourlyRate, description })
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                showAlert(data.error || 'Erreur lors de l\'ajout', 'error');
+        document.getElementById('entryForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const start = new Date('2000-01-01 ' + document.getElementById('startTime').value);
+            const end = new Date('2000-01-01 ' + document.getElementById('endTime').value);
+            const diff = (end - start) / (1000 * 60 * 60);
+            if (diff <= 0) {
+                showAlert('Heure fin apres heure debut', 'error');
                 return;
             }
-
-            const timeCalc = calculateHours(startTime, endTime);
-            showAlert(`EntrÃ©e ajoutÃ©e: ${timeCalc.hours}h${timeCalc.minutes.toString().padStart(2, '0')} - ${data.entry.salary.toFixed(2)}â‚¬`, 'success');
-
-            document.getElementById('description').value = '';
-            await loadEntries();
-
-        } catch (error) {
-            console.error('Erreur:', error);
-            showAlert('Erreur lors de l\'ajout', 'error');
-        }
-    }
-
-    // Charger toutes les entrÃ©es
-    async function loadEntries() {
-        try {
-            const response = await fetch(`${API_URL}/work/entries`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-
-            if (!response.ok) {
-                console.error('Erreur chargement entrÃ©es');
-                return;
-            }
-
-            workData = await response.json();
-            updateDisplay();
-
-        } catch (error) {
-            console.error('Erreur:', error);
-            showAlert('Erreur lors du chargement des donnÃ©es', 'error');
-        }
-    }
-
-    // Mettre Ã  jour l'affichage
-    function updateDisplay() {
-        const selectedMonth = document.getElementById('selectedMonth').value;
-        const filteredData = workData.filter(entry => entry.date.startsWith(selectedMonth));
-
-        let totalMinutes = 0;
-        let totalSalary = 0;
-
-        filteredData.forEach(entry => {
-            totalMinutes += entry.totalHours * 60;
-            totalSalary += entry.salary;
-        });
-
-        const totalHours = Math.floor(totalMinutes / 60);
-        const remainingMinutes = Math.floor(totalMinutes % 60);
-
-        document.getElementById('totalHours').textContent = `${totalHours}h${remainingMinutes.toString().padStart(2, '0')}`;
-        document.getElementById('totalSalary').textContent = `${totalSalary.toFixed(2)} â‚¬`;
-
-        displayEntries(filteredData);
-    }
-
-    // Afficher les entrÃ©es
-    function displayEntries(entries) {
-        const container = document.getElementById('workEntries');
-
-        if (entries.length === 0) {
-            container.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i><p>Aucune entrÃ©e pour ce mois.</p></div>';
-            return;
-        }
-
-        const entriesHTML = entries
-            .sort((a, b) => new Date(b.date) - new Date(a.date))
-            .map(entry => {
-                const date = new Date(entry.date);
-                const dayName = date.toLocaleDateString('fr-FR', {
-                    weekday: 'long',
-                    day: '2-digit',
-                    month: '2-digit'
+            try {
+                const res = await fetch(API_URL + '/entries', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({
+                        date: document.getElementById('entryDate').value,
+                        start_time: document.getElementById('startTime').value,
+                        end_time: document.getElementById('endTime').value,
+                        hourly_rate: parseFloat(document.getElementById('hourlyRate').value),
+                        description: document.getElementById('description').value
+                    })
                 });
-
-                return `
-                    <div class="entry-item">
-                        <div class="entry-info">
-                            <h4><i class="fas fa-calendar-day"></i> ${dayName}</h4>
-                            <p><i class="fas fa-clock"></i> ${entry.startTime} Ã  ${entry.endTime} â€¢ ${entry.hours}h${entry.minutes.toString().padStart(2, '0')} â€¢ ${entry.hourlyRate}â‚¬/h</p>
-                            ${entry.description ? `<p><i class="fas fa-comment"></i> ${entry.description}</p>` : ''}
-                        </div>
-                        <div style="text-align: right;">
-                            <div class="entry-salary">${entry.salary.toFixed(2)} â‚¬</div>
-                            <button onclick="deleteEntry(${entry.id})" class="btn-danger">
-                                <i class="fas fa-trash"></i> Supprimer
-                            </button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-
-        container.innerHTML = entriesHTML;
-    }
-
-    // Supprimer une entrÃ©e
-    async function deleteEntry(id) {
-        if (!confirm('ÃŠtes-vous sÃ»r de vouloir supprimer cette entrÃ©e ?')) return;
-
-        try {
-            const response = await fetch(`${API_URL}/work/entries/${id}`, {
-                method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-
-            if (!response.ok) {
-                showAlert('Erreur lors de la suppression', 'error');
-                return;
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error);
+                showAlert('Entree ajoutee');
+                document.getElementById('entryForm').reset();
+                document.getElementById('entryDate').valueAsDate = new Date();
+                loadEntries();
+                loadStats();
+            } catch (err) {
+                showAlert(err.message, 'error');
             }
-
-            showAlert('EntrÃ©e supprimÃ©e avec succÃ¨s', 'success');
-            await loadEntries();
-
-        } catch (error) {
-            console.error('Erreur:', error);
-            showAlert('Erreur lors de la suppression', 'error');
-        }
-    }
-
-    // Afficher une alerte
-    function showAlert(message, type = 'success') {
-        const alertDiv = document.createElement('div');
-        alertDiv.className = `alert alert-${type}`;
-        alertDiv.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'exclamation-triangle'}"></i> ${message}`;
-
-        const container = document.querySelector('.container');
-        container.insertBefore(alertDiv, container.firstChild);
-
-        setTimeout(() => {
-            if (alertDiv.parentNode) {
-                alertDiv.parentNode.removeChild(alertDiv);
-            }
-        }, 5000);
-    }
-
-    // Fonctions Admin
-    function showAdminPanel() {
-        const panel = document.getElementById('adminPanel');
-        panel.classList.toggle('hidden');
-    }
-
-    function showUsersManagement() {
-        openModal('usersModal');
-        loadUsers();
-    }
-
-    function showGlobalStats() {
-        openModal('statsModal');
-        loadGlobalStats();
-    }
-
-    function showAllEntries() {
-        openModal('entriesModal');
-        loadAllEntries();
-    }
-
-    function openModal(modalId) {
-        document.getElementById(modalId).classList.remove('hidden');
-    }
-
-    function closeModal(modalId) {
-        document.getElementById(modalId).classList.add('hidden');
-    }
-
-    async function loadUsers() {
-        try {
-            const response = await fetch(`${API_URL}/admin/users`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-
-            if (!response.ok) {
-                showAlert('Erreur lors du chargement des utilisateurs', 'error');
-                return;
-            }
-
-            const users = await response.json();
-            displayUsers(users);
-
-        } catch (error) {
-            console.error('Erreur:', error);
-            showAlert('Erreur lors du chargement des utilisateurs', 'error');
-        }
-    }
-
-    function displayUsers(users) {
-        const container = document.getElementById('usersContent');
-
-        if (users.length === 0) {
-            container.innerHTML = '<div class="empty-state"><i class="fas fa-users"></i><p>Aucun utilisateur trouvÃ©.</p></div>';
-            return;
-        }
-
-        const usersHTML = `
-            <div style="margin-bottom: 1rem;">
-                <h4 style="color: white; margin-bottom: 1rem;">Utilisateurs (${users.length})</h4>
-            </div>
-            ${users.map(user => `
-                <div class="entry-item">
-                    <div class="entry-info">
-                        <h4><i class="fas fa-user"></i> ${user.username}</h4>
-                        <p><i class="fas fa-envelope"></i> ${user.email}</p>
-                        <p><i class="fas fa-calendar"></i> ${new Date(user.created_at).toLocaleDateString('fr-FR')}</p>
-                    </div>
-                    <div style="text-align: right;">
-                        <div style="margin-bottom: 0.5rem;">
-                            <span class="user-role" style="background: ${user.role === 'admin' ? 'var(--warning)' : 'var(--primary)'}">${user.role}</span>
-                        </div>
-                        <div style="font-size: 0.9rem; color: rgba(255, 255, 255, 0.7);">
-                            <i class="fas fa-list"></i> ${user.total_entries || 0} entrÃ©es<br>
-                            <i class="fas fa-clock"></i> ${user.total_hours ? user.total_hours.toFixed(1) : 0}h<br>
-                            <i class="fas fa-euro-sign"></i> ${user.total_salary ? user.total_salary.toFixed(2) : 0}â‚¬
-                        </div>
-                        ${user.id !== currentUser.id ? `
-                            <div style="margin-top: 0.5rem;">
-                                <select onchange="changeUserRole(${user.id}, this.value)" style="margin-right: 0.5rem;">
-                                    <option value="user" ${user.role === 'user' ? 'selected' : ''}>Utilisateur</option>
-                                    <option value="admin" ${user.role === 'admin' ? 'selected' : ''}>Admin</option>
-                                </select>
-                                <button onclick="deleteUser(${user.id})" class="btn-danger">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        ` : ''}
-                    </div>
-                </div>
-            `).join('')}
-        `;
-
-        container.innerHTML = usersHTML;
-    }
-</script>
-</body>
-</html>
-
-    async function changeUserRole(userId, newRole) {
-        try {
-            const response = await fetch(`${API_URL}/admin/users/${userId}/role`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({ role: newRole })
-            });
-
-            if (!response.ok) {
-                showAlert('Erreur lors du changement de rÃ´le', 'error');
-                return;
-            }
-
-            showAlert('RÃ´le mis Ã  jour avec succÃ¨s', 'success');
-            loadUsers();
-
-        } catch (error) {
-            console.error('Erreur:', error);
-            showAlert('Erreur lors du changement de rÃ´le', 'error');
-        }
-    }
-
-    async function deleteUser(userId) {
-        if (!confirm('ÃŠtes-vous sÃ»r de vouloir supprimer cet utilisateur ?')) return;
-
-        try {
-            const response = await fetch(`${API_URL}/admin/users/${userId}`, {
-                method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-
-            if (!response.ok) {
-                showAlert('Erreur lors de la suppression', 'error');
-                return;
-            }
-
-            showAlert('Utilisateur supprimÃ© avec succÃ¨s', 'success');
-            loadUsers();
-
-        } catch (error) {
-            console.error('Erreur:', error);
-            showAlert('Erreur lors de la suppression', 'error');
-        }
-    }
-
-    async function loadGlobalStats() {
-        try {
-            const response = await fetch(`${API_URL}/admin/stats`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-
-            if (!response.ok) {
-                showAlert('Erreur lors du chargement des statistiques', 'error');
-                return;
-            }
-
-            const stats = await response.json();
-            displayGlobalStats(stats);
-
-        } catch (error) {
-            console.error('Erreur:', error);
-            showAlert('Erreur lors du chargement des statistiques', 'error');
-        }
-    }
-
-    function displayGlobalStats(stats) {
-        const container = document.getElementById('statsContent');
-
-        const statsHTML = `
-            <div class="grid grid-3" style="margin-bottom: 2rem;">
-                <div class="stat-card">
-                    <div class="stat-icon">ðŸ‘¥</div>
-                    <div class="stat-value">${stats.totalUsers}</div>
-                    <div class="stat-label">Utilisateurs</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">ðŸ“</div>
-                    <div class="stat-value">${stats.totalEntries}</div>
-                    <div class="stat-label">Total entrÃ©es</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">â±ï¸</div>
-                    <div class="stat-value">${stats.totalHours ? stats.totalHours.toFixed(1) : 0}</div>
-                    <div class="stat-label">Heures totales</div>
-                </div>
-            </div>
-
-            <div class="stat-card" style="margin-bottom: 2rem;">
-                <div class="stat-icon">ðŸ’°</div>
-                <div class="stat-value">${stats.totalSalary ? stats.totalSalary.toFixed(2) : 0} â‚¬</div>
-                <div class="stat-label">Chiffre d'affaires total</div>
-            </div>
-
-            <h4 style="color: white; margin-bottom: 1rem;">EntrÃ©es rÃ©centes</h4>
-            ${stats.recentEntries.length > 0 ?
-                stats.recentEntries.map(entry => `
-                    <div class="entry-item">
-                        <div class="entry-info">
-                            <h4><i class="fas fa-user"></i> ${entry.username}</h4>
-                            <p><i class="fas fa-calendar"></i> ${new Date(entry.date).toLocaleDateString('fr-FR')} â€¢ ${entry.start_time} Ã  ${entry.end_time}</p>
-                        </div>
-                        <div class="entry-salary">${entry.salary.toFixed(2)} â‚¬</div>
-                    </div>
-                `).join('') :
-                '<div class="empty-state"><i class="fas fa-inbox"></i><p>Aucune entrÃ©e rÃ©cente.</p></div>'
-            }
-        `;
-
-        container.innerHTML = statsHTML;
-    }
-
-    async function loadAllEntries() {
-        try {
-            const response = await fetch(`${API_URL}/admin/entries`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-
-            if (!response.ok) {
-                showAlert('Erreur lors du chargement des entrÃ©es', 'error');
-                return;
-            }
-
-            const entries = await response.json();
-            displayAllEntries(entries);
-
-        } catch (error) {
-            console.error('Erreur:', error);
-            showAlert('Erreur lors du chargement des entrÃ©es', 'error');
-        }
-    }
-
-    function displayAllEntries(entries) {
-        const container = document.getElementById('entriesContent');
-
-        if (entries.length === 0) {
-            container.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i><p>Aucune entrÃ©e trouvÃ©e.</p></div>';
-            return;
-        }
-
-        const entriesHTML = `
-            <div style="margin-bottom: 1rem;">
-                <h4 style="color: white; margin-bottom: 1rem;">Toutes les entrÃ©es (${entries.length})</h4>
-                <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
-                    <input type="month" id="filterMonth" placeholder="Filtrer par mois" style="flex: 1;">
-                    <input type="text" id="filterUser" placeholder="Filtrer par utilisateur" style="flex: 1;">
-                    <button onclick="applyFilters()" class="btn btn-primary">Filtrer</button>
-                </div>
-            </div>
-            ${entries.map(entry => `
-                <div class="entry-item">
-                    <div class="entry-info">
-                        <h4><i class="fas fa-user"></i> ${entry.username} (${entry.email})</h4>
-                        <p><i class="fas fa-calendar"></i> ${new Date(entry.date).toLocaleDateString('fr-FR')} â€¢ ${entry.start_time} Ã  ${entry.end_time}</p>
-                        <p><i class="fas fa-clock"></i> ${entry.hours}h${entry.minutes.toString().padStart(2, '0')} â€¢ ${entry.hourly_rate}â‚¬/h</p>
-                        ${entry.description ? `<p><i class="fas fa-comment"></i> ${entry.description}</p>` : ''}
-                    </div>
-                    <div class="entry-salary">${entry.salary.toFixed(2)} â‚¬</div>
-                </div>
-            `).join('')}
-        `;
-
-        container.innerHTML = entriesHTML;
-
-        // Ajouter les event listeners pour les filtres
-        document.getElementById('filterMonth').addEventListener('change', applyFilters);
-        document.getElementById('filterUser').addEventListener('input', applyFilters);
-    }
-
-    function applyFilters() {
-        const monthFilter = document.getElementById('filterMonth').value;
-        const userFilter = document.getElementById('filterUser').value.toLowerCase();
-
-        const entryItems = document.querySelectorAll('#entriesContent .entry-item');
-
-        entryItems.forEach(item => {
-            const username = item.querySelector('h4').textContent.toLowerCase();
-            const date = item.querySelector('p').textContent;
-
-            let show = true;
-
-            if (monthFilter) {
-                const entryDate = new Date(date.split('â€¢')[0].trim());
-                const filterDate = new Date(monthFilter);
-                if (entryDate.getMonth() !== filterDate.getMonth() || entryDate.getFullYear() !== filterDate.getFullYear()) {
-                    show = false;
-                }
-            }
-
-            if (userFilter && !username.includes(userFilter)) {
-                show = false;
-            }
-
-            item.style.display = show ? 'flex' : 'none';
         });
-    }
-</script>
+
+        async function loadEntries() {
+            try {
+                const res = await fetch(API_URL + '/entries', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error);
+                const list = document.getElementById('entriesList');
+                list.innerHTML = data.entries.map(e => 
+                    '<div class="entry-item"><div class="entry-info"><strong>' + e.date + '</strong><small>' + e.start_time + ' - ' + e.end_time + '</small><small>' + e.total_hours + 'h - ' + e.salary.toFixed(2) + '€</small>' + (e.description ? '<small><strong>:</strong> ' + e.description + '</small>' : '') + '</div><div class="entry-actions"><button class="btn btn-danger" onclick="deleteEntry(' + e.id + ')"><i class="fas fa-trash"></i></button></div></div>'
+                ).join('');
+            } catch (err) {
+                showAlert(err.message, 'error');
+            }
+        }
+
+        async function deleteEntry(id) {
+            if (!confirm('Confirmer?')) return;
+            try {
+                const res = await fetch(API_URL + '/entries/' + id, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                if (!res.ok) throw new Error('Erreur');
+                showAlert('Supprimee');
+                loadEntries();
+                loadStats();
+            } catch (err) {
+                showAlert(err.message, 'error');
+            }
+        }
+
+        async function loadStats() {
+            try {
+                const res = await fetch(API_URL + '/entries', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                const data = await res.json();
+                const entries = data.entries;
+                const hours = entries.reduce((s, e) => s + parseFloat(e.total_hours), 0);
+                const salary = entries.reduce((s, e) => s + parseFloat(e.salary), 0);
+                document.getElementById('statsContainer').innerHTML = '<div class="stat-box"><div class="stat-value">' + entries.length + '</div><div class="stat-label">Entrees</div></div><div class="stat-box"><div class="stat-value">' + hours.toFixed(1) + '</div><div class="stat-label">Heures</div></div><div class="stat-box"><div class="stat-value">' + salary.toFixed(2) + 'e</div><div class="stat-label">Total</div></div>';
+            } catch (err) {
+                showAlert(err.message, 'error');
+            }
+        }
+
+        async function loadAdminData() {
+            if (currentUser.role !== 'admin') return;
+            try {
+                const ures = await fetch(API_URL + '/admin/users', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                const udata = await ures.json();
+                document.getElementById('usersList').innerHTML = udata.users.map(u => 
+                    '<div class="user-item"><div class="user-info"><strong>' + u.username + '</strong><small>' + u.email + '</small><small>Role: ' + u.role + '</small></div><div class="user-actions"><button class="btn btn-danger" onclick="deleteUser(' + u.id + ')"><i class="fas fa-trash"></i></button></div></div>'
+                ).join('');
+
+                const sres = await fetch(API_URL + '/admin/stats', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                const stats = await sres.json();
+                document.getElementById('totalUsers').textContent = stats.totalUsers;
+                document.getElementById('totalEntries').textContent = stats.totalEntries;
+                document.getElementById('totalHours').textContent = stats.totalHours.toFixed(1);
+                document.getElementById('totalSalary').textContent = stats.totalSalary.toFixed(2) + 'e';
+
+                const eres = await fetch(API_URL + '/admin/entries', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                const edata = await eres.json();
+                document.getElementById('allEntriesList').innerHTML = edata.entries.map(e => 
+                    '<div class="entry-item"><div class="entry-info"><strong>' + e.username + ' - ' + e.date + '</strong><small>' + e.start_time + ' - ' + e.end_time + '</small><small>' + e.total_hours + 'h - ' + e.salary.toFixed(2) + 'e</small></div></div>'
+                ).join('');
+            } catch (err) {
+                showAlert(err.message, 'error');
+            }
+        }
+
+        async function deleteUser(id) {
+            if (!confirm('Confirmer?')) return;
+            try {
+                const res = await fetch(API_URL + '/admin/users/' + id, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                if (!res.ok) throw new Error('Erreur');
+                showAlert('Supprime');
+                loadAdminData();
+            } catch (err) {
+                showAlert(err.message, 'error');
+            }
+        }
+    </script>
 </body>
 </html>
