@@ -1,22 +1,47 @@
 const jwt = require('jsonwebtoken');
 
-const authenticateToken = (req, res, next) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1]; // "Bearer TOKEN"
+function getJwtSecret() {
+  const secret = process.env.JWT_SECRET;
+  if (!secret || secret.length < 32) {
+    throw new Error('JWT_SECRET est manquant ou trop court. Utilisez au moins 32 caractères.');
+  }
+  return secret;
+}
 
-  if (!token) {
-    return res.status(401).json({ error: 'Token manquant' });
+function parseCookies(cookieHeader = '') {
+  return cookieHeader.split(';').reduce((acc, part) => {
+    const [rawName, ...rawValue] = part.trim().split('=');
+    if (!rawName) return acc;
+    acc[rawName] = decodeURIComponent(rawValue.join('='));
+    return acc;
+  }, {});
+}
+
+function getTokenFromRequest(req) {
+  const authHeader = req.headers.authorization;
+  if (authHeader?.startsWith('Bearer ')) {
+    return authHeader.slice(7);
   }
 
-  jwt.verify(token, process.env.JWT_SECRET || 'your_secret_key', (err, user) => {
+  const cookies = parseCookies(req.headers.cookie);
+  return cookies.auth_token || null;
+}
+
+const authenticateToken = (req, res, next) => {
+  const token = getTokenFromRequest(req);
+
+  if (!token) {
+    return res.status(401).json({ error: 'Authentification requise' });
+  }
+
+  jwt.verify(token, getJwtSecret(), (err, user) => {
     if (err) {
-      console.error('Token invalide:', err.message);
-      return res.status(403).json({ error: 'Token invalide ou expiré' });
+      return res.status(403).json({ error: 'Session invalide ou expirée' });
     }
 
-    req.user = user; // Attacher l'utilisateur au request
+    req.user = user;
     next();
   });
 };
 
-module.exports = { authenticateToken };
+module.exports = { authenticateToken, getJwtSecret };
