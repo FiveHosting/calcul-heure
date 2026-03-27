@@ -13,6 +13,11 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const publicDir = path.join(__dirname, 'public');
 
+console.log('PUBLIC DIR =', publicDir);
+console.log('index exists:', fs.existsSync(path.join(publicDir, 'index.html')));
+console.log('css exists:', fs.existsSync(path.join(publicDir, 'css', 'style.css')));
+console.log('js exists:', fs.existsSync(path.join(publicDir, 'js', 'app.js')));
+
 app.set('trust proxy', 1);
 app.disable('x-powered-by');
 
