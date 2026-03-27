@@ -25,14 +25,15 @@ app.use((req, res, next) => {
   res.setHeader('Cross-Origin-Resource-Policy', 'same-origin');
   res.setHeader(
     'Content-Security-Policy',
-    "default-src 'self'; script-src 'self'; style-src 'self' https://cdnjs.cloudflare.com; font-src 'self' https://cdnjs.cloudflare.com data:; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+    "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; font-src 'self' https://cdnjs.cloudflare.com data:; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
   );
   next();
 });
 
 app.use(express.json({ limit: '50kb' }));
 app.use(express.urlencoded({ extended: false, limit: '50kb' }));
-app.use(express.static(publicDir, {
+
+app.use('/public', express.static(publicDir, {
   index: false,
   extensions: false,
   redirect: false,
@@ -43,28 +44,22 @@ app.use(express.static(publicDir, {
   }
 }));
 
-app.use('/api', (req, res, next) => {
-  console.log(`[API] ${req.method} ${req.originalUrl}`);
-  next();
-});
-
 app.use('/api/auth', authRoutes);
 app.use('/api/entries', authenticateToken, entriesRoutes);
 app.use('/api/admin', authenticateToken, adminRoutes);
 
 app.get('/favicon.ico', (req, res) => res.sendStatus(204));
-app.get('/', (req, res) => res.sendFile(path.join(publicDir, 'index.html')));
+
+app.get('/', (req, res) => {
+  res.setHeader('Cache-Control', 'no-store');
+  res.sendFile(path.join(publicDir, 'index.html'));
+});
 
 app.use((req, res) => {
   if (req.path.startsWith('/api/')) {
     return res.status(404).json({ error: 'Route non trouvée.' });
   }
   res.status(404).send('Page non trouvée.');
-});
-
-app.get('/', (req, res) => {
-  res.setHeader('Cache-Control', 'no-store');
-  res.sendFile(path.join(publicDir, 'index.html'));
 });
 
 app.listen(PORT, () => {
