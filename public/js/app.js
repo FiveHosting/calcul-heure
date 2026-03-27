@@ -192,47 +192,160 @@ async function deleteEntry(id) {
 }
 
 async function loadAdminData() {
-    if (!currentUser || currentUser.role !== 'admin') return;
+    if (!currentUser || String(currentUser.role).toLowerCase() !== 'admin') return;
 
     try {
         const udata = await apiFetch('/admin/users');
-        const container = document.querySelector('#usersList');
-        clearElement(container);
+        const usersList = document.getElementById('usersList');
+        clearElement(usersList);
 
-        if (window.innerWidth < 768) {
-            // 🔥 MOBILE → CARDS
-            udata.users.forEach((u) => {
+        const isMobile = window.innerWidth <= 768;
+
+        if (isMobile) {
+            (udata.users || []).forEach((user) => {
                 const card = document.createElement('div');
-                card.className = 'user-card';
+                card.className = 'user-mobile-card';
 
-                card.innerHTML = `
-                    <div><strong>${u.username}</strong></div>
-                    <div>${u.email}</div>
-                    <div>Rôle: ${u.role}</div>
-                    <div>Entrées: ${u.total_entries || 0}</div>
-                    <div>Heures: ${(u.total_hours || 0).toFixed(1)}h</div>
-                    <div>Salaire: ${formatMoney(u.total_salary || 0)}</div>
-                `;
+                const top = document.createElement('div');
+                top.className = 'user-mobile-top';
 
-                container.appendChild(card);
+                const identity = document.createElement('div');
+                identity.className = 'user-mobile-identity';
+
+                const username = document.createElement('div');
+                username.className = 'user-mobile-name';
+                username.textContent = user.username;
+
+                const email = document.createElement('div');
+                email.className = 'user-mobile-email';
+                email.textContent = user.email;
+
+                identity.appendChild(username);
+                identity.appendChild(email);
+
+                const badge = document.createElement('span');
+                badge.className = `badge ${user.role === 'admin' ? 'badge-admin' : 'badge-user'}`;
+                badge.textContent = user.role;
+
+                top.appendChild(identity);
+                top.appendChild(badge);
+                card.appendChild(top);
+
+                const stats = document.createElement('div');
+                stats.className = 'user-mobile-stats';
+
+                const stat1 = document.createElement('div');
+                stat1.className = 'user-mobile-stat';
+                stat1.innerHTML = `<span>Entrées</span><strong>${String(user.total_entries || 0)}</strong>`;
+
+                const stat2 = document.createElement('div');
+                stat2.className = 'user-mobile-stat';
+                stat2.innerHTML = `<span>Heures</span><strong>${Number(user.total_hours || 0).toFixed(1)}h</strong>`;
+
+                const stat3 = document.createElement('div');
+                stat3.className = 'user-mobile-stat';
+                stat3.innerHTML = `<span>Salaire</span><strong>${formatMoney(user.total_salary || 0)}</strong>`;
+
+                stats.appendChild(stat1);
+                stats.appendChild(stat2);
+                stats.appendChild(stat3);
+                card.appendChild(stats);
+
+                const actions = document.createElement('div');
+                actions.className = 'user-mobile-actions';
+
+                actions.appendChild(
+                    createIconButton(
+                        'btn-action',
+                        'fas fa-user-tie',
+                        user.role === 'admin' ? 'Retirer admin' : 'Admin',
+                        () => changeUserRole(user.id, user.role, user.username)
+                    )
+                );
+
+                if (user.id !== currentUser.id) {
+                    actions.appendChild(
+                        createIconButton(
+                            'btn-action-delete',
+                            'fas fa-trash',
+                            'Supprimer',
+                            () => deleteUser(user.id, user.username)
+                        )
+                    );
+                } else {
+                    const currentAccount = createTextElement('span', 'user-mobile-current', 'Compte actuel');
+                    actions.appendChild(currentAccount);
+                }
+
+                card.appendChild(actions);
+                usersList.appendChild(card);
             });
-
         } else {
-            // DESKTOP → TABLE
-            udata.users.forEach((u) => {
+            (udata.users || []).forEach((user) => {
                 const tr = document.createElement('tr');
 
-                tr.appendChild(createTextElement('td', '', u.username));
-                tr.appendChild(createTextElement('td', '', u.email));
-                tr.appendChild(createTextElement('td', '', u.role));
-                tr.appendChild(createTextElement('td', '', String(u.total_entries || 0)));
-                tr.appendChild(createTextElement('td', '', `${Number(u.total_hours || 0).toFixed(1)}h`));
-                tr.appendChild(createTextElement('td', '', formatMoney(u.total_salary || 0)));
+                tr.appendChild(createTextElement('td', '', user.username));
+                tr.appendChild(createTextElement('td', '', user.email));
 
-                container.appendChild(tr);
+                const roleTd = document.createElement('td');
+                roleTd.appendChild(
+                    createTextElement(
+                        'span',
+                        `badge ${user.role === 'admin' ? 'badge-admin' : 'badge-user'}`,
+                        user.role
+                    )
+                );
+                tr.appendChild(roleTd);
+
+                tr.appendChild(createTextElement('td', '', String(user.total_entries || 0)));
+                tr.appendChild(createTextElement('td', '', `${Number(user.total_hours || 0).toFixed(1)}h`));
+                tr.appendChild(createTextElement('td', '', formatMoney(user.total_salary || 0)));
+
+                const actionsTd = document.createElement('td');
+                actionsTd.style.display = 'flex';
+                actionsTd.style.gap = '8px';
+                actionsTd.style.flexWrap = 'wrap';
+
+                actionsTd.appendChild(
+                    createIconButton(
+                        'btn-action',
+                        'fas fa-user-tie',
+                        user.role === 'admin' ? 'Retirer admin' : 'Admin',
+                        () => changeUserRole(user.id, user.role, user.username)
+                    )
+                );
+
+                if (user.id !== currentUser.id) {
+                    actionsTd.appendChild(
+                        createIconButton(
+                            'btn-action-delete',
+                            'fas fa-trash',
+                            'Supprimer',
+                            () => deleteUser(user.id, user.username)
+                        )
+                    );
+                } else {
+                    const currentAccount = createTextElement('span', '', 'Compte actuel');
+                    currentAccount.style.fontSize = '12px';
+                    currentAccount.style.color = 'var(--text-secondary)';
+                    actionsTd.appendChild(currentAccount);
+                }
+
+                tr.appendChild(actionsTd);
+                usersList.appendChild(tr);
             });
         }
 
+        const stats = await apiFetch('/admin/stats');
+        const elTotalUsers = document.getElementById('totalUsers');
+        const elTotalEntries = document.getElementById('totalEntries');
+        const elTotalHours = document.getElementById('totalHours');
+        const elTotalSalary = document.getElementById('totalSalary');
+
+        if (elTotalUsers) elTotalUsers.textContent = stats.totalUsers;
+        if (elTotalEntries) elTotalEntries.textContent = stats.totalEntries;
+        if (elTotalHours) elTotalHours.textContent = Number(stats.totalHours || 0).toFixed(1) + 'h';
+        if (elTotalSalary) elTotalSalary.textContent = formatMoney(stats.totalSalary || 0);
     } catch (err) {
         showAlert(err.message, 'error');
     }
@@ -572,7 +685,7 @@ window.addEventListener('load', async () => {
 });
 
 window.addEventListener('resize', () => {
-    if (currentUser && currentUser.role === 'admin') {
+    if (currentUser && String(currentUser.role).toLowerCase() === 'admin') {
         loadAdminData();
     }
 });

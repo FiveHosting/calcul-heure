@@ -153,3 +153,354 @@ button {
     background: #1e293b;
   }
 }
+
+/* ===== FIX MOBILE PREMIUM ===== */
+@media (max-width: 768px) {
+  html, body {
+    overflow-x: hidden;
+  }
+
+  body {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .container {
+    width: calc(100% - 16px);
+    margin: 0 auto;
+    padding: 8px 0 18px;
+  }
+
+  .app {
+    padding-block: 8px 20px;
+  }
+
+  .header {
+    position: sticky;
+    top: 8px;
+    margin-bottom: 12px;
+    padding: 14px;
+    border-radius: 18px;
+    gap: 12px;
+  }
+
+  .header h1 {
+    font-size: 20px;
+    line-height: 1.1;
+  }
+
+  .header h1 i {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    font-size: 14px;
+  }
+
+  .header-right {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .user-info,
+  .btn-logout,
+  .btn-small-primary {
+    width: 100%;
+  }
+
+  .nav-tabs {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 8px;
+    border-radius: 18px;
+    overflow: visible;
+  }
+
+  .nav-tab {
+    width: 100%;
+    min-height: 44px;
+    justify-content: center;
+    padding: 11px 12px;
+    border-radius: 12px;
+  }
+
+  .content {
+    padding: 14px;
+    border-radius: 20px;
+    overflow: hidden;
+  }
+
+  .section-heading {
+    font-size: 21px;
+    margin-bottom: 14px;
+  }
+
+  .subsection-heading,
+  .admin-subsection-heading {
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+
+  .stats-panel {
+    padding: 14px;
+    margin-bottom: 16px;
+    border-radius: 16px;
+  }
+
+  #monthlyStats {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .monthly-card {
+    grid-column: span 1;
+    padding: 14px;
+    border-radius: 16px;
+  }
+
+  .monthly-card-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .entries-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .entry-card {
+    grid-column: span 1;
+    padding: 14px;
+    border-radius: 18px;
+  }
+
+  .entry-card-header {
+    margin-bottom: 8px;
+  }
+
+  .entry-card-date {
+    font-size: 15px;
+  }
+
+  .entry-card-time {
+    margin-bottom: 12px;
+    font-size: 14px;
+  }
+
+  .entry-card-details {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .entry-detail {
+    padding: 11px 12px;
+    border-radius: 14px;
+  }
+
+  .entry-card-salary {
+    padding: 13px;
+    border-radius: 15px;
+    margin-bottom: 12px;
+  }
+
+  .entry-card-salary-value {
+    font-size: 20px;
+  }
+
+  .entry-card-description {
+    padding: 12px;
+    border-radius: 14px;
+    margin-bottom: 12px;
+    font-size: 14px;
+  }
+
+  .entry-card-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .form-section {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .form-section .form-group {
+    grid-column: span 1;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    padding: 13px 14px;
+    border-radius: 14px;
+  }
+
+  .btn,
+  .btn-primary,
+  .btn-secondary,
+  .btn-logout,
+  .btn-action,
+  .btn-action-delete,
+  .btn-delete,
+  .btn-small-primary {
+    width: 100%;
+    min-height: 44px;
+    border-radius: 12px;
+  }
+
+  .admin-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .stat-card {
+    grid-column: span 1;
+    padding: 14px;
+    border-radius: 16px;
+  }
+
+  .users-table {
+    display: table;
+    width: 100%;
+  }
+
+  .users-table thead {
+    display: none;
+  }
+
+  .users-table tbody {
+    display: block;
+    width: 100%;
+  }
+
+  #usersList {
+    display: block;
+    width: 100%;
+  }
+
+  #usersList tr {
+    display: none;
+  }
+
+  .user-mobile-card {
+    display: block;
+    width: 100%;
+    margin-bottom: 12px;
+    padding: 14px;
+    border-radius: 18px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.03));
+    border: 1px solid rgba(148, 163, 184, 0.16);
+    box-shadow: 0 14px 36px rgba(2, 6, 23, 0.24);
+  }
+
+  .user-mobile-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .user-mobile-identity {
+    min-width: 0;
+  }
+
+  .user-mobile-name {
+    font-size: 15px;
+    font-weight: 700;
+    word-break: break-word;
+  }
+
+  .user-mobile-email {
+    margin-top: 4px;
+    font-size: 13px;
+    color: var(--text-soft);
+    word-break: break-word;
+  }
+
+  .user-mobile-stats {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .user-mobile-stat {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .user-mobile-stat span {
+    color: var(--text-soft);
+    font-size: 13px;
+  }
+
+  .user-mobile-stat strong {
+    font-size: 14px;
+  }
+
+  .user-mobile-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .user-mobile-current {
+    font-size: 12px;
+    color: var(--text-soft);
+    text-align: center;
+    padding-top: 4px;
+  }
+
+  .modal {
+    padding: 10px;
+  }
+
+  .modal-content {
+    width: 100%;
+    padding: 16px 14px;
+    border-radius: 20px;
+  }
+
+  .modal-footer {
+    flex-direction: column-reverse;
+    gap: 8px;
+  }
+
+  .alert {
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    min-width: 0;
+    max-width: none;
+  }
+}
+
+@media (max-width: 420px) {
+  .container {
+    width: calc(100% - 12px);
+  }
+
+  .header {
+    padding: 12px;
+  }
+
+  .content {
+    padding: 12px;
+  }
+
+  .entry-card,
+  .monthly-card,
+  .user-mobile-card,
+  .stat-card {
+    padding: 12px;
+  }
+}
