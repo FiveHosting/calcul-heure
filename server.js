@@ -62,6 +62,11 @@ app.use((req, res) => {
   res.status(404).send('Page non trouvée.');
 });
 
+app.get('/', (req, res) => {
+  res.setHeader('Cache-Control', 'no-store');
+  res.sendFile(path.join(publicDir, 'index.html'));
+});
+
 app.listen(PORT, () => {
   console.log(`🚀 Serveur démarré sur http://localhost:${PORT}`);
   console.log(`📁 Fichiers publics: ${publicDir}`);
