@@ -377,30 +377,65 @@
         }
 
         function showApp() {
-            document.getElementById('auth').style.display = 'none';
-            document.getElementById('app').classList.add('active');
-            document.getElementById('headerUsername').textContent = currentUser.username;
-            document.getElementById('headerRole').textContent = currentUser.role === 'admin' ? 'Administrateur' : 'Utilisateur';
-            const adminBtn = document.getElementById('adminBtn');
-            adminBtn.style.display = currentUser.role === 'admin' ? 'flex' : 'none';
-            loadEntries();
-            loadMonthlyStats();
-        }
+    document.getElementById('auth').style.display = 'none';
+    document.getElementById('app').classList.add('active');
 
-        async function logout() {
-            try {
-                await apiFetch('/auth/logout', { method: 'POST' });
-            } catch (e) {
-                // On force quand même la déconnexion côté interface.
-            }
-            currentUser = null;
-            document.getElementById('auth').style.display = 'flex';
-            document.getElementById('app').classList.remove('active');
-            document.getElementById('loginPanel').classList.add('active');
-            document.getElementById('registerPanel').classList.remove('active');
-            document.getElementById('loginForm').reset();
-            document.getElementById('adminBtn').style.display = 'none';
-        }
+    document.getElementById('headerUsername').textContent = currentUser.username;
+    document.getElementById('headerRole').textContent =
+        currentUser.role === 'admin' ? 'Administrateur' : 'Utilisateur';
+
+    const adminBtn = document.getElementById('adminBtn');
+
+    if (currentUser.role === 'admin') {
+        adminBtn.classList.remove('is-hidden');
+        adminBtn.style.display = 'flex';
+    } else {
+        adminBtn.classList.add('is-hidden');
+        adminBtn.style.display = 'none';
+    }
+
+    loadEntries();
+    loadMonthlyStats();
+}
+
+       async function logout() {
+    try {
+        await apiFetch('/auth/logout', { method: 'POST' });
+    } catch (e) {
+        // Même si ça échoue, on force la déconnexion côté front
+    }
+
+    currentUser = null;
+
+    // UI principale
+    document.getElementById('auth').style.display = 'flex';
+    document.getElementById('app').classList.remove('active');
+
+    // Reset panels auth
+    document.getElementById('loginPanel').classList.add('active');
+    document.getElementById('registerPanel').classList.remove('active');
+
+    // Reset formulaire
+    document.getElementById('loginForm').reset();
+
+    // 🔥 CORRECTION ADMIN
+    const adminBtn = document.getElementById('adminBtn');
+    if (adminBtn) {
+        adminBtn.classList.add('is-hidden');
+        adminBtn.style.display = 'none';
+    }
+
+    // Reset header
+    document.getElementById('headerUsername').textContent = '';
+    document.getElementById('headerRole').textContent = '';
+
+    // (optionnel mais propre) reset des contenus
+    const entriesList = document.getElementById('entriesList');
+    if (entriesList) entriesList.innerHTML = '';
+
+    const usersList = document.getElementById('usersList');
+    if (usersList) usersList.innerHTML = '';
+}
 
         function showAlert(message, type = 'success') {
             const alert = document.createElement('div');
