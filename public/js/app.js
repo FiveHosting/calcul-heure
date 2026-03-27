@@ -192,78 +192,47 @@ async function deleteEntry(id) {
 }
 
 async function loadAdminData() {
-    if (!currentUser || String(currentUser.role).toLowerCase() !== 'admin') return;
+    if (!currentUser || currentUser.role !== 'admin') return;
 
     try {
         const udata = await apiFetch('/admin/users');
-        const tbody = document.getElementById('usersList');
-        clearElement(tbody);
+        const container = document.querySelector('#usersList');
+        clearElement(container);
 
-        (udata.users || []).forEach((user) => {
-            const tr = document.createElement('tr');
+        if (window.innerWidth < 768) {
+            // 🔥 MOBILE → CARDS
+            udata.users.forEach((u) => {
+                const card = document.createElement('div');
+                card.className = 'user-card';
 
-            tr.appendChild(createTextElement('td', '', user.username));
-            tr.appendChild(createTextElement('td', '', user.email));
+                card.innerHTML = `
+                    <div><strong>${u.username}</strong></div>
+                    <div>${u.email}</div>
+                    <div>Rôle: ${u.role}</div>
+                    <div>Entrées: ${u.total_entries || 0}</div>
+                    <div>Heures: ${(u.total_hours || 0).toFixed(1)}h</div>
+                    <div>Salaire: ${formatMoney(u.total_salary || 0)}</div>
+                `;
 
-            const roleTd = document.createElement('td');
-            roleTd.appendChild(
-                createTextElement(
-                    'span',
-                    `badge ${user.role === 'admin' ? 'badge-admin' : 'badge-user'}`,
-                    user.role
-                )
-            );
-            tr.appendChild(roleTd);
+                container.appendChild(card);
+            });
 
-            tr.appendChild(createTextElement('td', '', String(user.total_entries || 0)));
-            tr.appendChild(createTextElement('td', '', `${Number(user.total_hours || 0).toFixed(1)}h`));
-            tr.appendChild(createTextElement('td', '', formatMoney(user.total_salary || 0)));
+        } else {
+            // DESKTOP → TABLE
+            udata.users.forEach((u) => {
+                const tr = document.createElement('tr');
 
-            const actionsTd = document.createElement('td');
-            actionsTd.style.display = 'flex';
-            actionsTd.style.gap = '5px';
-            actionsTd.style.flexWrap = 'wrap';
+                tr.appendChild(createTextElement('td', '', u.username));
+                tr.appendChild(createTextElement('td', '', u.email));
+                tr.appendChild(createTextElement('td', '', u.role));
+                tr.appendChild(createTextElement('td', '', String(u.total_entries || 0)));
+                tr.appendChild(createTextElement('td', '', `${Number(u.total_hours || 0).toFixed(1)}h`));
+                tr.appendChild(createTextElement('td', '', formatMoney(u.total_salary || 0)));
 
-            actionsTd.appendChild(
-                createIconButton(
-                    'btn-action',
-                    'fas fa-user-tie',
-                    user.role === 'admin' ? 'Retirer admin' : 'Admin',
-                    () => changeUserRole(user.id, user.role, user.username)
-                )
-            );
+                container.appendChild(tr);
+            });
+        }
 
-            if (user.id !== currentUser.id) {
-                actionsTd.appendChild(
-                    createIconButton(
-                        'btn-action-delete',
-                        'fas fa-trash',
-                        'Supprimer',
-                        () => deleteUser(user.id, user.username)
-                    )
-                );
-            } else {
-                const currentAccount = createTextElement('span', '', 'Compte actuel');
-                currentAccount.style.fontSize = '12px';
-                currentAccount.style.color = 'var(--text-secondary)';
-                actionsTd.appendChild(currentAccount);
-            }
-
-            tr.appendChild(actionsTd);
-            tbody.appendChild(tr);
-        });
-
-        const stats = await apiFetch('/admin/stats');
-
-        const elTotalUsers = document.getElementById('totalUsers');
-        const elTotalEntries = document.getElementById('totalEntries');
-        const elTotalHours = document.getElementById('totalHours');
-        const elTotalSalary = document.getElementById('totalSalary');
-
-        if (elTotalUsers) elTotalUsers.textContent = stats.totalUsers;
-        if (elTotalEntries) elTotalEntries.textContent = stats.totalEntries;
-        if (elTotalHours) elTotalHours.textContent = Number(stats.totalHours || 0).toFixed(1) + 'h';
-        if (elTotalSalary) elTotalSalary.textContent = formatMoney(stats.totalSalary || 0);
     } catch (err) {
         showAlert(err.message, 'error');
     }
@@ -599,5 +568,11 @@ window.addEventListener('load', async () => {
         resetAuthUI();
         showAlert('Erreur lors de la vérification de session', 'error');
         console.error(e);
+    }
+});
+
+window.addEventListener('resize', () => {
+    if (currentUser && currentUser.role === 'admin') {
+        loadAdminData();
     }
 });
