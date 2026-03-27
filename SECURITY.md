@@ -14,7 +14,7 @@ We currently support the latest version of this project.
 
 If you discover a security vulnerability, please report it responsibly.
 
-📧 Contact: ton-email@example.com
+📧 Contact: contact@fivehosting.net
 
 Please include:
 - Description of the vulnerability
