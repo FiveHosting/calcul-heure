@@ -70,9 +70,17 @@ function updateAdminButtonVisibility() {
 
     const isAdmin = !!currentUser && String(currentUser.role).toLowerCase() === 'admin';
 
-    adminBtn.hidden = !isAdmin;
-    adminBtn.style.display = isAdmin ? 'flex' : 'none';
-    adminBtn.setAttribute('aria-hidden', String(!isAdmin));
+    adminBtn.classList.remove('is-hidden');
+
+    if (isAdmin) {
+        adminBtn.hidden = false;
+        adminBtn.style.display = 'inline-flex';
+        adminBtn.setAttribute('aria-hidden', 'false');
+    } else {
+        adminBtn.hidden = true;
+        adminBtn.style.display = 'none';
+        adminBtn.setAttribute('aria-hidden', 'true');
+    }
 }
 
 function resetAuthUI() {
@@ -327,7 +335,7 @@ async function loadAdminData() {
                 } else {
                     const currentAccount = createTextElement('span', '', 'Compte actuel');
                     currentAccount.style.fontSize = '12px';
-                    currentAccount.style.color = 'var(--text-secondary)';
+                    currentAccount.style.color = 'var(--text-soft)';
                     actionsTd.appendChild(currentAccount);
                 }
 
@@ -401,7 +409,7 @@ async function loadMonthlyStats() {
 
         if (!sorted.length) {
             const p = createTextElement('p', '', 'Aucune entrée');
-            p.style.color = 'var(--text-secondary)';
+            p.style.color = 'var(--text-soft)';
             monthlyContainer.appendChild(p);
             return;
         }
