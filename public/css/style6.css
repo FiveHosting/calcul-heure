@@ -248,18 +248,73 @@ img, svg, canvas { display: block; max-width: 100%; }
 .negative { color: #fca5a5; }
 .neutral { color: var(--text-soft); }
 
-.month-controls { display: flex; align-items: center; gap: 8px; }
-.month-controls input {
+.month-selector {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr) 52px;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.month-display-btn {
   appearance: none;
   border: 1px solid var(--border);
   background: rgba(255,255,255,0.04);
   color: var(--text);
-  border-radius: 12px;
-  padding: 10px 12px;
-  outline: none;
+  border-radius: 16px;
+  padding: 12px 14px;
+  min-height: 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  text-align: center;
 }
 
-.btn-icon { width: 44px; min-width: 44px; padding: 0; }
+.month-display-btn:hover {
+  border-color: var(--border-strong);
+  background: rgba(255,255,255,0.06);
+}
+
+.month-display-btn:focus {
+  outline: none;
+  border-color: var(--primary-2);
+  box-shadow: 0 0 0 5px var(--primary-ring);
+}
+
+.month-display-label {
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  word-break: break-word;
+}
+
+.month-display-sub {
+  font-size: 12px;
+  color: var(--text-soft);
+}
+
+.month-picker-native {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 1px;
+  height: 1px;
+}
+
+.btn-icon {
+  width: 52px;
+  min-width: 52px;
+  min-height: 56px;
+  padding: 0;
+}
+
+
+.month-nav-btn {
+  font-size: 18px;
+}
 
 .chart-card { padding: 18px; border-radius: 20px; }
 .chart-header {
@@ -376,7 +431,7 @@ canvas {
 .form-group input::placeholder, .form-group textarea::placeholder { color: var(--text-faint); }
 .form-group input:hover, .form-group textarea:hover { border-color: var(--border-strong); }
 
-.form-group input:focus, .form-group textarea:focus, .month-controls input:focus {
+.form-group input:focus, .form-group textarea:focus, .month-display-btn:focus {
   border-color: var(--primary-2);
   box-shadow: 0 0 0 5px var(--primary-ring);
   background: rgba(255,255,255,0.06);
@@ -562,7 +617,7 @@ canvas {
 
 @media print {
   body { background: white !important; color: black !important; }
-  body::before, .header-right, .nav-tabs, #auth, #addTab, #adminTab, .entry-card-actions, .month-controls, .btn, .btn-logout, .btn-small-primary, .btn-action, .btn-action-delete, .btn-delete, .alert {
+  body::before, .header-right, .nav-tabs, #auth, #addTab, #adminTab, .entry-card-actions, .month-selector, .btn, .btn-logout, .btn-small-primary, .btn-action, .btn-action-delete, .btn-delete, .alert {
     display: none !important;
   }
   .app, .app.active { display: block !important; }
@@ -625,8 +680,28 @@ canvas {
 
   .content { padding: 18px 14px; border-radius: 24px; }
   .section-heading-row { flex-direction: column; align-items: stretch; }
-  .month-controls { width: 100%; }
-  .month-controls input { flex: 1; }
+  @media (max-width: 768px) {
+  .month-selector {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .month-display-btn {
+    order: -1;
+    min-height: 72px;
+    padding: 14px 16px;
+  }
+   .month-display-label {
+    font-size: 20px;
+  }
+  .month-display-sub {
+    font-size: 13px;
+  }
+  .month-nav-btn,
+  .month-selector .btn-icon {
+    width: 100%;
+    min-width: 100%;
+    min-height: 48px;
+  }
 
   .stats-grid { grid-template-columns: 1fr; }
   .summary-card { grid-column: span 1; padding: 16px; }
