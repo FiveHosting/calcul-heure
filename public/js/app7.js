@@ -752,7 +752,7 @@ const tab = element.getAttribute('data-tab');
 if (!tab) return;
 
 if (tab === 'admin' && (!currentUser || String(currentUser.role).toLowerCase() !== 'admin')) {
-showAlert('Accès refusé : vous n\\'êtes pas administrateur', 'error');
+showAlert('Accès refusé : vous n\'êtes pas administrateur', 'error');
 return;
 }
 
