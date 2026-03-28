@@ -4,13 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calcul d'Heures</title>
-
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%231e293b'/%3E%3Ctext x='50' y='55' text-anchor='middle' font-size='60' fill='%2360a5fa' font-family='Arial'%3EH%3C/text%3E%3C/svg%3E">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="/public/css/style3.css">
+    <link rel="stylesheet" href="/public/css/style4.css">
 </head>
 <body>
-
     <div id="auth" class="container">
         <div id="loginPanel" class="auth-panel active">
             <h2>Bienvenue</h2>
@@ -21,12 +19,10 @@
                     <label for="loginUsername">Nom d'utilisateur</label>
                     <input type="text" id="loginUsername" required>
                 </div>
-
                 <div class="form-group">
                     <label for="loginPassword">Mot de passe</label>
                     <input type="password" id="loginPassword" required>
                 </div>
-
                 <button type="submit" class="btn btn-primary">
                     <i class="fas fa-sign-in-alt"></i> Connexion
                 </button>
@@ -47,22 +43,18 @@
                     <label for="registerUsername">Nom d'utilisateur</label>
                     <input type="text" id="registerUsername" required>
                 </div>
-
                 <div class="form-group">
                     <label for="registerEmail">Email</label>
                     <input type="email" id="registerEmail" required>
                 </div>
-
                 <div class="form-group">
                     <label for="registerPassword">Mot de passe</label>
                     <input type="password" id="registerPassword" required>
                 </div>
-
                 <div class="form-group">
                     <label for="registerPassword2">Confirmer le mot de passe</label>
                     <input type="password" id="registerPassword2" required>
                 </div>
-
                 <button type="submit" class="btn btn-primary">
                     <i class="fas fa-user-plus"></i> S'inscrire
                 </button>
@@ -78,17 +70,17 @@
     <div id="app" class="app container">
         <div class="header glass-card">
             <h1><i class="fas fa-clock"></i> Calcul d'Heures</h1>
-
             <div class="header-right">
                 <div class="user-info">
                     <div class="username" id="headerUsername"></div>
                     <div class="role" id="headerRole"></div>
                 </div>
-
                 <button id="changePasswordBtn" class="btn btn-small-primary" type="button">
                     <i class="fas fa-key"></i> Mot de passe
                 </button>
-
+                <button id="exportPdfBtn" class="btn btn-secondary" type="button">
+                    <i class="fas fa-file-pdf"></i> Export PDF
+                </button>
                 <button id="logoutBtn" class="btn-logout" type="button">
                     <i class="fas fa-sign-out-alt"></i> Déconnexion
                 </button>
@@ -99,11 +91,9 @@
             <button class="nav-tab active" data-tab="entries" type="button">
                 <i class="fas fa-list"></i> Mes Heures
             </button>
-
             <button class="nav-tab" data-tab="add" type="button">
                 <i class="fas fa-plus"></i> Ajouter une entrée
             </button>
-
             <button class="nav-tab" id="adminBtn" data-tab="admin" type="button" hidden>
                 <i class="fas fa-cog"></i> Administration
             </button>
@@ -111,11 +101,47 @@
 
         <div class="content glass-card">
             <div id="entriesTab" class="tab-content active">
-                <h2 class="section-heading">Vos entrées de travail</h2>
+                <div class="section-heading-row">
+                    <h2 class="section-heading">Vos entrées de travail</h2>
+                    <div class="month-controls">
+                        <button id="prevMonthBtn" class="btn btn-secondary btn-icon" type="button" aria-label="Mois précédent">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <input type="month" id="monthPicker">
+                        <button id="nextMonthBtn" class="btn btn-secondary btn-icon" type="button" aria-label="Mois suivant">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
 
                 <div class="stats-panel">
-                    <h3 class="subsection-heading">Statistiques mensuelles</h3>
-                    <div id="monthlyStats"></div>
+                    <h3 class="subsection-heading">Résumé du mois sélectionné</h3>
+                    <div id="monthlyStats" class="stats-grid"></div>
+                </div>
+
+                <div class="stats-panel">
+                    <h3 class="subsection-heading">Comparaison avec le mois précédent</h3>
+                    <div id="comparisonStats" class="stats-grid"></div>
+                </div>
+
+                <div class="stats-panel">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="subsection-heading">Heures par jour</h3>
+                            <span class="chart-subtitle" id="hoursChartTitle"></span>
+                        </div>
+                        <canvas id="hoursChart" height="120"></canvas>
+                    </div>
+                </div>
+
+                <div class="stats-panel">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="subsection-heading">Salaire par jour</h3>
+                            <span class="chart-subtitle" id="salaryChartTitle"></span>
+                        </div>
+                        <canvas id="salaryChart" height="120"></canvas>
+                    </div>
                 </div>
 
                 <h3 class="subsection-heading">Détail des entrées</h3>
@@ -124,35 +150,29 @@
 
             <div id="addTab" class="tab-content">
                 <h2 class="section-heading">Ajouter une entrée de travail</h2>
-
                 <form id="entryForm" class="entry-form">
                     <div class="form-section">
                         <div class="form-group">
                             <label for="entryDate">Date</label>
                             <input type="date" id="entryDate" required>
                         </div>
-
                         <div class="form-group">
                             <label for="entryStartTime">Heure de début</label>
                             <input type="time" id="entryStartTime" required>
                         </div>
-
                         <div class="form-group">
                             <label for="entryEndTime">Heure de fin</label>
                             <input type="time" id="entryEndTime" required>
                         </div>
-
                         <div class="form-group">
                             <label for="entryHourlyRate">Taux horaire (€)</label>
                             <input type="number" id="entryHourlyRate" step="0.01" value="10" required>
                         </div>
                     </div>
-
                     <div class="form-group">
                         <label for="entryDescription">Description</label>
                         <textarea id="entryDescription" rows="4"></textarea>
                     </div>
-
                     <button type="submit" class="btn btn-primary full-width">
                         <i class="fas fa-save"></i> Ajouter l'entrée
                     </button>
@@ -160,17 +180,53 @@
             </div>
 
             <div id="adminTab" class="tab-content">
-                <h2 class="section-heading">Administration</h2>
+                <div class="section-heading-row">
+                    <h2 class="section-heading">Dashboard admin global</h2>
+                    <button id="refreshAdminBtn" class="btn btn-secondary" type="button">
+                        <i class="fas fa-rotate"></i> Actualiser
+                    </button>
+                </div>
 
                 <div class="admin-grid">
                     <div class="stat-card">
                         <div class="stat-card-label">Utilisateurs</div>
                         <div class="stat-card-value" id="totalUsers">0</div>
                     </div>
+                    <div class="stat-card">
+                        <div class="stat-card-label">Entrées totales</div>
+                        <div class="stat-card-value" id="totalEntries">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-label">Heures totales</div>
+                        <div class="stat-card-value" id="totalHours">0h</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-label">Salaires totaux</div>
+                        <div class="stat-card-value" id="totalSalary">0€</div>
+                    </div>
+                </div>
+
+                <div class="stats-panel">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="subsection-heading">Répartition des rôles</h3>
+                            <span class="chart-subtitle">Admins vs utilisateurs</span>
+                        </div>
+                        <canvas id="adminRoleChart" height="120"></canvas>
+                    </div>
+                </div>
+
+                <div class="stats-panel">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="subsection-heading">Top salaires</h3>
+                            <span class="chart-subtitle">Vue globale par utilisateur</span>
+                        </div>
+                        <canvas id="adminSalaryChart" height="120"></canvas>
+                    </div>
                 </div>
 
                 <h3 class="admin-subsection-heading">Utilisateurs</h3>
-
                 <table class="users-table">
                     <thead>
                         <tr>
@@ -194,33 +250,24 @@
             <div class="modal-header">
                 <h2><i class="fas fa-lock"></i> Changer mot de passe</h2>
             </div>
-
             <div class="modal-body">
                 <div class="form-group">
                     <input type="password" id="oldPasswordInput" placeholder="Ancien mot de passe">
                 </div>
-
                 <div class="form-group">
                     <input type="password" id="newPasswordInput" placeholder="Nouveau mot de passe">
                 </div>
-
                 <div class="form-group">
                     <input type="password" id="confirmPasswordInput" placeholder="Confirmer mot de passe">
                 </div>
             </div>
-
             <div class="modal-footer">
-                <button id="closeChangePwdBtn" class="btn btn-secondary" type="button">
-                    Annuler
-                </button>
-
-                <button id="submitChangePwdBtn" class="btn btn-primary" type="button">
-                    Valider
-                </button>
+                <button id="closeChangePwdBtn" class="btn btn-secondary" type="button">Annuler</button>
+                <button id="submitChangePwdBtn" class="btn btn-primary" type="button">Valider</button>
             </div>
         </div>
     </div>
 
-    <script src="/public/js/app2.js" defer></script>
+    <script src="/public/js/app3.js" defer></script>
 </body>
 </html>
