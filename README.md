@@ -1,72 +1,108 @@
+Parfait — là on passe en **niveau très haut de gamme** (README type vrai SaaS open-source / portfolio premium).
+👉 Je vais te faire un README **ULTRA COMPLET**, **bilingue FR/EN**, **structuré comme un projet sérieux**, basé sur ton repo  + amélioré.
+
+---
+
+# 📥 README FINAL (VERSION PREMIUM)
+
+👉 Copie-colle DIRECT dans ton `README.md`
+
+---
+
+````md
 # 🚀 Calculateur d'Heures — SaaS sécurisé & moderne
 
 ![Node.js](https://img.shields.io/badge/Node.js-18+-339933?logo=node.js&logoColor=white)
 ![Express](https://img.shields.io/badge/Express.js-Backend-black?logo=express)
 ![SQLite](https://img.shields.io/badge/Database-SQLite-blue?logo=sqlite)
+![Security](https://img.shields.io/badge/Security-Hardened-success)
 ![Status](https://img.shields.io/badge/Status-Production-success)
 ![License](https://img.shields.io/badge/License-MIT-purple)
 
-> Application web SaaS permettant de gérer ses heures de travail, calculer ses revenus et administrer des utilisateurs.
+> 🧠 Application SaaS moderne pour suivre ses heures de travail, calculer ses revenus et gérer des utilisateurs en toute sécurité.
 
 ---
 
-# 🇫🇷 Documentation Française
+# 🇫🇷 Documentation complète
+
+---
 
 ## 🚀 Présentation
 
-**Calculateur d’Heures** est une application web complète permettant :
+**Calculateur d’Heures** est une application web complète inspirée des standards SaaS modernes (Notion, Stripe), conçue pour :
 
-- le suivi du temps de travail
-- le calcul automatique des revenus
-- la gestion d’utilisateurs
-- une interface moderne type SaaS
+- suivre précisément les heures de travail
+- calculer automatiquement les revenus
+- gérer plusieurs utilisateurs avec rôles
+- offrir une expérience fluide et sécurisée
 
-👉 Objectif : **simplicité + sécurité + performance**
+👉 Objectif : **performance, sécurité, simplicité**
 
 ---
 
-## ✨ Fonctionnalités
+## ✨ Fonctionnalités détaillées
 
-### 👤 Utilisateur
+### 👤 Espace utilisateur
 
-- Inscription / connexion sécurisée
-- Ajout d’entrées de travail
+- Authentification sécurisée (login/register)
+- Gestion des sessions via cookies HttpOnly
+- Création d’entrées de travail :
+  - heure de début
+  - heure de fin
+  - taux horaire
 - Calcul automatique :
   - durée travaillée
-  - salaire généré
-- Statistiques mensuelles
+  - revenu généré
+- Historique complet des entrées
+- Statistiques mensuelles :
+  - total heures
+  - total revenus
 - Suppression d’entrées
 - Modification du mot de passe
 
 ---
 
-### 🛠️ Administrateur
+### 🛠️ Espace administrateur
 
-- Gestion complète des utilisateurs
-- Promotion / rétrogradation admin
+- Liste complète des utilisateurs
 - Suppression de comptes
+- Promotion / rétrogradation admin
 - Accès aux statistiques globales
+- Gestion sécurisée des privilèges
 
 ---
 
-## 🔐 Sécurité
+## 🔐 Sécurité avancée
 
-Application sécurisée côté backend et frontend :
+### 🔒 Authentification
 
-### 🔒 Protections principales
-
-- Cookies **HttpOnly** (aucun token en localStorage)
 - JWT sécurisé
-- Validation serveur stricte
-- Protection basique brute-force
-- Aucune injection HTML côté frontend
+- Stockage via cookies HttpOnly
+- Aucun stockage sensible côté frontend
 
-### 🛡️ Headers HTTP
+---
+
+### 🛡️ Protection backend
+
+- Validation stricte des inputs
+- Protection brute-force basique
+- Middleware d’authentification sécurisé
+
+---
+
+### 🌐 Sécurité frontend
+
+- CSP (Content Security Policy) stricte
+- Aucune injection HTML dynamique
+- Pas de `innerHTML` dangereux
+
+---
+
+### 🔐 Headers HTTP
 
 - `X-Frame-Options`
 - `X-Content-Type-Options`
 - `Referrer-Policy`
-- CSP stricte (anti XSS)
 
 ---
 
@@ -74,15 +110,41 @@ Application sécurisée côté backend et frontend :
 
 ### Frontend
 
-- HTML / CSS (design SaaS custom)
-- JavaScript vanilla
+- HTML5
+- CSS3 (design SaaS custom)
+- JavaScript Vanilla
 - Responsive mobile-first
+
+---
 
 ### Backend
 
 - Node.js 18+
-- Express
-- SQLite
+- Express.js
+- SQLite (léger & rapide)
+- Middleware custom
+
+---
+
+## 🧠 Architecture
+
+### Backend
+
+- `server.js` → point d’entrée principal
+- `database.js` → gestion SQLite
+- `routes/` → logique API :
+  - `auth.js`
+  - `entries.js`
+  - `admin.js`
+- `middleware/auth.js` → sécurisation des routes
+
+---
+
+### Frontend
+
+- `public/index.html` → UI principale
+- `public/js/app.js` → logique client
+- `public/css/style.css` → UI design
 
 ---
 
@@ -91,10 +153,8 @@ Application sécurisée côté backend et frontend :
 ```bash
 .
 ├── public/
-│   ├── css/
-│   │   └── style.css
-│   ├── js/
-│   │   └── app.js
+│   ├── css/style.css
+│   ├── js/app.js
 │   └── index.html
 │
 ├── routes/
@@ -108,14 +168,15 @@ Application sécurisée côté backend et frontend :
 ├── server.js
 ├── database.js
 ├── setup-admin.js
+├── .env.example
 └── README.md
 ````
 
 ---
 
-## ⚙️ Installation
+## ⚙️ Installation complète
 
-### 1. Cloner le projet
+### 1. Cloner le repo
 
 ```bash
 git clone https://github.com/FiveHosting/calcul-heure.git
@@ -134,7 +195,7 @@ PORT=3000
 DB_PATH=./database.db
 NODE_ENV=production
 
-JWT_SECRET=cle_super_secrete_32_caracteres_minimum
+JWT_SECRET=UNE_CLE_LONGUE_DE_32+_CARACTERES
 
 ALLOW_ADMIN_BOOTSTRAP=false
 ADMIN_BOOTSTRAP_TOKEN=
@@ -146,7 +207,7 @@ ADMIN_PASS=
 
 ---
 
-### 3. Lancer l’application
+### 3. Lancement
 
 ```bash
 npm start
@@ -165,65 +226,91 @@ node setup-admin.js
 
 ---
 
-## 📱 Interface & UX
+## 🌐 API (Backend)
+
+### Auth
+
+* `POST /api/register`
+* `POST /api/login`
+* `POST /api/logout`
+
+### Entrées
+
+* `GET /api/entries`
+* `POST /api/entries`
+* `DELETE /api/entries/:id`
+
+### Admin
+
+* `GET /api/admin/users`
+* `POST /api/admin/promote`
+* `DELETE /api/admin/user/:id`
+
+---
+
+## 📱 UI / UX
 
 * 📱 Mobile-first
 * 🌙 Dark mode moderne
-* ⚡ UI fluide
-* 💎 Design SaaS inspiré de Notion / Stripe
-* 🎨 Animations légères
+* ⚡ Expérience fluide
+* 🎨 Design SaaS premium
+* 💎 Animations légères
 
 ---
 
 ## 🧪 Debug
 
-### Si le serveur ne démarre pas
+### Serveur
 
-* Vérifier `.env`
-* Vérifier port libre
-* Vérifier `JWT_SECRET`
+```bash
+npm start
+```
 
-### Si login ne fonctionne pas
+### Vérifications
 
-* Vérifier cookies activés
-* Vérifier base SQLite
+* `.env` correct
+* `JWT_SECRET` valide
+* port libre
+* base SQLite accessible
 
 ---
 
 ## 🔒 Sécurité
 
-### ❌ Ne jamais commit :
+### ❌ Ne jamais commit
 
 ```
 .env
 database.db
-JWT secrets
+JWT_SECRET
 ```
 
-### ✔️ À sécuriser :
+### ✔️ Bonnes pratiques
 
-* JWT_SECRET
-* accès admin
-* base de données
+* utiliser un secret fort
+* protéger accès admin
+* limiter accès serveur
 
 ---
 
-## 📈 Améliorations possibles
+## 📈 Roadmap
 
-* Dashboard analytics avancé
-* Export PDF / CSV
+* Export CSV / PDF
+* Dashboard avancé
+* Authentification 2FA
 * Multi-utilisateurs (teams)
-* API REST publique
-* Auth 2FA
+* API publique
 * Logs avancés
 
 ---
 
-# 🇬🇧 English Documentation
+# 🇬🇧 Full Documentation
+
+---
 
 ## 🚀 Overview
 
-**Hour Calculator** is a modern SaaS-style web app to:
+**Hour Calculator** is a modern SaaS web application designed to:
 
 * track working hours
 * automatically calculate earnings
@@ -235,34 +322,34 @@ JWT secrets
 
 ### 👤 User
 
-* Secure login / register
-* Add work entries
+* Secure authentication
+* Work entries management
 * Automatic:
 
   * duration calculation
   * salary calculation
-* Monthly stats
-* Delete entries
-* Change password
+* Monthly statistics
+* Entry deletion
+* Password update
 
 ---
 
 ### 🛠️ Admin
 
 * User management
-* Promote / demote admins
-* Delete accounts
+* Role control (admin/user)
+* Account deletion
 * Global stats
 
 ---
 
 ## 🔐 Security
 
-* HttpOnly cookies (no localStorage)
+* HttpOnly cookies
 * Secure JWT
 * Server-side validation
-* Basic brute-force protection
-* Strict CSP
+* CSP protection
+* No frontend injection
 
 ---
 
