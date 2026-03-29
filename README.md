@@ -1,15 +1,3 @@
-Parfait — là on passe en **niveau très haut de gamme** (README type vrai SaaS open-source / portfolio premium).
-👉 Je vais te faire un README **ULTRA COMPLET**, **bilingue FR/EN**, **structuré comme un projet sérieux**, basé sur ton repo  + amélioré.
-
----
-
-# 📥 README FINAL (VERSION PREMIUM)
-
-👉 Copie-colle DIRECT dans ton `README.md`
-
----
-
-````md
 # 🚀 Calculateur d'Heures — SaaS sécurisé & moderne
 
 ![Node.js](https://img.shields.io/badge/Node.js-18+-339933?logo=node.js&logoColor=white)
