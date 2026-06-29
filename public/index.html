@@ -2,11 +2,11 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Calcul d'Heures</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%231e293b'/%3E%3Ctext x='50' y='55' text-anchor='middle' font-size='60' fill='%2360a5fa' font-family='Arial'%3EH%3C/text%3E%3C/svg%3E">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="/public/css/style7.css?v=4a27258-mobile">
+    <link rel="stylesheet" href="/public/css/style7.css?v=20260630-ui2">
 </head>
 <body>
     <div id="auth" class="container">
@@ -69,20 +69,28 @@
 
     <div id="app" class="app container">
         <div class="header glass-card">
-            <h1><i class="fas fa-clock"></i> Calcul d'Heures</h1>
-            <div class="header-right">
+            <div class="header-top">
+                <h1><i class="fas fa-clock"></i> Calcul d'Heures</h1>
                 <div class="user-info">
                     <div class="username" id="headerUsername"></div>
                     <div class="role" id="headerRole"></div>
                 </div>
+            </div>
+            <div class="header-right">
                 <button id="changePasswordBtn" class="btn btn-small-primary" type="button">
-                    <i class="fas fa-key"></i> Mot de passe
+                    <i class="fas fa-key"></i>
+                    <span class="label-desktop">Mot de passe</span>
+                    <span class="label-mobile">Sécurité</span>
                 </button>
                 <button id="exportPdfBtn" class="btn btn-secondary" type="button">
-                    <i class="fas fa-file-pdf"></i> Export PDF
+                    <i class="fas fa-file-pdf"></i>
+                    <span class="label-desktop">Export PDF</span>
+                    <span class="label-mobile">PDF</span>
                 </button>
                 <button id="logoutBtn" class="btn-logout" type="button">
-                    <i class="fas fa-sign-out-alt"></i> Déconnexion
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span class="label-desktop">Déconnexion</span>
+                    <span class="label-mobile">Quitter</span>
                 </button>
             </div>
         </div>
@@ -343,6 +351,6 @@
         </section>
     </template>
 
-    <script src="/public/js/app10.js?v=4a27258-mobile" defer></script>
+    <script src="/public/js/app10.js?v=20260630-ui2" defer></script>
 </body>
 </html>

@@ -126,6 +126,7 @@ updateAdminButtonVisibility();
 syncMonthPicker();
 loadEntries();
 loadMonthlyStats();
+scrollToPageTop();
 }
 
 function showAlert(message, type = 'success') {
@@ -992,12 +993,21 @@ document.querySelectorAll('.nav-tab').forEach((el) => el.classList.remove('activ
 const tabContent = document.getElementById(tab + 'Tab');
 if (tabContent) tabContent.classList.add('active');
 element.classList.add('active');
+scrollToPageTop();
 
 if (tab === 'admin') loadAdminData();
 if (tab === 'entries') {
 loadEntries();
 loadMonthlyStats();
 }
+}
+
+function scrollToPageTop() {
+window.requestAnimationFrame(() => {
+document.documentElement.scrollTop = 0;
+document.body.scrollTop = 0;
+window.scrollTo(0, 0);
+});
 }
 
 function exportSelectedMonthToPdf() {
