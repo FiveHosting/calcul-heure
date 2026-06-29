@@ -137,8 +137,8 @@
 ### Frontend
 
 - `public/index.html` → UI principale
-- `public/js/app9.js` → logique client
-- `public/css/style6.css` → UI design
+- `public/js/app10.js` → logique client
+- `public/css/style7.css` → UI design
 
 ---
 
@@ -147,8 +147,8 @@
 ```bash
 .
 ├── public/
-│   ├── css/style6.css
-│   ├── js/app9.js
+│   ├── css/style7.css
+│   ├── js/app10.js
 │   └── index.html
 │
 ├── routes/
