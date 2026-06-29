@@ -519,6 +519,48 @@ description: row.querySelector('[data-field="description"]').value
 }));
 }
 
+function isMissingApiRoute(error) {
+return error?.status === 404 && (
+error.message === 'Route non trouvée.' ||
+error.message === 'Route non trouvée' ||
+error.message === 'Erreur'
+);
+}
+
+async function createEntriesForDay(date, entries) {
+try {
+return await apiFetch('/entries/bulk', {
+method: 'POST',
+body: { date, entries }
+});
+} catch (error) {
+if (!isMissingApiRoute(error)) throw error;
+}
+
+const createdEntries = [];
+
+for (const entry of entries) {
+try {
+const result = await apiFetch('/entries', {
+method: 'POST',
+body: { date, ...entry }
+});
+createdEntries.push(result.entry);
+} catch (error) {
+if (createdEntries.length) {
+error.message = `${createdEntries.length} créneau(x) ajouté(s), puis une erreur est survenue : ${error.message}`;
+}
+throw error;
+}
+}
+
+return {
+count: createdEntries.length,
+entries: createdEntries,
+usedLegacyRoute: true
+};
+}
+
 async function loadEntries() {
 try {
 const entries = await apiFetch('/entries');
@@ -648,10 +690,25 @@ if (!dateInput?.value) return;
 if (submitButton) submitButton.disabled = true;
 
 try {
+try {
 await apiFetch(`/entries/${duplicateSourceEntry.id}/duplicate`, {
 method: 'POST',
 body: { date: dateInput.value }
 });
+} catch (error) {
+if (!isMissingApiRoute(error)) throw error;
+
+await apiFetch('/entries', {
+method: 'POST',
+body: {
+date: dateInput.value,
+startTime: duplicateSourceEntry.startTime,
+endTime: duplicateSourceEntry.endTime,
+hourlyRate: duplicateSourceEntry.hourlyRate,
+description: duplicateSourceEntry.description || ''
+}
+});
+}
 
 selectedMonth = dateInput.value.slice(0, 7);
 syncMonthPicker();
@@ -1104,13 +1161,7 @@ return;
 if (submitButton) submitButton.disabled = true;
 
 try {
-const result = await apiFetch('/entries/bulk', {
-method: 'POST',
-body: {
-date,
-entries
-}
-});
+const result = await createEntriesForDay(date, entries);
 
 selectedMonth = date.slice(0, 7);
 syncMonthPicker();

@@ -141,7 +141,7 @@
 ### Frontend
 
 - `public/index.html` → UI principale
-- `public/js/app12.js` → logique client
+- `public/js/app13.js` → logique client
 - `public/css/style9.css` → UI design
 
 ---
@@ -152,7 +152,7 @@
 .
 ├── public/
 │   ├── css/style9.css
-│   ├── js/app12.js
+│   ├── js/app13.js
 │   └── index.html
 │
 ├── routes/
