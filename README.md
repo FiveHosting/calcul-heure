@@ -1,5 +1,9 @@
 # 🚀 Calculateur d'Heures — SaaS sécurisé & moderne
 
+<p align="center">
+  <img src="./public/assets/logo-neuro-tech.png" alt="Logo Calculateur d'Heures" width="180">
+</p>
+
 ![Node.js](https://img.shields.io/badge/Node.js-18+-339933?logo=node.js&logoColor=white)
 ![Express](https://img.shields.io/badge/Express.js-Backend-black?logo=express)
 ![SQLite](https://img.shields.io/badge/Database-SQLite-blue?logo=sqlite)
