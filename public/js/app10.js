@@ -726,7 +726,7 @@ const labels = byDay.map(([day]) => day.slice(-2));
 const hoursValues = byDay.map(([, value]) => Number(value.hours.toFixed(2)));
 const salaryValues = byDay.map(([, value]) => Number(value.salary.toFixed(2)));
 
-drawBarChart('hoursChart', labels, hoursValues, 'rgba(139, 92, 246, 0.88)', (v) => `${v.toFixed(0)}h`);
+drawBarChart('hoursChart', labels, hoursValues, 'rgba(41, 196, 232, 0.9)', (v) => `${v.toFixed(0)}h`);
 drawBarChart('salaryChart', labels, salaryValues, 'rgba(34, 197, 94, 0.88)', (v) => `${v.toFixed(0)}€`);
 } catch (err) {
 showAlert(err.message, 'error');
@@ -873,7 +873,7 @@ const adminCount = users.filter((u) => u.role === 'admin').length;
 const userCount = users.filter((u) => u.role !== 'admin').length;
 
 drawDonutChart('adminRoleChart', [
-{ label: 'Admins', value: adminCount, color: 'rgba(139, 92, 246, 0.9)' },
+{ label: 'Admins', value: adminCount, color: 'rgba(18, 134, 216, 0.92)' },
 { label: 'Users', value: userCount, color: 'rgba(59, 130, 246, 0.88)' }
 ]);
 
