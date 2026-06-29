@@ -92,7 +92,7 @@
                 <i class="fas fa-list"></i> Mes Heures
             </button>
             <button class="nav-tab" data-tab="add" type="button">
-                <i class="fas fa-plus"></i> Ajouter une entrée
+                <i class="fas fa-plus"></i> Saisir une journée
             </button>
             <button class="nav-tab" id="adminBtn" data-tab="admin" type="button" hidden>
                 <i class="fas fa-cog"></i> Administration
@@ -156,33 +156,41 @@
             </div>
 
             <div id="addTab" class="tab-content">
-                <h2 class="section-heading">Ajouter une entrée de travail</h2>
+                <div class="add-tab-heading">
+                    <div>
+                        <span class="section-kicker">Nouvelle journée</span>
+                        <h2 class="section-heading">Saisissez vos créneaux</h2>
+                        <p class="section-description">Une seule date, autant de périodes de travail que nécessaire.</p>
+                    </div>
+                    <div class="entry-count-badge" id="entryCountBadge">1 créneau</div>
+                </div>
                 <form id="entryForm" class="entry-form">
-                    <div class="form-section">
-                        <div class="form-group">
+                    <div class="workday-date-panel">
+                        <div class="workday-date-icon" aria-hidden="true">
+                            <i class="fas fa-calendar-day"></i>
+                        </div>
+                        <div class="form-group workday-date-field">
                             <label for="entryDate">Date</label>
                             <input type="date" id="entryDate" required>
                         </div>
-                        <div class="form-group">
-                            <label for="entryStartTime">Heure de début</label>
-                            <input type="time" id="entryStartTime" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="entryEndTime">Heure de fin</label>
-                            <input type="time" id="entryEndTime" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="entryHourlyRate">Taux horaire (€)</label>
-                            <input type="number" id="entryHourlyRate" step="0.01" value="10" required>
-                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="entryDescription">Description</label>
-                        <textarea id="entryDescription" rows="4"></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary full-width">
-                        <i class="fas fa-save"></i> Ajouter l'entrée
+
+                    <div id="entryRows" class="entry-rows"></div>
+
+                    <button id="addEntryRowBtn" type="button" class="btn btn-add-slot">
+                        <i class="fas fa-plus"></i> Ajouter un autre créneau
                     </button>
+
+                    <div class="entry-form-footer">
+                        <div class="form-helper">
+                            <i class="fas fa-circle-info" aria-hidden="true"></i>
+                            Les créneaux seront enregistrés ensemble pour cette date.
+                        </div>
+                        <button id="submitEntriesBtn" type="submit" class="btn btn-primary entry-submit-btn">
+                            <i class="fas fa-check"></i>
+                            <span>Enregistrer le créneau</span>
+                        </button>
+                    </div>
                 </form>
             </div>
 
@@ -274,6 +282,66 @@
             </div>
         </div>
     </div>
+
+    <div id="duplicateEntryModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="duplicateEntryTitle">
+        <div class="modal-content duplicate-modal-content">
+            <form id="duplicateEntryForm">
+                <div class="modal-header">
+                    <div class="modal-icon" aria-hidden="true">
+                        <i class="fas fa-copy"></i>
+                    </div>
+                    <div>
+                        <h2 id="duplicateEntryTitle">Dupliquer ce créneau</h2>
+                        <p id="duplicateEntrySummary" class="modal-description"></p>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="duplicateEntryDate">Date de la copie</label>
+                        <input type="date" id="duplicateEntryDate" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="closeDuplicateEntryBtn" class="btn btn-secondary" type="button">Annuler</button>
+                    <button id="submitDuplicateEntryBtn" class="btn btn-primary" type="submit">
+                        <i class="fas fa-copy"></i> Dupliquer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <template id="entryRowTemplate">
+        <section class="entry-row">
+            <div class="entry-row-header">
+                <div>
+                    <div class="entry-row-title">Créneau <span data-row-number>1</span></div>
+                    <div class="entry-row-duration" data-duration>Aucune heure renseignée</div>
+                </div>
+                <button type="button" class="entry-row-remove" data-remove-row aria-label="Supprimer ce créneau">
+                    <i class="fas fa-trash" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="entry-row-fields">
+                <div class="form-group">
+                    <label data-label-for="startTime">Heure de début</label>
+                    <input type="time" data-field="startTime" required>
+                </div>
+                <div class="form-group">
+                    <label data-label-for="endTime">Heure de fin</label>
+                    <input type="time" data-field="endTime" required>
+                </div>
+                <div class="form-group">
+                    <label data-label-for="hourlyRate">Taux horaire (€)</label>
+                    <input type="number" data-field="hourlyRate" inputmode="decimal" min="0.01" max="100000" step="0.01" value="10" required>
+                </div>
+                <div class="form-group entry-row-description">
+                    <label data-label-for="description">Description <span>(facultatif)</span></label>
+                    <textarea data-field="description" rows="2" maxlength="1000" placeholder="Ex. service du midi"></textarea>
+                </div>
+            </div>
+        </section>
+    </template>
 
     <script src="/public/js/app9.js" defer></script>
 </body>

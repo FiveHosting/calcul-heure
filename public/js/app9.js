@@ -1,6 +1,9 @@
 const API_URL = window.location.origin + '/api';
 let currentUser = null;
-let selectedMonth = new Date().toISOString().slice(0, 7);
+let selectedMonth = getLocalDateValue().slice(0, 7);
+let duplicateSourceEntry = null;
+let entryRowSequence = 0;
+let resizeTimer = null;
 
 async function apiFetch(path, options = {}) {
 const config = {
@@ -49,6 +52,7 @@ function createIconButton(className, iconClass, label, onClick) {
 const btn = document.createElement('button');
 btn.className = className;
 btn.type = 'button';
+btn.setAttribute('aria-label', label);
 btn.addEventListener('click', onClick);
 
 const icon = document.createElement('i');
@@ -56,6 +60,24 @@ icon.className = iconClass;
 btn.appendChild(icon);
 btn.appendChild(document.createTextNode(' ' + label));
 return btn;
+}
+
+function getLocalDateValue(date = new Date()) {
+const year = date.getFullYear();
+const month = String(date.getMonth() + 1).padStart(2, '0');
+const day = String(date.getDate()).padStart(2, '0');
+return `${year}-${month}-${day}`;
+}
+
+function formatEntryDate(value) {
+if (!value) return '';
+
+return new Date(`${value}T12:00:00`).toLocaleDateString('fr-FR', {
+weekday: 'short',
+day: 'numeric',
+month: 'long',
+year: 'numeric'
+});
 }
 
 function switchAuthPanel(panel) {
@@ -393,6 +415,106 @@ ctx.textAlign = 'center';
 ctx.fillText(String(total), centerX, centerY + 6);
 }
 
+function getDurationText(startTime, endTime) {
+if (!startTime || !endTime) return 'Aucune heure renseignée';
+
+const [startHour, startMinute] = startTime.split(':').map(Number);
+const [endHour, endMinute] = endTime.split(':').map(Number);
+let duration = (endHour * 60 + endMinute) - (startHour * 60 + startMinute);
+
+if (duration <= 0) duration += 24 * 60;
+
+const hours = Math.floor(duration / 60);
+const minutes = duration % 60;
+const suffix = endTime <= startTime ? ' · termine le lendemain' : '';
+return `${hours} h${minutes ? ` ${minutes} min` : ''}${suffix}`;
+}
+
+function updateEntryRowDuration(row) {
+const startTime = row.querySelector('[data-field="startTime"]')?.value || '';
+const endTime = row.querySelector('[data-field="endTime"]')?.value || '';
+const duration = row.querySelector('[data-duration]');
+
+if (duration) duration.textContent = getDurationText(startTime, endTime);
+}
+
+function updateEntryRowsUI() {
+const rows = Array.from(document.querySelectorAll('#entryRows .entry-row'));
+const count = rows.length;
+
+rows.forEach((row, index) => {
+const number = row.querySelector('[data-row-number]');
+const removeButton = row.querySelector('[data-remove-row]');
+
+if (number) number.textContent = String(index + 1);
+if (removeButton) {
+removeButton.hidden = count === 1;
+removeButton.setAttribute('aria-label', `Supprimer le créneau ${index + 1}`);
+}
+});
+
+const countText = `${count} créneau${count > 1 ? 'x' : ''}`;
+const badge = document.getElementById('entryCountBadge');
+const submitLabel = document.querySelector('#submitEntriesBtn span');
+
+if (badge) badge.textContent = countText;
+if (submitLabel) {
+submitLabel.textContent = count > 1
+? `Enregistrer les ${count} créneaux`
+: 'Enregistrer le créneau';
+}
+}
+
+function addEntryRow(values = {}) {
+const template = document.getElementById('entryRowTemplate');
+const container = document.getElementById('entryRows');
+if (!template || !container) return;
+
+entryRowSequence += 1;
+const fragment = template.content.cloneNode(true);
+const row = fragment.querySelector('.entry-row');
+
+['startTime', 'endTime', 'hourlyRate', 'description'].forEach((fieldName) => {
+const field = row.querySelector(`[data-field="${fieldName}"]`);
+const label = row.querySelector(`[data-label-for="${fieldName}"]`);
+const fieldId = `entry-${fieldName}-${entryRowSequence}`;
+
+if (!field) return;
+field.id = fieldId;
+if (label) label.setAttribute('for', fieldId);
+
+if (Object.prototype.hasOwnProperty.call(values, fieldName)) {
+field.value = values[fieldName];
+}
+});
+
+row.querySelector('[data-remove-row]')?.addEventListener('click', () => {
+row.remove();
+updateEntryRowsUI();
+});
+
+row.querySelector('[data-field="startTime"]')?.addEventListener('input', () => updateEntryRowDuration(row));
+row.querySelector('[data-field="endTime"]')?.addEventListener('input', () => updateEntryRowDuration(row));
+
+container.appendChild(fragment);
+updateEntryRowDuration(row);
+updateEntryRowsUI();
+}
+
+function resetEntryRows() {
+clearElement(document.getElementById('entryRows'));
+addEntryRow({ hourlyRate: '10' });
+}
+
+function getEntryRowsPayload() {
+return Array.from(document.querySelectorAll('#entryRows .entry-row')).map((row) => ({
+startTime: row.querySelector('[data-field="startTime"]').value,
+endTime: row.querySelector('[data-field="endTime"]').value,
+hourlyRate: Number(row.querySelector('[data-field="hourlyRate"]').value),
+description: row.querySelector('[data-field="description"]').value
+}));
+}
+
 async function loadEntries() {
 try {
 const entries = await apiFetch('/entries');
@@ -405,13 +527,27 @@ list.appendChild(createTextElement('div', 'empty-state', 'Aucune entrée pour ce
 return;
 }
 
+const entriesPerDay = currentMonthData.reduce((counts, entry) => {
+counts[entry.date] = (counts[entry.date] || 0) + 1;
+return counts;
+}, {});
+
 currentMonthData
-.sort((a, b) => String(b.date).localeCompare(String(a.date)))
+.sort((a, b) => String(b.date).localeCompare(String(a.date)) || Number(b.id) - Number(a.id))
 .forEach((entry) => {
 const card = createTextElement('div', 'entry-card', '');
 
 const header = createTextElement('div', 'entry-card-header', '');
-header.appendChild(createTextElement('div', 'entry-card-date', entry.date));
+const dateBlock = createTextElement('div', 'entry-card-date-block', '');
+dateBlock.appendChild(createTextElement('div', 'entry-card-date', formatEntryDate(entry.date)));
+
+if (entriesPerDay[entry.date] > 1) {
+dateBlock.appendChild(
+createTextElement('div', 'entry-card-day-count', `${entriesPerDay[entry.date]} créneaux ce jour`)
+);
+}
+
+header.appendChild(dateBlock);
 card.appendChild(header);
 
 card.appendChild(createTextElement('div', 'entry-card-time', `${entry.startTime} - ${entry.endTime}`));
@@ -441,7 +577,10 @@ card.appendChild(createTextElement('div', 'entry-card-description', entry.descri
 
 const actions = createTextElement('div', 'entry-card-actions', '');
 actions.appendChild(
-createIconButton('btn-delete', 'fas fa-trash', 'Supprimer', () => deleteEntry(entry.id))
+createIconButton('btn btn-secondary btn-duplicate', 'fas fa-copy', 'Dupliquer', () => openDuplicateEntryModal(entry))
+);
+actions.appendChild(
+createIconButton('btn btn-delete', 'fas fa-trash', 'Supprimer', () => deleteEntry(entry.id))
 );
 
 card.appendChild(actions);
@@ -462,6 +601,63 @@ loadEntries();
 loadMonthlyStats();
 } catch (err) {
 showAlert(err.message, 'error');
+}
+}
+
+function openDuplicateEntryModal(entry) {
+duplicateSourceEntry = entry;
+
+const modal = document.getElementById('duplicateEntryModal');
+const dateInput = document.getElementById('duplicateEntryDate');
+const summary = document.getElementById('duplicateEntrySummary');
+
+if (dateInput) dateInput.value = entry.date;
+if (summary) {
+summary.textContent = `${entry.startTime}–${entry.endTime}, ${Number(entry.hourlyRate).toFixed(2)} €/h`;
+}
+
+modal?.classList.add('active');
+document.body.classList.add('modal-open');
+
+window.setTimeout(() => {
+dateInput?.focus();
+if (typeof dateInput?.showPicker === 'function') {
+try { dateInput.showPicker(); } catch (e) {}
+}
+}, 50);
+}
+
+function closeDuplicateEntryModal() {
+document.getElementById('duplicateEntryModal')?.classList.remove('active');
+document.body.classList.remove('modal-open');
+duplicateSourceEntry = null;
+}
+
+async function submitDuplicateEntry(event) {
+event.preventDefault();
+if (!duplicateSourceEntry) return;
+
+const dateInput = document.getElementById('duplicateEntryDate');
+const submitButton = document.getElementById('submitDuplicateEntryBtn');
+if (!dateInput?.value) return;
+
+if (submitButton) submitButton.disabled = true;
+
+try {
+await apiFetch(`/entries/${duplicateSourceEntry.id}/duplicate`, {
+method: 'POST',
+body: { date: dateInput.value }
+});
+
+selectedMonth = dateInput.value.slice(0, 7);
+syncMonthPicker();
+closeDuplicateEntryModal();
+showAlert('Créneau dupliqué avec succès', 'success');
+await Promise.all([loadEntries(), loadMonthlyStats()]);
+} catch (err) {
+showAlert(err.message, 'error');
+} finally {
+if (submitButton) submitButton.disabled = false;
 }
 }
 
@@ -885,33 +1081,49 @@ const entryForm = document.getElementById('entryForm');
 if (entryForm) {
 entryForm.addEventListener('submit', async (e) => {
 e.preventDefault();
+const submitButton = document.getElementById('submitEntriesBtn');
+const date = document.getElementById('entryDate').value;
+const entries = getEntryRowsPayload();
+
+if (!entries.length) {
+showAlert('Ajoutez au moins un créneau', 'error');
+return;
+}
+
+if (submitButton) submitButton.disabled = true;
 
 try {
-await apiFetch('/entries', {
+const result = await apiFetch('/entries/bulk', {
 method: 'POST',
 body: {
-date: document.getElementById('entryDate').value,
-startTime: document.getElementById('entryStartTime').value,
-endTime: document.getElementById('entryEndTime').value,
-hourlyRate: parseFloat(document.getElementById('entryHourlyRate').value),
-description: document.getElementById('entryDescription').value
+date,
+entries
 }
 });
 
-document.getElementById('entryForm').reset();
-document.getElementById('entryDate').value = new Date().toISOString().split('T')[0];
-showAlert('Entrée ajoutée !', 'success');
-
-loadEntries();
-loadMonthlyStats();
+selectedMonth = date.slice(0, 7);
+syncMonthPicker();
+resetEntryRows();
+showAlert(
+result.count > 1 ? `${result.count} créneaux ajoutés !` : 'Créneau ajouté !',
+'success'
+);
 
 const entriesBtn = document.querySelector('.nav-tab[data-tab="entries"]');
 if (entriesBtn) showTab(entriesBtn);
 } catch (err) {
 showAlert(err.message, 'error');
+} finally {
+if (submitButton) submitButton.disabled = false;
 }
 });
 }
+
+document.getElementById('addEntryRowBtn')?.addEventListener('click', () => {
+addEntryRow({ hourlyRate: '10' });
+const rows = document.querySelectorAll('#entryRows .entry-row');
+rows[rows.length - 1]?.querySelector('[data-field="startTime"]')?.focus();
+});
 
 document.getElementById('registerToggle')?.addEventListener('click', () => switchAuthPanel('register'));
 document.getElementById('loginToggle')?.addEventListener('click', () => switchAuthPanel('login'));
@@ -964,10 +1176,24 @@ button.addEventListener('click', () => showTab(button));
 
 document.getElementById('closeChangePwdBtn')?.addEventListener('click', closeChangePwdModal);
 document.getElementById('submitChangePwdBtn')?.addEventListener('click', submitChangePassword);
+document.getElementById('duplicateEntryForm')?.addEventListener('submit', submitDuplicateEntry);
+document.getElementById('closeDuplicateEntryBtn')?.addEventListener('click', closeDuplicateEntryModal);
 
 document.getElementById('changePwdModal')?.addEventListener('click', (event) => {
 if (event.target === document.getElementById('changePwdModal')) {
 closeChangePwdModal();
+}
+});
+
+document.getElementById('duplicateEntryModal')?.addEventListener('click', (event) => {
+if (event.target === document.getElementById('duplicateEntryModal')) {
+closeDuplicateEntryModal();
+}
+});
+
+document.addEventListener('keydown', (event) => {
+if (event.key === 'Escape' && document.getElementById('duplicateEntryModal')?.classList.contains('active')) {
+closeDuplicateEntryModal();
 }
 });
 }
@@ -977,7 +1203,8 @@ bindUIEvents();
 resetAuthUI();
 
 const entryDate = document.getElementById('entryDate');
-if (entryDate) entryDate.value = new Date().toISOString().split('T')[0];
+if (entryDate) entryDate.value = getLocalDateValue();
+resetEntryRows();
 
 syncMonthPicker();
 
@@ -1000,62 +1227,13 @@ console.error(e);
 });
 
 window.addEventListener('resize', () => {
+window.clearTimeout(resizeTimer);
+resizeTimer = window.setTimeout(() => {
+if (!currentUser) return;
 loadMonthlyStats();
 
 if (currentUser && String(currentUser.role).toLowerCase() === 'admin') {
 loadAdminData();
 }
+}, 180);
 });
-
-function isIOS() {
-    const ua = window.navigator.userAgent;
-    return /iPhone|iPad|iPod/i.test(ua);
-}
-
-function openMonthPicker() {
-    const monthPicker = document.getElementById('monthPicker');
-
-    if (!isIOS() && monthPicker) {
-        try {
-            if (typeof monthPicker.showPicker === 'function') {
-                monthPicker.showPicker();
-                return;
-            }
-        } catch (e) {}
-
-        try {
-            monthPicker.focus();
-            monthPicker.click();
-            return;
-        } catch (e) {}
-    }
-
-    openIOSMonthFallback();
-}
-
-function openIOSMonthFallback() {
-    const [currentYear, currentMonth] = selectedMonth.split('-').map(Number);
-
-    const yearInput = prompt('Choisis l’année (ex: 2026)', String(currentYear));
-    if (yearInput === null) return;
-
-    const year = Number(yearInput);
-    if (!Number.isInteger(year) || year < 2000 || year > 2100) {
-        showAlert('Année invalide', 'error');
-        return;
-    }
-
-    const monthInput = prompt('Choisis le mois (1 à 12)', String(currentMonth));
-    if (monthInput === null) return;
-
-    const month = Number(monthInput);
-    if (!Number.isInteger(month) || month < 1 || month > 12) {
-        showAlert('Mois invalide', 'error');
-        return;
-    }
-
-    selectedMonth = `${year}-${String(month).padStart(2, '0')}`;
-    syncMonthPicker();
-    loadEntries();
-    loadMonthlyStats();
-}

@@ -35,9 +35,13 @@
 - Authentification sécurisée (login/register)
 - Gestion des sessions via cookies HttpOnly
 - Création d’entrées de travail :
+  - plusieurs créneaux pour une même journée
   - heure de début
   - heure de fin
   - taux horaire
+  - description facultative
+- Duplication rapide d’un créneau en changeant uniquement sa date
+- Enregistrement groupé et atomique des créneaux d’une journée
 - Calcul automatique :
   - durée travaillée
   - revenu généré
@@ -101,7 +105,9 @@
 - HTML5
 - CSS3 (design SaaS custom)
 - JavaScript Vanilla
-- Responsive mobile-first
+- Interface responsive pensée comme une application mobile
+- Navigation tactile fixe en bas sur téléphone
+- Respect des zones sûres et modales adaptées aux petits écrans
 
 ---
 
@@ -131,8 +137,8 @@
 ### Frontend
 
 - `public/index.html` → UI principale
-- `public/js/app.js` → logique client
-- `public/css/style.css` → UI design
+- `public/js/app9.js` → logique client
+- `public/css/style6.css` → UI design
 
 ---
 
@@ -141,8 +147,8 @@
 ```bash
 .
 ├── public/
-│   ├── css/style.css
-│   ├── js/app.js
+│   ├── css/style6.css
+│   ├── js/app9.js
 │   └── index.html
 │
 ├── routes/
@@ -158,7 +164,7 @@
 ├── setup-admin.js
 ├── .env.example
 └── README.md
-````
+```
 
 ---
 
@@ -218,14 +224,17 @@ node setup-admin.js
 
 ### Auth
 
-* `POST /api/register`
-* `POST /api/login`
-* `POST /api/logout`
+* `POST /api/auth/register`
+* `POST /api/auth/login`
+* `POST /api/auth/logout`
 
 ### Entrées
 
 * `GET /api/entries`
 * `POST /api/entries`
+* `POST /api/entries/bulk` — ajouter plusieurs créneaux pour une même date
+* `POST /api/entries/:id/duplicate` — dupliquer un créneau à une autre date
+* `PUT /api/entries/:id`
 * `DELETE /api/entries/:id`
 
 ### Admin
@@ -238,7 +247,10 @@ node setup-admin.js
 
 ## 📱 UI / UX
 
-* 📱 Mobile-first
+* 📱 Expérience proche d’une application mobile
+* 🧭 Navigation inférieure fixe et adaptée au tactile
+* 🗓️ Saisie de plusieurs créneaux sur une même journée
+* 📋 Duplication rapide avec changement de date
 * 🌙 Dark mode moderne
 * ⚡ Expérience fluide
 * 🎨 Design SaaS premium
@@ -312,6 +324,9 @@ JWT_SECRET
 
 * Secure authentication
 * Work entries management
+* Multiple work periods on the same day
+* Batch creation for a full workday
+* Quick entry duplication with a new date
 * Automatic:
 
   * duration calculation
@@ -319,6 +334,7 @@ JWT_SECRET
 * Monthly statistics
 * Entry deletion
 * Password update
+* Mobile app-like bottom navigation and touch-friendly interface
 
 ---
 
