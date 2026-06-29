@@ -594,6 +594,33 @@ canvas {
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), transform var(--transition-fast);
 }
 
+.form-group input[type="date"],
+.form-group input[type="time"] {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 52px;
+  color-scheme: dark;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.form-group input[type="date"]::-webkit-date-and-time-value,
+.form-group input[type="time"]::-webkit-date-and-time-value {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  text-align: left;
+}
+
+.form-group input[type="date"]::-webkit-datetime-edit,
+.form-group input[type="time"]::-webkit-datetime-edit {
+  min-width: 0;
+  padding: 0;
+}
+
 .form-group input::placeholder, .form-group textarea::placeholder { color: var(--text-faint); }
 .form-group input:hover, .form-group textarea:hover { border-color: var(--border-strong); }
 
@@ -1030,43 +1057,56 @@ body.modal-open { overflow: hidden; }
   .add-tab-heading .section-description { font-size: 13px; }
   .entry-count-badge { padding: 7px 10px; font-size: 11px; }
   .workday-date-panel {
-    display: grid;
-    grid-template-columns: 42px minmax(0, 1fr);
+    display: block;
+    width: 100%;
+    max-width: 100%;
     padding: 13px;
-    gap: 12px;
     border-radius: 18px;
+    overflow: hidden;
   }
 
-  .workday-date-icon { width: 42px; height: 42px; flex-basis: 42px; border-radius: 13px; }
+  .workday-date-icon { display: none; }
   .workday-date-field { width: 100%; min-width: 0; }
   .workday-date-field input {
     display: block;
-    width: 100%;
-    min-width: 0;
-    max-width: 100%;
-    inline-size: 100%;
-    max-inline-size: 100%;
+    width: calc(100% - 2px) !important;
+    min-width: 0 !important;
+    max-width: calc(100% - 2px) !important;
+    margin-inline: 1px;
   }
 
   .entry-row { padding: 14px; border-radius: 19px; overflow: hidden; }
-  .entry-row-fields { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .entry-row-fields {
+    width: 100%;
+    max-width: 100%;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+    overflow: hidden;
+  }
   .entry-row-fields .form-group,
   .entry-row-fields .form-group:nth-child(3),
   .entry-row-description {
     grid-column: 1;
+    width: 100%;
     min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
   }
 
   .entry-row-fields input, .entry-row-fields textarea {
     display: block;
-    width: 100%;
-    min-width: 0;
-    max-width: 100%;
+    width: calc(100% - 2px) !important;
+    min-width: 0 !important;
+    max-width: calc(100% - 2px) !important;
+    margin-inline: 1px;
     padding: 13px 11px;
     border-radius: 14px;
   }
 
-  .entry-row-fields input[type="time"] { inline-size: 100%; }
+  .entry-row-fields input[type="time"] {
+    inline-size: calc(100% - 2px) !important;
+    max-inline-size: calc(100% - 2px) !important;
+  }
   .entry-form-footer { align-items: stretch; flex-direction: column; gap: 12px; }
   .entry-submit-btn, .btn-add-slot { width: 100%; min-height: 48px; }
   .form-helper { align-items: flex-start; }

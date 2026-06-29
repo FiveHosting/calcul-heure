@@ -143,9 +143,12 @@ setTimeout(() => alert.remove(), 300);
 
 function getPreviousMonth(month) {
 const [year, m] = month.split('-').map(Number);
-const date = new Date(year, m - 1, 1);
-date.setMonth(date.getMonth() - 1);
-return date.toISOString().slice(0, 7);
+return formatMonthValue(year, m - 2);
+}
+
+function formatMonthValue(year, zeroBasedMonth) {
+const date = new Date(year, zeroBasedMonth, 1, 12);
+return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
 }
 
 function getMonthLabel(month) {
@@ -1016,9 +1019,7 @@ window.print();
 
 function changeSelectedMonth(offset) {
 const [year, month] = selectedMonth.split('-').map(Number);
-const date = new Date(year, month - 1, 1);
-date.setMonth(date.getMonth() + offset);
-selectedMonth = date.toISOString().slice(0, 7);
+selectedMonth = formatMonthValue(year, month - 1 + offset);
 syncMonthPicker();
 loadEntries();
 loadMonthlyStats();
