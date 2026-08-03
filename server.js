@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
+const cors = require('cors');
 const db = require('./database');
 const authRoutes = require('./routes/auth');
 const entriesRoutes = require('./routes/entries');
@@ -12,6 +13,43 @@ getJwtSecret();
 const app = express();
 const PORT = process.env.PORT || 3000;
 const publicDir = path.join(__dirname, 'public');
+const staticAssetOptions = {
+  index: false,
+  extensions: false,
+  redirect: false,
+  setHeaders: (res, filePath) => {
+    if (filePath.endsWith('.html')) {
+      res.setHeader('Cache-Control', 'no-store');
+    } else if (filePath.endsWith('.css') || filePath.endsWith('.js')) {
+      res.setHeader('Cache-Control', 'no-cache, must-revalidate');
+    }
+  }
+};
+
+function getAllowedCorsOrigins() {
+  const defaults = ['capacitor://localhost', 'ionic://localhost', 'http://localhost', 'https://localhost'];
+  const configured = String(process.env.CORS_ORIGINS || '')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+
+  return new Set([...defaults, ...configured]);
+}
+
+const allowedCorsOrigins = getAllowedCorsOrigins();
+const apiCors = cors({
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Client-Platform'],
+  origin(origin, callback) {
+    if (!origin || allowedCorsOrigins.has(origin)) {
+      callback(null, true);
+      return;
+    }
+
+    callback(null, false);
+  }
+});
 
 app.set('trust proxy', 1);
 app.disable('x-powered-by');
@@ -32,19 +70,12 @@ app.use((req, res, next) => {
 
 app.use(express.json({ limit: '50kb' }));
 app.use(express.urlencoded({ extended: false, limit: '50kb' }));
+app.use('/api', apiCors);
 
-app.use('/public', express.static(publicDir, {
-  index: false,
-  extensions: false,
-  redirect: false,
-  setHeaders: (res, filePath) => {
-    if (filePath.endsWith('.html')) {
-      res.setHeader('Cache-Control', 'no-store');
-    } else if (filePath.endsWith('.css') || filePath.endsWith('.js')) {
-      res.setHeader('Cache-Control', 'no-cache, must-revalidate');
-    }
-  }
-}));
+app.use('/public', express.static(publicDir, staticAssetOptions));
+app.use('/css', express.static(path.join(publicDir, 'css'), staticAssetOptions));
+app.use('/js', express.static(path.join(publicDir, 'js'), staticAssetOptions));
+app.use('/assets', express.static(path.join(publicDir, 'assets'), staticAssetOptions));
 
 app.use('/api/auth', authRoutes);
 app.use('/api/entries', authenticateToken, entriesRoutes);
@@ -55,6 +86,17 @@ app.get('/favicon.ico', (req, res) => res.sendStatus(204));
 app.get('/', (req, res) => {
   res.setHeader('Cache-Control', 'no-store');
   res.sendFile(path.join(publicDir, 'index.html'));
+});
+
+app.get(['/privacy', '/privacy.html'], (req, res) => {
+  res.setHeader('Cache-Control', 'no-store');
+  res.sendFile(path.join(publicDir, 'privacy.html'));
+});
+
+app.get('/manifest.webmanifest', (req, res) => {
+  res.setHeader('Cache-Control', 'no-cache, must-revalidate');
+  res.type('application/manifest+json');
+  res.sendFile(path.join(publicDir, 'manifest.webmanifest'));
 });
 
 app.use((req, res) => {

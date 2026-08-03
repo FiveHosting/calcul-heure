@@ -1,0 +1,16 @@
+{
+  "appId": "com.fivehosting.calculheures",
+  "appName": "Calcul d'Heures",
+  "webDir": "public",
+  "server": {
+    "androidScheme": "https",
+    "cleartext": false
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 1200,
+      "backgroundColor": "#08111f",
+      "showSpinner": false
+    }
+  }
+}

@@ -14,6 +14,11 @@ yarn-error.log*
 *~
 dist/
 build/
+android/.gradle/
+android/**/build/
+android/local.properties
+ios/**/build/
+ios/**/DerivedData/
 .idea/
 *.suo
 *.ntvs*

@@ -112,6 +112,21 @@
 - Interface responsive pensée comme une application mobile
 - Navigation tactile fixe en bas sur téléphone
 - Respect des zones sûres et modales adaptées aux petits écrans
+- Build mobile Android/iOS avec Capacitor
+
+---
+
+### Mobile stores
+
+- Capacitor Android + iOS
+- Configuration API mobile via `public/js/mobile-config.js`
+- Authentification mobile par Bearer token
+- Icônes et splash screens générés depuis le logo
+- Page de confidentialité disponible sur `/privacy`
+- Suppression de compte intégrée pour conformité App Store
+- Monétisation AdMob préparée, désactivée par défaut tant que les vrais IDs ne sont pas configurés
+
+Guide complet : [`docs/mobile-store-release.md`](./docs/mobile-store-release.md)
 
 ---
 
@@ -141,8 +156,11 @@
 ### Frontend
 
 - `public/index.html` → UI principale
-- `public/js/app13.js` → logique client
-- `public/css/style9.css` → UI design
+- `public/js/app14.js` → logique client web + mobile
+- `public/js/mobile-config.js` → URL API mobile et configuration AdMob
+- `public/js/native-ads.js` → pont AdMob Capacitor
+- `public/css/style10.css` → UI design
+- `capacitor.config.json` → configuration Android/iOS
 
 ---
 
@@ -151,9 +169,18 @@
 ```bash
 .
 ├── public/
-│   ├── css/style9.css
-│   ├── js/app13.js
+│   ├── css/style10.css
+│   ├── js/app14.js
+│   ├── js/mobile-config.js
+│   ├── js/native-ads.js
+│   ├── manifest.webmanifest
+│   ├── privacy.html
 │   └── index.html
+│
+├── android/
+├── ios/
+├── assets/
+├── docs/
 │
 ├── routes/
 │   ├── auth.js
@@ -231,6 +258,7 @@ node setup-admin.js
 * `POST /api/auth/register`
 * `POST /api/auth/login`
 * `POST /api/auth/logout`
+* `DELETE /api/auth/me` — supprimer son compte et ses entrées
 
 ### Entrées
 
@@ -269,6 +297,16 @@ node setup-admin.js
 ```bash
 npm start
 ```
+
+### Mobile
+
+```bash
+npm run mobile:sync
+npm run mobile:open:android
+npm run mobile:open:ios
+```
+
+Avant une build store, configurez `public/js/mobile-config.js` avec l'URL HTTPS du backend.
 
 ### Vérifications
 

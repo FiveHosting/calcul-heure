@@ -4,15 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Calcul d'Heures</title>
-    <link rel="icon" type="image/png" href="/public/assets/logo-neuro-tech.png?v=20260630-brand">
+    <meta name="theme-color" content="#1286d8">
+    <link rel="icon" type="image/png" href="assets/logo-neuro-tech.png?v=20260803-mobile">
+    <link rel="manifest" href="manifest.webmanifest">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="/public/css/style9.css">
+    <link rel="stylesheet" href="css/style10.css">
 </head>
 <body>
     <div id="auth" class="container">
         <div id="loginPanel" class="auth-panel active">
             <div class="auth-brand">
-                <img src="/public/assets/logo-neuro-tech.png" alt="" class="auth-brand-logo">
+                <img src="assets/logo-neuro-tech.png" alt="" class="auth-brand-logo">
                 <span>Calcul d'Heures</span>
             </div>
             <h2>Bienvenue</h2>
@@ -36,11 +38,14 @@
                 Pas encore de compte ?
                 <a id="registerToggle" class="auth-switch-link">S'inscrire</a>
             </div>
+            <div class="legal-links">
+                <a href="privacy.html" target="_blank" rel="noopener">Confidentialité</a>
+            </div>
         </div>
 
         <div id="registerPanel" class="auth-panel">
             <div class="auth-brand">
-                <img src="/public/assets/logo-neuro-tech.png" alt="" class="auth-brand-logo">
+                <img src="assets/logo-neuro-tech.png" alt="" class="auth-brand-logo">
                 <span>Calcul d'Heures</span>
             </div>
             <h2>Créer un compte</h2>
@@ -72,6 +77,9 @@
                 Déjà inscrit ?
                 <a id="loginToggle" class="auth-switch-link">Se connecter</a>
             </div>
+            <div class="legal-links">
+                <a href="privacy.html" target="_blank" rel="noopener">Confidentialité</a>
+            </div>
         </div>
     </div>
 
@@ -79,7 +87,7 @@
         <div class="header glass-card">
             <div class="header-top">
                 <h1>
-                    <img src="/public/assets/logo-neuro-tech.png" alt="" class="app-logo">
+                    <img src="assets/logo-neuro-tech.png" alt="" class="app-logo">
                     Calcul d'Heures
                 </h1>
                 <div class="user-info">
@@ -297,6 +305,9 @@
             </div>
             <div class="modal-footer">
                 <button id="closeChangePwdBtn" class="btn btn-secondary" type="button">Annuler</button>
+                <button id="deleteAccountBtn" class="btn btn-danger-outline" type="button">
+                    <i class="fas fa-user-slash"></i> Supprimer mon compte
+                </button>
                 <button id="submitChangePwdBtn" class="btn btn-primary" type="button">Valider</button>
             </div>
         </div>
@@ -362,6 +373,8 @@
         </section>
     </template>
 
-    <script src="/public/js/app13.js" defer></script>
+    <script src="js/mobile-config.js" defer></script>
+    <script src="js/native-ads.js" defer></script>
+    <script src="js/app14.js" defer></script>
 </body>
 </html>

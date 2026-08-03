@@ -20,8 +20,31 @@ function setAuthCookie(res, token) {
   });
 }
 
+function clearAuthCookie(res) {
+  const isProd = process.env.NODE_ENV === 'production';
+  res.clearCookie('auth_token', {
+    httpOnly: true,
+    sameSite: 'strict',
+    secure: isProd,
+    path: '/'
+  });
+}
+
 function buildUserPayload(user) {
   return { id: user.id, username: user.username, email: user.email, role: user.role };
+}
+
+function shouldReturnBearerToken(req) {
+  const platform = String(req.headers['x-client-platform'] || req.body?.clientType || '').toLowerCase();
+  return ['mobile', 'capacitor', 'android', 'ios'].includes(platform);
+}
+
+function buildAuthResponse(req, message, user, token) {
+  const payload = { message, user };
+  if (shouldReturnBearerToken(req)) {
+    payload.token = token;
+  }
+  return payload;
 }
 
 router.post('/register', authLimiter, async (req, res) => {
@@ -57,7 +80,7 @@ router.post('/register', authLimiter, async (req, res) => {
           const user = { id: this.lastID, username, email, role: 'user' };
           const token = jwt.sign(user, getJwtSecret(), { expiresIn: '7d' });
           setAuthCookie(res, token);
-          res.status(201).json({ message: 'Compte créé avec succès.', user });
+          res.status(201).json(buildAuthResponse(req, 'Compte créé avec succès.', user, token));
         }
       );
     });
@@ -88,7 +111,7 @@ router.post('/login', authLimiter, (req, res) => {
       const userPayload = buildUserPayload(user);
       const token = jwt.sign(userPayload, getJwtSecret(), { expiresIn: '7d' });
       setAuthCookie(res, token);
-      res.json({ message: 'Connecté avec succès.', user: userPayload });
+      res.json(buildAuthResponse(req, 'Connecté avec succès.', userPayload, token));
     });
   } catch (error) {
     console.error('Erreur connexion:', error);
@@ -100,14 +123,53 @@ router.get('/me', authenticateToken, (req, res) => {
   res.json({ user: buildUserPayload(req.user) });
 });
 
-router.post('/logout', (req, res) => {
-  const isProd = process.env.NODE_ENV === 'production';
-  res.clearCookie('auth_token', {
-    httpOnly: true,
-    sameSite: 'strict',
-    secure: isProd,
-    path: '/'
+router.delete('/me', authenticateToken, (req, res) => {
+  const userId = req.user.id;
+
+  function rollbackWithResponse(status, payload) {
+    db.run('ROLLBACK', () => res.status(status).json(payload));
+  }
+
+  db.serialize(() => {
+    db.run('BEGIN IMMEDIATE', (beginErr) => {
+      if (beginErr) {
+        console.error('Erreur début suppression compte:', beginErr);
+        return res.status(500).json({ error: 'Erreur lors de la suppression du compte.' });
+      }
+
+      db.run('DELETE FROM work_entries WHERE user_id = ?', [userId], (entriesErr) => {
+        if (entriesErr) {
+          console.error('Erreur suppression entrées compte:', entriesErr);
+          return rollbackWithResponse(500, { error: 'Erreur lors de la suppression des données.' });
+        }
+
+        db.run('DELETE FROM users WHERE id = ?', [userId], function(userErr) {
+          if (userErr) {
+            console.error('Erreur suppression utilisateur:', userErr);
+            return rollbackWithResponse(500, { error: 'Erreur lors de la suppression du compte.' });
+          }
+
+          if (this.changes === 0) {
+            return rollbackWithResponse(404, { error: 'Utilisateur non trouvé.' });
+          }
+
+          db.run('COMMIT', (commitErr) => {
+            if (commitErr) {
+              console.error('Erreur validation suppression compte:', commitErr);
+              return rollbackWithResponse(500, { error: 'Erreur lors de la suppression du compte.' });
+            }
+
+            clearAuthCookie(res);
+            return res.json({ message: 'Compte supprimé avec succès.' });
+          });
+        });
+      });
+    });
   });
+});
+
+router.post('/logout', (req, res) => {
+  clearAuthCookie(res);
   res.json({ message: 'Déconnecté avec succès.' });
 });
 
@@ -159,7 +221,7 @@ router.post('/create-admin', authLimiter, async (req, res) => {
           const user = { id: this.lastID, username, email, role: 'admin' };
           const token = jwt.sign(user, getJwtSecret(), { expiresIn: '7d' });
           setAuthCookie(res, token);
-          res.status(201).json({ message: 'Compte admin créé avec succès.', user });
+          res.status(201).json(buildAuthResponse(req, 'Compte admin créé avec succès.', user, token));
         }
       );
     });
