@@ -10,7 +10,10 @@ const db = new sqlite3.Database(dbPath, (err) => {
     console.error('Erreur de connexion à la BDD:', err);
   } else {
     console.log('✅ Connecté à la base de données SQLite');
-    initializeDatabase();
+    db.run('PRAGMA foreign_keys = ON', (foreignKeyError) => {
+      if (foreignKeyError) console.error('Erreur activation clés étrangères:', foreignKeyError);
+      initializeDatabase();
+    });
   }
 });
 

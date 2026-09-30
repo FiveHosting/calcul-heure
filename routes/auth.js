@@ -111,6 +111,21 @@ router.post('/logout', (req, res) => {
   res.json({ message: 'Déconnecté avec succès.' });
 });
 
+router.delete('/me', authenticateToken, (req, res) => {
+  const userId = req.user.id;
+  db.run('DELETE FROM users WHERE id = ?', [userId], function(error) {
+    if (error) return res.status(500).json({ error: 'Erreur lors de la suppression du compte.' });
+    if (!this.changes) return res.status(404).json({ error: 'Compte introuvable.' });
+    res.clearCookie('auth_token', {
+      httpOnly: true,
+      sameSite: 'strict',
+      secure: process.env.NODE_ENV === 'production',
+      path: '/'
+    });
+    return res.json({ message: 'Compte et données associées supprimés.' });
+  });
+});
+
 router.post('/create-admin', authLimiter, async (req, res) => {
   if (process.env.ALLOW_ADMIN_BOOTSTRAP !== 'true') {
     return res.status(404).json({ error: 'Route désactivée.' });
