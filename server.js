@@ -5,6 +5,7 @@ const db = require('./database');
 const authRoutes = require('./routes/auth');
 const entriesRoutes = require('./routes/entries');
 const adminRoutes = require('./routes/admin');
+const kilometersRoutes = require('./routes/kilometers');
 const { authenticateToken, getJwtSecret } = require('./middleware/auth');
 
 getJwtSecret();
@@ -49,6 +50,7 @@ app.use('/public', express.static(publicDir, {
 app.use('/api/auth', authRoutes);
 app.use('/api/entries', authenticateToken, entriesRoutes);
 app.use('/api/admin', authenticateToken, adminRoutes);
+app.use('/api/kilometers', authenticateToken, kilometersRoutes);
 
 app.get('/favicon.ico', (req, res) => res.sendStatus(204));
 

@@ -49,6 +49,24 @@ function initializeDatabase() {
     if (err) console.error('Erreur création table work_entries:', err);
     else console.log('✅ Table work_entries initialisée');
   });
+
+  db.run(`
+    CREATE TABLE IF NOT EXISTS kilometer_trips (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER NOT NULL,
+      date DATE NOT NULL,
+      kilometers REAL NOT NULL CHECK (kilometers > 0),
+      reason TEXT NOT NULL,
+      source TEXT NOT NULL DEFAULT 'manual' CHECK (source IN ('manual', 'gps')),
+      start_address TEXT DEFAULT '',
+      end_address TEXT DEFAULT '',
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    )
+  `, (err) => {
+    if (err) console.error('Erreur création table kilometer_trips:', err);
+    else console.log('✅ Table kilometer_trips initialisée');
+  });
 }
 
 module.exports = db;
